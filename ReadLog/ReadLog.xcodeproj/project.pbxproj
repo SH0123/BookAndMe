@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E6E68EDB2AF1DD7B00172557 /* ReadLogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E68EDA2AF1DD7B00172557 /* ReadLogApp.swift */; };
-		E6E68EDD2AF1DD7B00172557 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E68EDC2AF1DD7B00172557 /* ContentView.swift */; };
+		E6E68EDD2AF1DD7B00172557 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E68EDC2AF1DD7B00172557 /* RootView.swift */; };
 		E6E68EDF2AF1DD7C00172557 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6E68EDE2AF1DD7C00172557 /* Assets.xcassets */; };
 		E6E68EE22AF1DD7C00172557 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6E68EE12AF1DD7C00172557 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -16,7 +16,7 @@
 /* Begin PBXFileReference section */
 		E6E68ED72AF1DD7B00172557 /* ReadLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6E68EDA2AF1DD7B00172557 /* ReadLogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadLogApp.swift; sourceTree = "<group>"; };
-		E6E68EDC2AF1DD7B00172557 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E6E68EDC2AF1DD7B00172557 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		E6E68EDE2AF1DD7C00172557 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E6E68EE12AF1DD7C00172557 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -51,8 +51,12 @@
 		E6E68ED92AF1DD7B00172557 /* ReadLog */ = {
 			isa = PBXGroup;
 			children = (
-				E6E68EDA2AF1DD7B00172557 /* ReadLogApp.swift */,
-				E6E68EDC2AF1DD7B00172557 /* ContentView.swift */,
+				E6E68EF02AF1DEDB00172557 /* Extension */,
+				E6E68EEF2AF1DED200172557 /* Domain */,
+				E6E68EEE2AF1DEC300172557 /* Data */,
+				E6E68EED2AF1DEBC00172557 /* Constant */,
+				E6E68EEC2AF1DE9900172557 /* System */,
+				E6E68EE82AF1DDF400172557 /* Presenter */,
 				E6E68EDE2AF1DD7C00172557 /* Assets.xcassets */,
 				E6E68EE02AF1DD7C00172557 /* Preview Content */,
 			);
@@ -65,6 +69,66 @@
 				E6E68EE12AF1DD7C00172557 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E6E68EE82AF1DDF400172557 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				E6E68EEB2AF1DE1C00172557 /* System */,
+				E6E68EE92AF1DDFE00172557 /* Component */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		E6E68EE92AF1DDFE00172557 /* Component */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
+		E6E68EEB2AF1DE1C00172557 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E6E68EDC2AF1DD7B00172557 /* RootView.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		E6E68EEC2AF1DE9900172557 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E6E68EDA2AF1DD7B00172557 /* ReadLogApp.swift */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		E6E68EED2AF1DEBC00172557 /* Constant */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Constant;
+			sourceTree = "<group>";
+		};
+		E6E68EEE2AF1DEC300172557 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		E6E68EEF2AF1DED200172557 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		E6E68EF02AF1DEDB00172557 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,7 +201,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E6E68EDD2AF1DD7B00172557 /* ContentView.swift in Sources */,
+				E6E68EDD2AF1DD7B00172557 /* RootView.swift in Sources */,
 				E6E68EDB2AF1DD7B00172557 /* ReadLogApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
