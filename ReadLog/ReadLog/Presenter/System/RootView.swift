@@ -9,13 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
+        ZStack{
+            
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            displayBook()
+            viewBookMemo(memos: Memo.sampleData)
+            readingProgressRecord()
         }
         .padding()
+    }
+    .background(Color("background"))
     }
 }
 

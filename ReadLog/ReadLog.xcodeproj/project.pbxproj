@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9DA3579A2B009A9D004EC3C1 /* displayBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA357992B009A9D004EC3C1 /* displayBook.swift */; };
+		9DA3579C2B009AD1004EC3C1 /* viewBookMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA3579B2B009AD0004EC3C1 /* viewBookMemo.swift */; };
+		9DA357A02B010314004EC3C1 /* readingProgressDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA3579F2B010314004EC3C1 /* readingProgressDisplay.swift */; };
+		9DA357A22B01037F004EC3C1 /* readingProgressRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DA357A12B01037F004EC3C1 /* readingProgressRecord.swift */; };
 		E622526B2AFB7AE600D33EC3 /* omyu pretty.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */; };
 		E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */; };
 		E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */; };
@@ -17,6 +21,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9DA357992B009A9D004EC3C1 /* displayBook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = displayBook.swift; sourceTree = "<group>"; };
+		9DA3579B2B009AD0004EC3C1 /* viewBookMemo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = viewBookMemo.swift; sourceTree = "<group>"; };
+		9DA3579F2B010314004EC3C1 /* readingProgressDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = readingProgressDisplay.swift; sourceTree = "<group>"; };
+		9DA357A12B01037F004EC3C1 /* readingProgressRecord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = readingProgressRecord.swift; sourceTree = "<group>"; };
 		E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "omyu pretty.ttf"; sourceTree = "<group>"; };
 		E622526C2AFB7B0400D33EC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
@@ -100,6 +108,10 @@
 		E6E68EE92AF1DDFE00172557 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				9DA357992B009A9D004EC3C1 /* displayBook.swift */,
+				9DA3579B2B009AD0004EC3C1 /* viewBookMemo.swift */,
+				9DA357A12B01037F004EC3C1 /* readingProgressRecord.swift */,
+				9DA3579F2B010314004EC3C1 /* readingProgressDisplay.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -222,9 +234,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6E68EDD2AF1DD7B00172557 /* RootView.swift in Sources */,
+				9DA357A02B010314004EC3C1 /* readingProgressDisplay.swift in Sources */,
 				E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */,
+				9DA3579A2B009A9D004EC3C1 /* displayBook.swift in Sources */,
+				9DA357A22B01037F004EC3C1 /* readingProgressRecord.swift in Sources */,
 				E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */,
 				E6E68EDB2AF1DD7B00172557 /* ReadLogApp.swift in Sources */,
+				9DA3579C2B009AD1004EC3C1 /* viewBookMemo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
