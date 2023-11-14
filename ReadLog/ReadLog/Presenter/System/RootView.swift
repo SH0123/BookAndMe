@@ -18,7 +18,6 @@ struct ContentView: View {
         .padding()
     }
 }
-}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
