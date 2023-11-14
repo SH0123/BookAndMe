@@ -31,6 +31,7 @@
 		E6E4BF552B01BF4000FEEE10 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		E6E4BF582B01C88500FEEE10 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		E6E4BF5A2B01CE1100FEEE10 /* NoteLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteLabel.swift; sourceTree = "<group>"; };
+
 		E6E68ED72AF1DD7B00172557 /* ReadLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6E68EDA2AF1DD7B00172557 /* ReadLogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadLogApp.swift; sourceTree = "<group>"; };
 		E6E68EDC2AF1DD7B00172557 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -57,6 +58,7 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+
 		E6E4BF542B01BD9B00FEEE10 /* AddNote */ = {
 			isa = PBXGroup;
 			children = (
@@ -73,6 +75,7 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+
 		E6E68ECE2AF1DD7B00172557 = {
 			isa = PBXGroup;
 			children = (
@@ -176,7 +179,9 @@
 			children = (
 				E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */,
 				E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */,
+
 				E6C73D5A2B02F82E00A3C9C9 /* UINavigationController+Extension.swift */,
+
 			);
 			path = Extension;
 			sourceTree = "<group>";
