@@ -16,11 +16,13 @@ struct AddNoteView: View {
         ZStack {
             Color.backgroundColor
                 .ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 40) {
                 header
-                NoteLabel(noteType)
-                textField
-                
+                ZStack(alignment: .topLeading) {
+                    textField
+                    NoteLabel(noteType)
+                        .padding(EdgeInsets(top: -20, leading: -20, bottom: 0, trailing: 0))
+                }
             }
             .padding(.horizontal, 32)
         }
@@ -71,6 +73,7 @@ private extension AddNoteView {
                 if contents.isEmpty {
                     Text(placeholder)
                         .bodyDefault(.darkGray)
+                        .padding(.vertical, 7.5)
                 }
             }
         }

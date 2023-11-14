@@ -9,22 +9,15 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        NavigationStack {
-            VStack {
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundColor(.accentColor)
-                Text("Hello, world!")
-                NavigationLink(value: "dd") {
-                    Text("넘어가기")
-                }
-                .navigationDestination(for: String.self) {_ in
-                    AddNoteView()
-                }
-            }
-            .padding()
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Text("Hello, world!")
         }
+        .padding()
     }
+}
 }
 
 struct ContentView_Previews: PreviewProvider {
