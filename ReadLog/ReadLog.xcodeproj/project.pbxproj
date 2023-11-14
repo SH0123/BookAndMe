@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E6187EF42B03495700731321 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6187EF32B03495700731321 /* ScannerView.swift */; };
+		E6187EF62B03505300731321 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6187EF52B03505300731321 /* TextRecognizer.swift */; };
 		E622526B2AFB7AE600D33EC3 /* omyu pretty.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */; };
 		E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */; };
 		E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E6187EF32B03495700731321 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
+		E6187EF52B03505300731321 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "omyu pretty.ttf"; sourceTree = "<group>"; };
 		E622526C2AFB7B0400D33EC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
@@ -31,7 +35,6 @@
 		E6E4BF552B01BF4000FEEE10 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		E6E4BF582B01C88500FEEE10 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		E6E4BF5A2B01CE1100FEEE10 /* NoteLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteLabel.swift; sourceTree = "<group>"; };
-
 		E6E68ED72AF1DD7B00172557 /* ReadLog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadLog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6E68EDA2AF1DD7B00172557 /* ReadLogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadLogApp.swift; sourceTree = "<group>"; };
 		E6E68EDC2AF1DD7B00172557 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -58,11 +61,12 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
-
 		E6E4BF542B01BD9B00FEEE10 /* AddNote */ = {
 			isa = PBXGroup;
 			children = (
 				E6E4BF522B01B70300FEEE10 /* AddNoteView.swift */,
+				E6187EF32B03495700731321 /* ScannerView.swift */,
+				E6187EF52B03505300731321 /* TextRecognizer.swift */,
 			);
 			path = AddNote;
 			sourceTree = "<group>";
@@ -75,7 +79,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-
 		E6E68ECE2AF1DD7B00172557 = {
 			isa = PBXGroup;
 			children = (
@@ -179,9 +182,7 @@
 			children = (
 				E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */,
 				E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */,
-
 				E6C73D5A2B02F82E00A3C9C9 /* UINavigationController+Extension.swift */,
-
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -261,11 +262,13 @@
 				E6E4BF592B01C88500FEEE10 /* Note.swift in Sources */,
 				E6E68EDD2AF1DD7B00172557 /* RootView.swift in Sources */,
 				E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */,
+				E6187EF62B03505300731321 /* TextRecognizer.swift in Sources */,
 				E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */,
 				E6E68EDB2AF1DD7B00172557 /* ReadLogApp.swift in Sources */,
 				E6E4BF562B01BF4000FEEE10 /* Header.swift in Sources */,
 				E6E4BF532B01B70300FEEE10 /* AddNoteView.swift in Sources */,
 				E6C73D5B2B02F82E00A3C9C9 /* UINavigationController+Extension.swift in Sources */,
+				E6187EF42B03495700731321 /* ScannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AddNoteView: View {
+    @State private var showScannerSheet = false
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
     private let placeholder: String = "내용을 작성해보세요"
@@ -27,6 +28,9 @@ struct AddNoteView: View {
             .padding(.horizontal, 32)
         }
         .toolbar(.hidden)
+        .fullScreenCover(isPresented: $showScannerSheet, content: {
+            scannerView
+        })
     }
 }
 
@@ -52,6 +56,7 @@ private extension AddNoteView {
             Spacer()
             Button {
                 // scan
+                showScannerSheet = true
             } label: {
                 Image(systemName: "doc.viewfinder")
                     .font(.system(size: 25))
@@ -69,6 +74,17 @@ private extension AddNoteView {
                 TextEditor(text: $contents)
                     .bodyDefault(.black)
                     .scrollContentBackground(.hidden)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button {
+                                // save
+                            } label: {
+                                Text("노트 저장")
+                                    .foregroundStyle(Color.black)
+                            }
+                        }
+                    }
                 
                 if contents.isEmpty {
                     Text(placeholder)
@@ -82,6 +98,13 @@ private extension AddNoteView {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(.gray, lineWidth: 1)
         )
+    }
+    
+    var scannerView: ScannerView {
+        ScannerView { textPerPage in
+            self.contents = textPerPage.joined(separator: "\n")
+            self.showScannerSheet = false
+        }
     }
                 
 }
