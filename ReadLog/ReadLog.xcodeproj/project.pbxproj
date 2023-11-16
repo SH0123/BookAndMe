@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E60025092B06378D00C4DFDD /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60025082B06378D00C4DFDD /* Date+Extension.swift */; };
 		E6187EF42B03495700731321 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6187EF32B03495700731321 /* ScannerView.swift */; };
 		E6187EF62B03505300731321 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6187EF52B03505300731321 /* TextRecognizer.swift */; };
 		E622526B2AFB7AE600D33EC3 /* omyu pretty.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E60025082B06378D00C4DFDD /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		E6187EF32B03495700731321 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		E6187EF52B03505300731321 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "omyu pretty.ttf"; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */,
 				E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */,
 				E6C73D5A2B02F82E00A3C9C9 /* UINavigationController+Extension.swift */,
+				E60025082B06378D00C4DFDD /* Date+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				E6E68EDD2AF1DD7B00172557 /* RootView.swift in Sources */,
 				E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */,
 				E6187EF62B03505300731321 /* TextRecognizer.swift in Sources */,
+				E60025092B06378D00C4DFDD /* Date+Extension.swift in Sources */,
 				E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */,
 				E6E68EDB2AF1DD7B00172557 /* ReadLogApp.swift in Sources */,
 				E6E4BF562B01BF4000FEEE10 /* Header.swift in Sources */,
