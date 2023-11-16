@@ -12,6 +12,7 @@ struct AddNoteView: View {
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
     private let placeholder: String = "내용을 작성해보세요"
+    private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
     
     var body: some View {
         ZStack {
@@ -68,7 +69,7 @@ private extension AddNoteView {
     
     var textField: some View {
         VStack(alignment: .leading) {
-            Text("날짜 부분")
+            Text("\(dateFormatter.string(from: Date()))")
                 .bodyDefault(.darkGray)
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $contents)
