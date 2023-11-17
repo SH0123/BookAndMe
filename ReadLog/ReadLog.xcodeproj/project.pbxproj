@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB18172D2B062ED600A55F80 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB18172C2B062ED600A55F80 /* Persistence.swift */; };
+		DB633C1B2B02FC8F004CEC27 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB633C192B02FC8F004CEC27 /* Model.xcdatamodeld */; };
 		E622526B2AFB7AE600D33EC3 /* omyu pretty.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */; };
 		E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */; };
 		E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DB18172C2B062ED600A55F80 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		DB633C1A2B02FC8F004CEC27 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "omyu pretty.ttf"; sourceTree = "<group>"; };
 		E622526C2AFB7B0400D33EC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 		E6E68EEE2AF1DEC300172557 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				DB18172C2B062ED600A55F80 /* Persistence.swift */,
+				DB633C192B02FC8F004CEC27 /* Model.xcdatamodeld */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -223,6 +229,8 @@
 			files = (
 				E6E68EDD2AF1DD7B00172557 /* RootView.swift in Sources */,
 				E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */,
+				DB633C1B2B02FC8F004CEC27 /* Model.xcdatamodeld in Sources */,
+				DB18172D2B062ED600A55F80 /* Persistence.swift in Sources */,
 				E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */,
 				E6E68EDB2AF1DD7B00172557 /* ReadLogApp.swift in Sources */,
 			);
@@ -429,6 +437,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DB633C192B02FC8F004CEC27 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DB633C1A2B02FC8F004CEC27 /* Model.xcdatamodel */,
+			);
+			currentVersion = DB633C1A2B02FC8F004CEC27 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = E6E68ECF2AF1DD7B00172557 /* Project object */;
 }
