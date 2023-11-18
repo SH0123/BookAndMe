@@ -7,7 +7,14 @@
 
 import SwiftUI
 
+class PopUpHelper: ObservableObject {
+    @Published var showPopUp: Bool = false
+}
+
 struct ContentView: View {
+    
+    @StateObject var popUpControl: PopUpHelper = PopUpHelper()
+    
     var body: some View {
         ZStack{
             

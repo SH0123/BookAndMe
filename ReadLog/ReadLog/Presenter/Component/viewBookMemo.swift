@@ -59,10 +59,12 @@ struct viewBookMemo: View {
                 }
                 Spacer()
                 //Button
-                Image(systemName: "plus.app")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 24, height: 24)
+                NavigationLink(destination: displayBook()){
+                    Image(systemName: "plus.app")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 24, height: 24)
+                }
             }
             .padding()
             .background(Color("background"))
