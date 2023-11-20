@@ -13,30 +13,49 @@ struct BookSearchView: View {
     @State var bookTitle = "책 제목"
     @State var bookAuthor = "작가"
     @State var bookPublisher = "출판사"
+    @State var bookNthCycle = 0
     
     var body: some View {
         
-        NavigationView {
+        NavigationStack {
             VStack {
                 HStack {
                     SearchBar(text: $searchText)
                     
-                    // useless?
-//                    Button {
-//                        print("Search book by book title")
-//                    } label: {
-//                        Image(systemName: "magnifyingglass").tint(Color.secondary)
-//                    }.padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 8))
+                    
+                    Button {
+                        print("Search book by book title")
+                    } label: {
+                        Image(systemName: "magnifyingglass").tint(Color.secondary)
+                    }.padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 8))
                 }
                 .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
                 
                 ScrollView {
                     LazyVStack {
-                        BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher)
-                        BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher)
-                        BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher)
-                        BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher)
+                        NavigationLink(destination: BookInfoView()) {
+                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+                        }
+                        .foregroundColor(.black)
+                        
+                        NavigationLink(destination: BookInfoView()) {
+                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+                        }
+                        .foregroundColor(.black)
+                        
+                        NavigationLink(destination: BookInfoView()) {
+                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+                        }
+                        .foregroundColor(.black)
+                        
+                        NavigationLink(destination: BookInfoView()) {
+                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+                        }
+                        .foregroundColor(.black)
+                        
                     }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 10)
                 }
                 Spacer()
                 
