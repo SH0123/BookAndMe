@@ -15,6 +15,7 @@ struct ContentView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \BookInfo.isbn, ascending: true)],
         animation: .default)
     private var items: FetchedResults<BookInfo>
+    @State private var isMenuExpanded = false
     
     var body: some View {
         VStack{
@@ -25,41 +26,61 @@ struct ContentView: View {
                     .frame(alignment: .center)
                 HStack{
                     Spacer()
-                    Rectangle()
+                    Menu{
+                        Button("설정", action: {})
+                    } label: {
+                        Image("path-to-image")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 36, height: 36)
+                            .clipped()
+                    }
                         .foregroundColor(.clear)
                         .frame(width: 60, height: 36)
-                        .background(
-                            Image("path-to-image")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 36, height: 36)
-                                .clipped()
-                        )
+                        .padding(.trailing, 10)
                 }
             }
-            Text("0권 / 0권")
+            Text("0권 / \(items.count)권")
                 .font(Font.custom("omyu pretty", size: 18))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.black)
                 .frame(width: 231, height: 21, alignment: .top)
-            VStack{
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.isbn!)")
-                    } label: {
-                        Text(item.isbn!)
+            ScrollView(.horizontal) {
+                HStack {
+                    Spacer(minLength: 70)
+                    ForEach(items) { item in
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 258, height: 328)
+                            .background(.white)
+                            .cornerRadius(10)
+                            .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
+                            .padding(.trailing, 30)
                     }
+                    ZStack{
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 258, height: 328)
+                            .background(.white)
+                            .cornerRadius(10)
+                            .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
+                        Image("simple-line-icons:plus")
+                            .frame(width: 70, height: 70)
+                    }
+                    Spacer(minLength: 70)
                 }
+                .padding(.bottom, 15)
             }
             
             Spacer()
-                .frame(height: 50)
+                .frame(height: 30)
             
             HStack{
                 Text("최근 기록")
                     .font(Font.custom("omyu pretty", size: 22))
                     .foregroundColor(.black)
-                    .frame(width: 300, height: 21, alignment: .topLeading)
+                    .frame(width: 330, height: 21, alignment: .leading)
+                    .padding(3)
             }
             VStack{
                 Rectangle()
@@ -71,13 +92,13 @@ struct ContentView: View {
                     .font(Font.custom("omyu pretty", size: 20))
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.56))
-                    .frame(width: 333, height: 110, alignment: .top)
+                Spacer()
                 Rectangle()
                     .foregroundColor(.clear)
                     .frame(width: 332.00287, height: 1)
                     .background(Color(red: 0.76, green: 0.76, blue: 0.76))
             }
-            .frame(height: 200)
+            .frame(height: 150)
         }
         .frame(width: 390, height: 844)
         .background(Color(red: 0.98, green: 0.97, blue: 0.95))
