@@ -48,7 +48,6 @@ struct Body1: ViewModifier {
         content
             .foregroundStyle(color)
             .font(.custom("omyu pretty", size: 22))
-
     }
 }
 
@@ -82,7 +81,6 @@ struct Mini: ViewModifier {
         content
             .foregroundStyle(color)
             .font(.custom("omyu pretty", size: 16))
-
     }
 }
 
