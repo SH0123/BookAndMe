@@ -33,8 +33,10 @@ struct displayBook: View {
                         .padding(.bottom,2)
                 }
                 .padding(.leading,10)
+                
             }
             .padding()
+            
             .frame(width: 323.0, height: 200)
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -47,7 +49,9 @@ struct displayBook: View {
         }
         .frame(width: 300, height: 200) // Adjust the size as needed
         
+        
     }
+        
 }
 
 #Preview {

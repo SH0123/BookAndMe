@@ -34,7 +34,6 @@ class ReadingTrackerModel: ObservableObject {
         let day = getCurrentDay()
         if let index = dailyProgress.firstIndex(where: { $0.day == day }) {
             dailyProgress[index].pagesRead += pagesRead // Increment the day's progress
-            objectWillChange.send() // Notify view to update
         }
     }
     
@@ -61,6 +60,8 @@ import SwiftUI
 struct ReadingTrackerView: View {
     @StateObject private var viewModel = ReadingTrackerModel()
     @State private var pagesReadInput: String = ""
+    @FocusState private var isInputActive: Bool 
+
 
     var body: some View {
         VStack {
@@ -89,13 +90,14 @@ struct ReadingTrackerView: View {
             // 3. Text Field to Accept Integer Value
             HStack {
                 Text("어디까지 읽으셨나요?")
-                    .title(Color.primary)
+                    .body1(Color.primary)
                 Spacer()
                 TextField("페이지 번호...", text: $pagesReadInput)
-                    .frame(width:104, height: 37)
+                    .frame(width:120, height: 37)
                     .keyboardType(.numberPad)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .body1(Color("gray"))
+                    .foregroundColor(isInputActive ? .black : Color("gray")).body2(Color.primary)
+                        .focused($isInputActive)
             }
             .padding()
             .frame(height:47)
@@ -123,8 +125,8 @@ struct progressBar: View {
                     .opacity(0.3)
                     .foregroundColor(Color("gray"))
 
-                Rectangle().frame(width: max(CGFloat(self.value)*geometry.size.width, geometry.size.width), height: thickness)
-                    .foregroundColor(Color("lightblue"))
+                Rectangle().frame(width: min(CGFloat(self.value)*geometry.size.width, geometry.size.width), height: thickness)
+                    .foregroundColor(Color("lightBlue"))
                     .animation(.linear, value: value)
             }
             .clipShape(RoundedRectangle(cornerRadius: 45))
