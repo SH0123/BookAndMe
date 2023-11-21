@@ -13,7 +13,7 @@ struct SearchBar: View {
     var body: some View {
         HStack {
             HStack {
-                Image(systemName: "magnifyingglass")
+//                Image(systemName: "magnifyingglass")
                 
                 TextField("책 제목, 작가, 출판사", text: $text)
                     .foregroundColor(.primary)
