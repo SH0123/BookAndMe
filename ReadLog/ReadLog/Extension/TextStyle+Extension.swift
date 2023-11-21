@@ -13,7 +13,7 @@ struct Display: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundStyle(color)
-            .font(.custom("omyu pretty", size: 27))
+            .font(.custom("omyu pretty", size: 29))
     }
 }
 
@@ -23,7 +23,7 @@ struct Title: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundStyle(color)
-            .font(.custom("omyu pretty", size: 22))
+            .font(.custom("omyu pretty", size: 24))
     }
 }
 
@@ -47,7 +47,7 @@ struct Body1: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundStyle(color)
-            .font(.custom("omyu pretty", size: 18))
+            .font(.custom("omyu pretty", size: 22))
     }
 }
 
@@ -58,7 +58,7 @@ struct Body2: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundStyle(color)
-            .font(.custom("omyu pretty", size: 18))
+            .font(.custom("omyu pretty", size: 20))
     }
 }
 
@@ -69,7 +69,7 @@ struct Body3: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundStyle(color)
-            .font(.custom("omyu pretty", size: 16))
+            .font(.custom("omyu pretty", size: 18))
     }
 }
 
@@ -80,7 +80,7 @@ struct Mini: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundStyle(color)
-            .font(.custom("omyu pretty", size: 14))
+            .font(.custom("omyu pretty", size: 16))
     }
 }
 
