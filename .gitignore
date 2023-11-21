@@ -139,4 +139,7 @@ iOSInjectionProject/
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+# APIKEY
+ReadLog/ReadLog/Constant/APIKEY.swift
+
 # End of https://www.toptal.com/developers/gitignore/api/cocoapods,xcode,swift,macos
