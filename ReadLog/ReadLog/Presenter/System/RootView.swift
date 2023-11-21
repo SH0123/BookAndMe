@@ -8,6 +8,8 @@
 import SwiftUI
 import CoreData
 
+
+
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -103,7 +105,6 @@ struct ContentView: View {
         .frame(width: 390, height: 844)
         .background(Color(red: 0.98, green: 0.97, blue: 0.95))
     }
-    
 }
 
 #Preview {
