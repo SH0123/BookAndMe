@@ -7,14 +7,15 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
     var body: some View {
         ZStack{
             
         VStack {
             displayBook()
-            viewBookMemo(memos: Memo.sampleData)
-            readingProgressRecord()
+            ReadingTrackerView()
+            
         }
         .padding()
     }

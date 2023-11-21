@@ -19,7 +19,7 @@ struct displayBook: View {
                 Image(bookCover)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 150)
+                    .frame(width: 96, height: 140)
                     .background(Color.white)
                 VStack(alignment: .leading){
                     Text(bookTitle)
@@ -35,12 +35,13 @@ struct displayBook: View {
                 .padding(.leading,10)
             }
             .padding()
+            .frame(width: 323.0, height: 200)
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 10))
-                .shadow(color: .black.opacity(0.1), radius:8, x: 0, y: 4)
-                .overlay(RoundedRectangle(cornerRadius:10)
-                    .stroke(Color("gray"), lineWidth: 1)
-                    //.frame(width: 300.0)
+            .shadow(color: .black.opacity(0.1), radius:8, x: 0, y: 4)
+            .overlay(RoundedRectangle(cornerRadius:10)
+            .stroke(Color("gray"), lineWidth: 1)
+            
                     
                     )
         }

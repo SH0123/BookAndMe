@@ -51,56 +51,57 @@ struct viewBookMemo: View {
     }()
     
     var body: some View {
-        VStack {
-            HStack{
-                VStack(alignment: .leading){
-                    Text("독서 기록").title(Color.primary)
-                    Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
+        ScrollView{
+            VStack {
+                HStack{
+                    VStack(alignment: .leading){
+                        Text("독서 기록").title(Color.primary)
+                        Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
+                    }
+                    Spacer()
+                    //Button
+                    Image(systemName: "plus.app")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 24, height: 24)
                 }
-                Spacer()
-                //Button
-                Image(systemName: "plus.app")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 24, height: 24)
-            }
-            .padding()
-            .background(Color("background"))
-            Divider()
-            
-            List {
-                Section{
-                    ForEach(memos){memo in
-                        
-                        VStack(alignment: .leading, spacing:8){
-                            HStack {
-                                Text("\(memo.date, formatter: Self.memoDateFormatter)")
-                                    .bodyDefault(Color("gray"))
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                                LabelView(text: memo.label)
-                            }
-                            Text(memo.content)
-                                .bodyDefault(Color.primary)
-                                .lineSpacing(6)
-                            //.frame(width: UIScreen.main.bounds.width * 0.9)
-                            //.frame(width:UIScreen.view.window.windowScene.screen * 0.9)
+                .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
+                .background(Color("background"))
+                Divider()
+                
+                LazyVStack {
+                    Section{
+                        ForEach(memos){memo in
                             
-                        }//where vstack ends
-
-                        .padding()
-                        .background(Color("background")) // Set the background for each cell
-                        .listRowInsets(EdgeInsets())
-                        
-                        .background(Color("background")) //works
+                            VStack(alignment: .leading, spacing:8){
+                                HStack {
+                                    Text("\(memo.date, formatter: Self.memoDateFormatter)")
+                                        .bodyDefault(Color("gray"))
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                    LabelView(text: memo.label)
+                                }
+                                Text(memo.content)
+                                    .bodyDefault(Color.primary)
+                                    .lineSpacing(6)
+                                
+                            }//where vstack ends
+                            
+                            .padding(EdgeInsets(top: 10, leading: 5, bottom: 5, trailing: 5))
+                            .background(Color("background")) // Set the background for each cell
+                            .listRowInsets(EdgeInsets())
+                            
+                            .background(Color("background")) //works
+                        }
                     }
                 }
+                .listStyle(PlainListStyle())
+                .background(Color("background"))
             }
-            .listStyle(PlainListStyle())
-            .background(Color("background"))
         }
     }
-}
+    }
+
 
 struct LabelView: View {
     var text: String
