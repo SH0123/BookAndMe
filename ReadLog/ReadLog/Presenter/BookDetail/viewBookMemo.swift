@@ -79,7 +79,8 @@ struct viewBookMemo: View {
                                         .bodyDefault(Color("gray"))
                                         .foregroundColor(.secondary)
                                     Spacer()
-                                    LabelView(text: memo.label)
+                                    //LabelView(text: memo.label)
+                                    NoteLabel(.impressive)
                                 }
                                 Text(memo.content)
                                     .bodyDefault(Color.primary)
@@ -88,15 +89,15 @@ struct viewBookMemo: View {
                             }//where vstack ends
                             
                             .padding(EdgeInsets(top: 10, leading: 5, bottom: 5, trailing: 5))
-                            .background(Color("background")) // Set the background for each cell
+                            .background(Color("backgroundColor")) // Set the background for each cell
                             .listRowInsets(EdgeInsets())
                             
-                            .background(Color("background")) //works
+                            .background(Color("backgroundColor")) //works
                         }
                     }
                 }
                 .listStyle(PlainListStyle())
-                .background(Color("background"))
+                .background(Color("backgroundColor"))
             }
         }
     }
