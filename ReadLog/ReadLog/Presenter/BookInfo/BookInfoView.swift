@@ -50,6 +50,7 @@ struct BookInfoView: View {
                 Spacer()
                 
                 Divider()
+                
                 HStack {
                     Button {
                         print("add/delete from wishlist")
@@ -71,8 +72,9 @@ struct BookInfoView: View {
                     .background(Color.lightBlue)
                     .cornerRadius(5.0)
                 }
-                .padding(.top, 5)
+                .padding(.top, 7)
                 .padding(.horizontal, 15)
+                .padding(.bottom, 15)
             }
             .navigationTitle("책 정보")
             .navigationBarTitleDisplayMode(.inline)
