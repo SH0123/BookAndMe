@@ -11,7 +11,8 @@ import SwiftUI
 struct ReadLogApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
+            BookSearchView()
         }
     }
 }

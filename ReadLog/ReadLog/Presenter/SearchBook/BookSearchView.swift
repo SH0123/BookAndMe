@@ -15,6 +15,9 @@ struct BookSearchView: View {
     @State var bookPublisher = "출판사"
     @State var bookNthCycle = 0
     
+    @State var isShowingScanner = false
+    @State var scannedCode: String?
+    
     var body: some View {
         
         NavigationStack {
@@ -67,15 +70,48 @@ struct BookSearchView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         print("Use barcode search")
+                        self.isShowingScanner = true
                     } label: {
                         Image(systemName: "barcode.viewfinder").tint(Color.black)
+                    }
+                    .fullScreenCover(isPresented: $isShowingScanner) {
+                        NavigationStack {
+                            VStack {
+                                ISBNScannerView(isScanning: $isShowingScanner) { code in
+                                    self.scannedCode = code
+                                    // temporarily show ISBN data on search bar
+                                    searchText = scannedCode!
+                                    print("scanned code: \(scannedCode!)")
+                                    self.isShowingScanner = false
+                                }
+                                .ignoresSafeArea(.all)
+                            }
+                            .navigationTitle("바코드 스캔")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbarBackground(Color.backgroundColor, for: .navigationBar)
+                            .toolbarBackground(.visible, for: .navigationBar)
+                            .toolbar {
+                                ToolbarItem(placement: .cancellationAction) {
+                                    Button(role: .cancel) {
+                                        self.isShowingScanner = false
+                                    } label: {
+                                        Image(systemName: "xmark")
+                                            .foregroundColor(.black)
+                                    }
+                                }
+                            }
+                            
+                        }
                     }
                 }
             }
         }
         
         
+        
     }
+    
+ 
 }
 
 #Preview {
