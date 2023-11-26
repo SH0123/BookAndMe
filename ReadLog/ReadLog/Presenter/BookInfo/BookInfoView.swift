@@ -9,14 +9,16 @@ import SwiftUI
 
 struct BookInfoView: View {
     // later change into binding variables (take data from BookSearchView's selection)
-    @State var bookTitle: String = "책 제목"
-    @State var bookAuthor: String = "작가"
-    @State var bookPublisher: String = "출판사"
-    @State var bookNthCycle: Int = 1
-    @State var bookIntroduce: String = 
-        """
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec dapibus augue. Aliquam ut fermentum metus, ut volutpat sapien. Nunc cursus felis convallis nulla ornare, a gravida diam efficitur. Mauris odio eros, egestas vitae mollis eu, mattis vel diam. Donec nec porttitor nisl. Fusce risus diam, consequat eget magna congue, pretium cursus sem. Fusce sollicitudin pretium erat sodales vulputate. Vivamus sed viverra magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ligula nulla, elementum luctus volutpat id, convallis vitae nunc.
-        """
+//    @State var bookTitle: String = "책 제목"
+//    @State var bookAuthor: String = "작가"
+//    @State var bookPublisher: String = "출판사"
+//    @State var bookNthCycle: Int = 1
+//    @State var bookIntroduce: String = 
+//        """
+//        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec dapibus augue. Aliquam ut fermentum metus, ut volutpat sapien. Nunc cursus felis convallis nulla ornare, a gravida diam efficitur. Mauris odio eros, egestas vitae mollis eu, mattis vel diam. Donec nec porttitor nisl. Fusce risus diam, consequat eget magna congue, pretium cursus sem. Fusce sollicitudin pretium erat sodales vulputate. Vivamus sed viverra magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ligula nulla, elementum luctus volutpat id, convallis vitae nunc.
+//        """
+    
+    @Binding var bookInfo: BookInfoData_Temporal
     
     @State var like = false
     
@@ -24,7 +26,8 @@ struct BookInfoView: View {
         NavigationStack {
             VStack {
                 ScrollView {
-                    BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+//                    BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+                    BookProfileContainer(bookInfo: $bookInfo)
                         .padding(.horizontal, 20)
                     
                     HStack {
@@ -41,7 +44,7 @@ struct BookInfoView: View {
                     
                     Divider()
                     
-                    Text(bookIntroduce)
+                    Text(bookInfo.description)
                         .padding(.vertical, 15)
                         .padding(.horizontal)
                         .lineSpacing(20)
@@ -82,6 +85,6 @@ struct BookInfoView: View {
     }
 }
 
-#Preview {
-    BookInfoView()
-}
+//#Preview {
+//    BookInfoView()
+//}

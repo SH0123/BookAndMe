@@ -7,11 +7,17 @@
 
 import SwiftUI
 
+
 struct BookProfileContainer: View {
-    @Binding var bookTitle: String
-    @Binding var bookAuthor: String
-    @Binding var bookPublisher: String
-    @Binding var bookNthCycle: Int
+//    @Binding var bookTitle: String
+//    @Binding var bookAuthor: String
+//    @Binding var bookPublisher: String
+//    @Binding var bookNthCycle: Int
+    
+    @Binding var bookInfo: BookInfoData_Temporal
+    
+    // set bookNthCycle to 0 temporarily
+    var bookNthCycle = 0
     
     
     
@@ -19,19 +25,27 @@ struct BookProfileContainer: View {
         let frameHeight: CGFloat = bookNthCycle != 0 ? 200.0 : 150.0
         
         HStack {
-            Image(systemName: "book")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100)
-                .clipped()
-                .padding(.horizontal, 15)
+//            Image(systemName: "book")
+//                .resizable()
+//                .scaledToFit()
+//                .frame(width: 100)
+//                .clipped()
+//                .padding(.horizontal, 15)
+            URLImage(urlString: bookInfo.coverImage)
             
             VStack(alignment: .leading) {
-                Text(bookTitle)
+//                Text(bookTitle)
+//                    .padding(.vertical, 6)
+//                Text(bookAuthor)
+//                    .padding(.vertical, 6)
+//                Text(bookPublisher)
+//                    .padding(.vertical, 6)
+                
+                Text(bookInfo.title)
                     .padding(.vertical, 6)
-                Text(bookAuthor)
+                Text(bookInfo.author)
                     .padding(.vertical, 6)
-                Text(bookPublisher)
+                Text(bookInfo.publisher)
                     .padding(.vertical, 6)
                 
                 if bookNthCycle != 0 {
@@ -54,13 +68,15 @@ struct BookProfileContainer: View {
         .padding(.vertical, 8)
         .padding(.horizontal)
     }
+    
+    
 }
 
-#Preview {
-    BookProfileContainer(
-        bookTitle: Binding.constant("책 제목"),
-        bookAuthor: Binding.constant("작가"),
-        bookPublisher: Binding.constant("출판사"),
-        bookNthCycle: Binding.constant(1)
-    )
-}
+//#Preview {
+//    BookProfileContainer(
+//        bookTitle: Binding.constant("책 제목"),
+//        bookAuthor: Binding.constant("작가"),
+//        bookPublisher: Binding.constant("출판사"),
+//        bookNthCycle: Binding.constant(1)
+//    )
+//}
