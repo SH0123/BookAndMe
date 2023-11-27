@@ -9,11 +9,6 @@ import SwiftUI
 
 
 struct BookProfileContainer: View {
-//    @Binding var bookTitle: String
-//    @Binding var bookAuthor: String
-//    @Binding var bookPublisher: String
-//    @Binding var bookNthCycle: Int
-    
     @Binding var bookInfo: BookInfoData_Temporal
     
     // set bookNthCycle to 0 temporarily
@@ -22,42 +17,35 @@ struct BookProfileContainer: View {
     
     
     var body: some View {
-        let frameHeight: CGFloat = bookNthCycle != 0 ? 200.0 : 150.0
+//        let frameHeight: CGFloat = bookNthCycle != 0 ? 200.0 : 150.0
         
         HStack {
-//            Image(systemName: "book")
-//                .resizable()
-//                .scaledToFit()
-//                .frame(width: 100)
-//                .clipped()
-//                .padding(.horizontal, 15)
             URLImage(urlString: bookInfo.coverImage)
+                .padding(.vertical, 5)
             
             VStack(alignment: .leading) {
-//                Text(bookTitle)
-//                    .padding(.vertical, 6)
-//                Text(bookAuthor)
-//                    .padding(.vertical, 6)
-//                Text(bookPublisher)
-//                    .padding(.vertical, 6)
-                
                 Text(bookInfo.title)
+                    .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 Text(bookInfo.author)
+                    .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 Text(bookInfo.publisher)
+                    .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 
                 if bookNthCycle != 0 {
                     Text("지금까지 \(bookNthCycle)회독 했어요")
+                        .multilineTextAlignment(.leading)
                         .padding(.vertical, 6)
                     
                 }
             }
+            .padding(.vertical, 8)
             .padding(.horizontal, 10)
             Spacer()
         }
-        .frame(height: frameHeight)
+//        .frame(height: frameHeight)
         .background(Color.primary.colorInvert())
         .overlay(
             RoundedRectangle(cornerRadius: 6)
@@ -71,12 +59,3 @@ struct BookProfileContainer: View {
     
     
 }
-
-//#Preview {
-//    BookProfileContainer(
-//        bookTitle: Binding.constant("책 제목"),
-//        bookAuthor: Binding.constant("작가"),
-//        bookPublisher: Binding.constant("출판사"),
-//        bookNthCycle: Binding.constant(1)
-//    )
-//}
