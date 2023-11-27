@@ -20,7 +20,7 @@ struct URLImage: View {
                 .clipped()
                 .padding(.horizontal, 15)
         } else {
-            Image(systemName: "book")
+            Image("")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100)
@@ -33,7 +33,8 @@ struct URLImage: View {
     }
     
     private func fetchImageData() {
-        guard let urlString = urlString else {
+        // coversum, cover200, cover500...
+        guard let urlString = urlString?.replacingOccurrences(of: "coversum", with: "cover200") else {
             return
         }
         

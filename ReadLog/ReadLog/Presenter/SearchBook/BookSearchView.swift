@@ -59,31 +59,6 @@ struct BookSearchView: View {
                                 }
                             }
                         }
-                        
-    //                    LazyVStack {
-    //                        NavigationLink(destination: BookInfoView()) {
-    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
-    //                        }
-    //                        .foregroundColor(.black)
-    //
-    //                        NavigationLink(destination: BookInfoView()) {
-    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
-    //                        }
-    //                        .foregroundColor(.black)
-    //
-    //                        NavigationLink(destination: BookInfoView()) {
-    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
-    //                        }
-    //                        .foregroundColor(.black)
-    //
-    //                        NavigationLink(destination: BookInfoView()) {
-    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
-    //                        }
-    //                        .foregroundColor(.black)
-    //
-    //                    }
-    //                    .padding(.vertical, 10)
-    //                    .padding(.horizontal, 10)
                     }
                 }
                 

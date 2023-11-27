@@ -18,8 +18,7 @@ struct BookInfoData_Temporal: Codable, Identifiable {
     let coverImage: String
     let publisher: String
     let priceStandard: Int
-    
-//    let link: String
+    let link: String
 //    let priceSales: Int
 //    let mallType: String
 //    let stockStatus: String
@@ -44,5 +43,6 @@ struct BookInfoData_Temporal: Codable, Identifiable {
         case coverImage = "cover"
         case publisher
         case priceStandard
+        case link
     }
 }
