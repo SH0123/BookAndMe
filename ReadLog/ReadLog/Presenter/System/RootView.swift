@@ -11,11 +11,17 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
+    // Book info
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \BookInfo.isbn, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: false)],
         animation: .default)
-    private var items: FetchedResults<BookInfo>
-    @State private var isMenuExpanded = false
+    private var items: FetchedResults<ReadingList>
+    
+    // Carousel View
+    let visibleEdgeSpace: CGFloat = 38 // 옆 화면의 일부가 얼마나 보이는지
+    let spacing: CGFloat = 28 // 뷰 사이의 공간 크기
+    @GestureState var dragOffset: CGFloat = 0 // 손가락으로 page를 넘기는 정도
+    @State var currentIndex: Int = 0 // 현재 가리키는 page넘버
     
     var body: some View {
         VStack{
@@ -45,17 +51,28 @@ struct ContentView: View {
                 .multilineTextAlignment(.center)
                 .foregroundColor(.black)
                 .frame(width: 231, height: 21, alignment: .top)
-            ScrollView(.horizontal) {
-                HStack {
-                    Spacer(minLength: 70)
-                    ForEach(items) { item in
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 258, height: 328)
-                            .background(.white)
-                            .cornerRadius(10)
-                            .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
-                            .padding(.trailing, 30)
+            
+            GeometryReader { proxy in
+                let baseOffset: CGFloat = spacing + visibleEdgeSpace
+                let pageWidth: CGFloat = proxy.size.width - (visibleEdgeSpace + spacing) * 2
+                let offsetX: CGFloat = baseOffset - CGFloat(currentIndex) * (pageWidth + spacing) + dragOffset
+                
+                HStack(spacing: spacing) {
+                    ForEach(items, id: \.self) { item in
+                        ZStack{
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(
+                                    width: pageWidth,
+                                    height: proxy.size.height)
+                                .background(.white)
+                                .cornerRadius(10)
+                                .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
+                            VStack{
+                                Text(item.book!.isbn!)
+                            }
+                            .frame(alignment: .center)
+                        }
                     }
                     ZStack{
                         Rectangle()
@@ -67,10 +84,25 @@ struct ContentView: View {
                         Image("simple-line-icons:plus")
                             .frame(width: 70, height: 70)
                     }
-                    Spacer(minLength: 70)
                 }
-                .padding(.bottom, 15)
+                .offset(x: offsetX)
+                .gesture(
+                    DragGesture()
+                        .updating($dragOffset) { value, out, _ in
+                            out = value.translation.width
+                            print(out)
+                        }
+                        .onEnded { value in
+                            let offsetX = value.translation.width
+                            let progress = -offsetX / pageWidth
+                            let increment = Int(progress.rounded())
+                            
+                            currentIndex = max(min(currentIndex + increment, items.count), 0)
+                        }
+                )
             }
+            .frame(height: 328)
+            .padding(.vertical, 15)
             
             Spacer()
                 .frame(height: 30)
@@ -88,10 +120,27 @@ struct ContentView: View {
                     .frame(width: 332.00287, height: 1)
                     .background(Color(red: 0.76, green: 0.76, blue: 0.76))
                 Spacer()
-                Text("책에 대한 기록이 아직 없어요.\n\n탭 해서 기록을 추가해 보세요")
-                    .font(Font.custom("omyu pretty", size: 20))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.56))
+                if items.indices.contains(currentIndex) {
+                    if let readLog = items[currentIndex].book!.readLog {
+                        if let swiftSet = readLog as? Set<ReadLog>, !swiftSet.isEmpty {
+                            Text(swiftSet.first!.log!)
+                                .font(Font.custom("omyu pretty", size: 20))
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.56))
+                        } else {
+                            Text("책에 대한 기록이 아직 없어요.\n\n탭 해서 기록을 추가해 보세요")
+                                .font(Font.custom("omyu pretty", size: 20))
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.56))
+                        }
+                    }
+                }
+                else {
+                    Text("새로운 책을 추가해 보세요")
+                        .font(Font.custom("omyu pretty", size: 20))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(red: 0.56, green: 0.56, blue: 0.56))
+                }
                 Spacer()
                 Rectangle()
                     .foregroundColor(.clear)
@@ -104,6 +153,12 @@ struct ContentView: View {
         .background(Color(red: 0.98, green: 0.97, blue: 0.95))
     }
     
+    struct LogStruct : Hashable {
+        let date: Date
+        let id: Int
+        let label: Int
+        let log: String
+    }
 }
 
 #Preview {
