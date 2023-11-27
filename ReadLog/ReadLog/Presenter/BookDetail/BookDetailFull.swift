@@ -9,16 +9,18 @@ import SwiftUI
 
 struct BookDetailFull: View {
     var body: some View {
-        ZStack{
-            
-        VStack {
-            displayBook()
-            ReadingTrackerView()
-            
+        NavigationStack{
+            ZStack{
+                
+                VStack {
+                    displayBook()
+                    ReadingTrackerView()
+                    
+                }
+                .padding()
+            }
+            .background(Color("backgroundColor"))
         }
-        .padding()
-    }
-    .background(Color("backgroundColor"))
     }
 }
 

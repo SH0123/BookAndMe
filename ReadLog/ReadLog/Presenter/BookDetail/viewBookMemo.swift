@@ -51,56 +51,63 @@ struct viewBookMemo: View {
     }()
     
     var body: some View {
-        ScrollView{
-            VStack {
-                HStack{
-                    VStack(alignment: .leading){
-                        Text("독서 기록").title(Color.primary)
-                        Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
+            ScrollView{
+                VStack {
+                    HStack{
+                        VStack(alignment: .leading){
+                            Text("독서 기록").title(Color.primary)
+                            Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
+                        }
+                        Spacer()
+                        NavigationLink(destination:AddNoteView()){
+                            Image(systemName: "plus.app")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 24, height: 24)
+                        }
+                        .foregroundStyle(Color.primary)
+                        
                     }
-                    Spacer()
-                    //Button
-                    Image(systemName: "plus.app")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 24, height: 24)
-                }
-                .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
-                .background(Color("background"))
-                Divider()
-                
-                LazyVStack {
-                    Section{
-                        ForEach(memos){memo in
-                            
-                            VStack(alignment: .leading, spacing:8){
-                                HStack {
-                                    Text("\(memo.date, formatter: Self.memoDateFormatter)")
-                                        .bodyDefault(Color("gray"))
-                                        .foregroundColor(.secondary)
-                                    Spacer()
-                                    //LabelView(text: memo.label)
-                                    NoteLabel(.impressive)
-                                }
-                                Text(memo.content)
-                                    .bodyDefault(Color.primary)
-                                    .lineSpacing(6)
+                    .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
+                    .background(Color("backgroundColor"))
+                    Divider()
+                    
+                    
+                    LazyVStack {
+                        Section{
+                            ForEach(memos){memo in
                                 
-                            }//where vstack ends
-                            
-                            .padding(EdgeInsets(top: 10, leading: 5, bottom: 5, trailing: 5))
-                            .background(Color("backgroundColor")) // Set the background for each cell
-                            .listRowInsets(EdgeInsets())
-                            
-                            .background(Color("backgroundColor")) //works
+                                VStack(alignment: .leading, spacing:8){
+                                    HStack {
+                                        Text("\(memo.date, formatter: Self.memoDateFormatter)")
+                                            .bodyDefault(Color("gray"))
+                                            .foregroundColor(.secondary)
+                                        Spacer()
+                                        //LabelView(text: memo.label)
+                                        NoteLabel(.impressive)
+                                    }
+                                    Text(memo.content)
+                                        .bodyDefault(Color.primary)
+                                        .lineSpacing(6)
+                                    
+                                }//where vstack ends
+                                
+                                .padding(EdgeInsets(top: 10, leading: 5, bottom: 5, trailing: 5))
+                                .background(Color("backgroundColor")) // Set the background for each cell
+                                .listRowInsets(EdgeInsets())
+                                
+                                .background(Color("backgroundColor")) //works
+                            }
                         }
                     }
+                    .listStyle(PlainListStyle())
+                    .background(Color("backgroundColor"))
                 }
-                .listStyle(PlainListStyle())
-                .background(Color("backgroundColor"))
             }
+            .background(Color("backgroundColor"))
         }
-    }
+        
+    
     }
 
 

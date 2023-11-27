@@ -12,6 +12,7 @@ struct ReadLogApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+//            BookSearchView()
         }
     }
 }
