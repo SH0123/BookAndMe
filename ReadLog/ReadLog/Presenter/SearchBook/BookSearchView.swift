@@ -18,48 +18,77 @@ struct BookSearchView: View {
     @State var isShowingScanner = false
     @State var scannedCode: String?
     
+    // later use core data instead of temporal data structure
+    @State private var bookItems: [BookInfoData_Temporal] = []
+    
     var body: some View {
         
         NavigationStack {
             VStack {
                 HStack {
-                    SearchBar(text: $searchText)
-                    
+                    SearchBar(text: $searchText, fetchData: fetchData)
                     
                     Button {
                         print("Search book by book title")
+                        let request = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=\(ApiKey.aladinKey)&Query=\(searchText)&QueryType=Keyword&MaxResults=10&start=1&SearchTarget=Book&output=js&Version=20131101"
+                        
+                        fetchData(requestUrl: request)
+                        
                     } label: {
                         Image(systemName: "magnifyingglass").tint(Color.secondary)
-                    }.padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 8))
+                    }
+                    .disabled(searchText.isEmpty)
+                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 8))
+                        
+                    
                 }
                 .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
                 
-                ScrollView {
-                    LazyVStack {
-                        NavigationLink(destination: BookInfoView()) {
-                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+                if bookItems.isEmpty {
+                    Spacer()
+                    Text("검색을 통해 책을 찾아보세요")
+                        .foregroundStyle(.secondary)
+                        .font(.title)
+                } else {
+                    ScrollView {
+                        LazyVStack {
+                            ForEach($bookItems) { book in
+                                
+                                NavigationLink(destination: BookInfoView(bookInfo: book)) {
+                                    BookProfileContainer(bookInfo: book)
+                                }
+                            }
                         }
-                        .foregroundColor(.black)
                         
-                        NavigationLink(destination: BookInfoView()) {
-                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
-                        }
-                        .foregroundColor(.black)
-                        
-                        NavigationLink(destination: BookInfoView()) {
-                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
-                        }
-                        .foregroundColor(.black)
-                        
-                        NavigationLink(destination: BookInfoView()) {
-                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
-                        }
-                        .foregroundColor(.black)
-                        
+    //                    LazyVStack {
+    //                        NavigationLink(destination: BookInfoView()) {
+    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+    //                        }
+    //                        .foregroundColor(.black)
+    //
+    //                        NavigationLink(destination: BookInfoView()) {
+    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+    //                        }
+    //                        .foregroundColor(.black)
+    //
+    //                        NavigationLink(destination: BookInfoView()) {
+    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+    //                        }
+    //                        .foregroundColor(.black)
+    //
+    //                        NavigationLink(destination: BookInfoView()) {
+    //                            BookProfileContainer(bookTitle: $bookTitle, bookAuthor: $bookAuthor, bookPublisher: $bookPublisher, bookNthCycle: $bookNthCycle)
+    //                        }
+    //                        .foregroundColor(.black)
+    //
+    //                    }
+    //                    .padding(.vertical, 10)
+    //                    .padding(.horizontal, 10)
                     }
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 10)
                 }
+                
+                
+                
                 Spacer()
                 
                 
@@ -79,9 +108,13 @@ struct BookSearchView: View {
                             VStack {
                                 ISBNScannerView(isScanning: $isShowingScanner) { code in
                                     self.scannedCode = code
-                                    // temporarily show ISBN data on search bar
-                                    searchText = scannedCode!
+                                    // set search text to blank
+                                    searchText = ""
                                     print("scanned code: \(scannedCode!)")
+                                    let request = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=\(ApiKey.aladinKey)&itemIdType=ISBN13&ItemId=\(scannedCode!)&output=js&Version=20131101&OptResult=ebookList,usedList,reviewList"
+                                    
+                                    fetchData(requestUrl: request)
+                                    
                                     self.isShowingScanner = false
                                 }
                                 .ignoresSafeArea(.all)
@@ -107,8 +140,41 @@ struct BookSearchView: View {
             }
         }
         
+    }
+    
+    func fetchData(requestUrl: String) {
+        guard let url = URL(string: requestUrl) else {
+            return
+        }
         
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print("Error: \(error)")
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+//                let decodedData = try decoder.decode([BookInfoData_Temporal].self, from: data)
+                let decodedData = try decoder.decode(APIResponse.self, from: data)
+                
+                DispatchQueue.main.async {
+//                    self.bookItems = decodedData
+                    self.bookItems = decodedData.item
+                }
+            } catch {
+                print("Error decoding JSON: \(error)")
+            }
+        }
         
+        // hide keyboard
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        
+        task.resume()
     }
     
  
