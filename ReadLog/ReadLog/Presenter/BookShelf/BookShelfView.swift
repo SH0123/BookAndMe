@@ -17,17 +17,19 @@ struct BookShelfView: View {
     }
     
     var body: some View {
-        ZStack {
-            Color.backgroundColor
-                .ignoresSafeArea()
-            VStack(spacing: 40) {
-                header
-                List {
-                    ForEach(0..<interpolatedBookList.count/bookCountInRow, id: \.self) {idx in
-                        BookShelfCell(renderedBook: dataForRow(idx: idx))
+        NavigationStack {
+            ZStack {
+                Color.backgroundColor
+                    .ignoresSafeArea()
+                VStack(spacing: 40) {
+                    header
+                    List {
+                        ForEach(0..<interpolatedBookList.count/bookCountInRow, id: \.self) {idx in
+                            BookShelfCell(renderedBook: dataForRow(idx: idx))
+                        }
                     }
+                    .listStyle(.plain)
                 }
-                .listStyle(.plain)
             }
         }
         
