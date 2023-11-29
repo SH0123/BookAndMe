@@ -13,10 +13,55 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<0 {
-            let newItem = BookInfo(context: viewContext)
-            newItem.isbn = "test"
-        }
+        
+        // book1
+        let newBook1 = BookInfo(context: viewContext)
+        newBook1.isbn = "newBook1"
+        newBook1.author = "Kim"
+        newBook1.readList = nil
+        
+        // log1
+//        let newLog1 = ReadLog(context: viewContext)
+//        newLog1.log = "loglog11111"
+//        newLog1.book = newBook1
+//        newLog1.date = Date()
+//        
+//        newBook1.readLog = [newLog1]
+        
+        // add book1 to reading List
+        let readingList1 = ReadingList(context: viewContext)
+        readingList1.id = 1
+        readingList1.readpage = 20
+        readingList1.readtime = Date()
+        readingList1.book = newBook1
+        
+        newBook1.readingList = readingList1
+        
+        
+        // book2
+        let newBook2 = BookInfo(context: viewContext)
+        newBook2.isbn = "newBook2"
+        newBook2.author = "Kim2"
+        newBook2.readList = nil
+        newBook2.readingList = nil
+        
+        // log2
+        let newLog2 = ReadLog(context: viewContext)
+        newLog2.log = "loglog22222"
+        newLog2.book = newBook2
+        newLog2.date = Date()
+        
+        newBook2.readLog = [newLog2]
+        
+        // add book2 to reading List
+        let readingList2 = ReadingList(context: viewContext)
+        readingList2.id = 2
+        readingList2.readpage = 32
+        readingList2.readtime = Date()
+        readingList2.book = newBook2
+        
+        newBook2.readingList = readingList2
+        
         do {
             try viewContext.save()
         } catch {

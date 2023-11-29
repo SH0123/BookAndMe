@@ -27,6 +27,7 @@ struct ContentView: View {
                     Label("다읽었어요", systemImage: "books.vertical")
                 }
         }
+        
     }
 }
 

@@ -28,6 +28,7 @@ struct AddNoteView: View {
             }
             .padding(.horizontal, 32)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .toolbar(.hidden)
         .fullScreenCover(isPresented: $showScannerSheet, content: {
             scannerView
