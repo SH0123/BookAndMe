@@ -9,7 +9,8 @@ import SwiftUI
 
 
 struct BookProfileContainer: View {
-    @Binding var bookInfo: BookInfoData_Temporal
+//    @Binding var bookInfo: BookInfoData_Temporal
+    var bookInfo: BookInfoData_Temporal
     
     // set bookNthCycle to 0 temporarily
     var bookNthCycle = 0

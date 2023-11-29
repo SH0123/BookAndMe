@@ -20,7 +20,7 @@ struct URLImage: View {
                 .clipped()
                 .padding(.horizontal, 15)
         } else {
-            Image("")
+            Image(systemName: "book")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100)

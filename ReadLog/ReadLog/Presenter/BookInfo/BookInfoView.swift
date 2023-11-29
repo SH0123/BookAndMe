@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct BookInfoView: View {
-    @Binding var bookInfo: BookInfoData_Temporal
+//    @Binding var bookInfo: BookInfoData_Temporal
+    var bookInfo: BookInfoData_Temporal
     
     @State var like = false
     @Environment(\.openURL) var openURL
@@ -17,7 +18,7 @@ struct BookInfoView: View {
         NavigationStack {
             VStack {
                 ScrollView {
-                    BookProfileContainer(bookInfo: $bookInfo)
+                    BookProfileContainer(bookInfo: bookInfo)
                         .padding(.horizontal, 20)
                     
                     HStack {
