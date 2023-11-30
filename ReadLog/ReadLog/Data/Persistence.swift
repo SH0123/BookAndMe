@@ -33,9 +33,11 @@ struct PersistenceController {
         readingList1.id = 1
         readingList1.readpage = 20
         readingList1.readtime = Date()
-        readingList1.book = newBook1
+        readingList1.recent = true
+        readingList1.pinned = false
         
-        newBook1.readingList = readingList1
+        readingList1.book = newBook1
+        newBook1.readingList = [readingList1]
         
         
         // book2
@@ -47,7 +49,7 @@ struct PersistenceController {
         
         // log2
         let newLog2 = ReadLog(context: viewContext)
-        newLog2.log = "loglog22222"
+        newLog2.log = "강조할 공유하지 않겠다는 물이 있다. 셀카를 그 사람에게 물러난 점들을 그의 입장에서 충분히 타당하나 내가게는 개인적으로 타격이 없는 것들이 대부분이다."
         newLog2.book = newBook2
         newLog2.date = Date()
         
@@ -58,9 +60,11 @@ struct PersistenceController {
         readingList2.id = 2
         readingList2.readpage = 32
         readingList2.readtime = Date()
-        readingList2.book = newBook2
+        readingList2.recent = true
+        readingList2.pinned = false
         
-        newBook2.readingList = readingList2
+        readingList2.book = newBook2
+        newBook2.readingList = [readingList2]
         
         do {
             try viewContext.save()

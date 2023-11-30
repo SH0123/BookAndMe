@@ -12,19 +12,22 @@
         <attribute name="reading" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="wish" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <relationship name="readingList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReadingList" inverseName="book" inverseEntity="ReadingList"/>
-        <relationship name="readList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReadList" inverseName="book" inverseEntity="ReadList"/>
+        <relationship name="readingList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadingList" inverseName="book" inverseEntity="ReadingList"/>
+        <relationship name="readList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadList" inverseName="book" inverseEntity="ReadList"/>
         <relationship name="readLog" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadLog" inverseName="book" inverseEntity="ReadLog"/>
     </entity>
     <entity name="ReadingList" representedClassName="ReadingList" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pinned" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="readpage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="readtime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="recent" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="book" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookInfo" inverseName="readingList" inverseEntity="BookInfo"/>
     </entity>
     <entity name="ReadList" representedClassName="ReadList" syncable="YES" codeGenerationType="class">
         <attribute name="enddate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="recent" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="startdate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="book" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookInfo" inverseName="readList" inverseEntity="BookInfo"/>
     </entity>
