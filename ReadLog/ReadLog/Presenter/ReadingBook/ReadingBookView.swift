@@ -60,6 +60,19 @@ struct ReadingBookView: View {
                                         .background(.white)
                                         .cornerRadius(10)
                                         .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
+                                    Button(action: {
+                                        item.pinned.toggle()
+                                        do {
+                                            try viewContext.save()
+                                        } catch {
+                                            let nsError = error as NSError
+                                            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                                        }
+                                    }){
+                                        Image(systemName: "pin")
+                                    }
+                                    .offset(x: 105, y: -135)
+                                    .foregroundColor(item.pinned == true ? .red : .black)
                                     VStack{
                                         Text(item.book!.isbn!)
                                     }
