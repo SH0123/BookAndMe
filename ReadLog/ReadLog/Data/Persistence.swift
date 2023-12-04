@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import UIKit
 
 struct PersistenceController {
     static let shared = PersistenceController()
@@ -19,6 +20,9 @@ struct PersistenceController {
         newBook1.isbn = "newBook1"
         newBook1.author = "Kim"
         newBook1.readList = nil
+        if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
+                newBook1.image = imageData
+            }
         
         // log1
 //        let newLog1 = ReadLog(context: viewContext)
