@@ -93,15 +93,15 @@ struct viewBookMemo: View {
                                 }//where vstack ends
                                 
                                 .padding(EdgeInsets(top: 10, leading: 5, bottom: 5, trailing: 5))
-                                .background(Color("backgroundColor")) // Set the background for each cell
+//                                .background(Color("backgroundColor")) // Set the background for each cell
                                 .listRowInsets(EdgeInsets())
                                 
-                                .background(Color("backgroundColor")) //works
+//                                .background(Color("backgroundColor")) //works
                             }
                         }
                     }
                     .listStyle(PlainListStyle())
-                    .background(Color("backgroundColor"))
+//                    .background(Color("backgroundColor"))
                 }
             }
             .background(Color("backgroundColor"))

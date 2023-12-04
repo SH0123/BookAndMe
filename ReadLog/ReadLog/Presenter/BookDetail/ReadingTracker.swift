@@ -49,9 +49,10 @@ class ReadingTrackerModel: ObservableObject {
     
     // Dummy function to get the current day
     func getCurrentDay() -> String {
-        // logic to determine current day
-        // could be based on Date()
-        return "Wed" // Replace with actual logic to get current day
+        let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "E" // "E" date format symbol for the day of the week
+            let currentDay = dateFormatter.string(from: Date())
+            return currentDay
     }
 }
 

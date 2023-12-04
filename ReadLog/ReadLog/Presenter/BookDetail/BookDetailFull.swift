@@ -8,18 +8,35 @@
 import SwiftUI
 
 struct BookDetailFull: View {
+    
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         NavigationStack{
             ZStack{
-                
                 VStack {
-                    displayBook()
+                    displayBook().environment(\.managedObjectContext,
+                                               PersistenceController.preview.container.viewContext)
                     ReadingTrackerView()
-                    
                 }
-                .padding()
             }
+            .padding()
             .background(Color("backgroundColor"))
+            
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action:{
+                        self.dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundStyle(Color.primary)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing){
+                    //Button() complete reading
+                }
+            }
         }
     }
 }
