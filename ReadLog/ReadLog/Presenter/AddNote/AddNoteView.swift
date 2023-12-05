@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct AddNoteView: View {
+    @Environment(\.managedObjectContext) private var viewContext
     @State private var showScannerSheet = false
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
+    
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
+    private var bookInfo: BookInfo {
+        BookInfo(context: self.viewContext)
+    }
     
     var body: some View {
         ZStack {
@@ -108,11 +113,31 @@ private extension AddNoteView {
             self.showScannerSheet = false
         }
     }
-                
 }
 
-#Preview {
-    AddNoteView()
+// CoreData Connection
+private extension AddNoteView {
+    func addItem() {
+        let note = ReadLog(context: viewContext)
+        note.id = UUID()
+        note.label = Int16(noteType.rawValue)
+        note.book = bookInfo
+        note.log = contents
+        
+        if var readLog = bookInfo.readLog {
+            readLog = readLog.adding(note) as NSSet
+            bookInfo.readLog = readLog
+        } else {
+            bookInfo.readLog = [note]
+        }
+        
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
 }
 
 

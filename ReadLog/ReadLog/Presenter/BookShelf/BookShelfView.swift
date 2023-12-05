@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct BookShelfView: View {
-    private var bookList: [BookExample] = BookExample.mock.compactMap { $0 }
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest (sortDescriptors:
+                    [NSSortDescriptor(keyPath: \ReadList.enddate, ascending: false)], predicate:  NSPredicate(format: "recent == true" ),
+        animation: .default)
+    private var fetchedBookList: FetchedResults<ReadList>
     private let bookCountInRow: Int = 3
-    private var interpolatedBookList: [BookExample?] {
+    private var interpolatedBookList: [BookInfo?] {
         get {
-            interpolateBookList(bookList)
+            return interpolateBookList(fetchedBookList)
         }
     }
     
@@ -50,18 +54,21 @@ private extension BookShelfView {
         .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
     }
     
-    func interpolateBookList(_ bookList: [BookExample]) -> [BookExample?] {
-        let bookCount = bookList.count
+    func interpolateBookList(_ readList: FetchedResults<ReadList>) -> [BookInfo?] {
+        let bookCount = readList.count
         let addBookCount = (bookCountInRow - bookCount % bookCountInRow) % bookCountInRow
-        let nilArray: [BookExample?] = Array<BookExample?>(repeating: nil, count: addBookCount)
+        let nilArray: [BookInfo?] = Array<BookInfo?>(repeating: nil, count: addBookCount)
+        let bookList = readList.map {readRecord in
+            return readRecord.book }
         return bookList + nilArray
     }
     
-    func dataForRow(idx: Int) -> [BookExample?] {
+    func dataForRow(idx: Int) -> [BookInfo?] {
         Array(interpolatedBookList[idx*bookCountInRow..<idx*bookCountInRow+3])
     }
 }
 
 #Preview {
-    BookShelfView()
+    BookShelfView().environment(\.managedObjectContext,
+            PersistenceController.preview.container.viewContext)
 }

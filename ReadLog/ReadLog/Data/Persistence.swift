@@ -22,6 +22,17 @@ struct PersistenceController {
         newBook1.readList = nil
         if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
                 newBook1.image = imageData
+            
+            }
+        
+        // book3
+        let newBook3 = BookInfo(context: viewContext)
+        newBook3.isbn = "newBook1"
+        newBook3.author = "Kim"
+        newBook3.readList = nil
+        if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
+                newBook3.image = imageData
+            
             }
         
         // log1
@@ -34,7 +45,7 @@ struct PersistenceController {
         
         // add book1 to reading List
         let readingList1 = ReadingList(context: viewContext)
-        readingList1.id = 1
+        readingList1.id = UUID()
         readingList1.readpage = 20
         readingList1.readtime = Date()
         readingList1.recent = true
@@ -61,7 +72,7 @@ struct PersistenceController {
         
         // add book2 to reading List
         let readingList2 = ReadingList(context: viewContext)
-        readingList2.id = 2
+        readingList2.id = UUID()
         readingList2.readpage = 32
         readingList2.readtime = Date()
         readingList2.recent = true
@@ -69,6 +80,24 @@ struct PersistenceController {
         
         readingList2.book = newBook2
         newBook2.readingList = [readingList2]
+        
+        let readList1 = ReadList(context: viewContext)
+        readList1.id = UUID()
+        readList1.book = newBook1
+        readList1.recent = true
+        readList1.startdate = nil
+        readList1.enddate = nil
+        
+        let readList2 = ReadList(context: viewContext)
+        readList2.id = UUID()
+        readList2.book = newBook3
+        readList2.recent = true
+        readList2.startdate = nil
+        readList2.enddate = nil
+        
+        newBook1.readList = [readList1]
+        newBook3.readList = [readList2]
+        
         
         do {
             try viewContext.save()

@@ -26,9 +26,9 @@
 		E622526B2AFB7AE600D33EC3 /* omyu pretty.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */; };
 		E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */; };
 		E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */; };
+		E66509D42B14B6FD005ACFA5 /* BookShelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B184D02B142C6600776177 /* BookShelfView.swift */; };
 		E6667EEB2B154DB7006E6ED5 /* BookSubInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6667EEA2B154DB7006E6ED5 /* BookSubInfo.swift */; };
 		E6667EED2B154E51006E6ED5 /* PaginationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6667EEC2B154E51006E6ED5 /* PaginationViewModel.swift */; };
-		E66509D42B14B6FD005ACFA5 /* BookShelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B184D02B142C6600776177 /* BookShelfView.swift */; };
 		E6B184D32B142FD400776177 /* BookShelfCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B184D22B142FD400776177 /* BookShelfCell.swift */; };
 		E6C73D5B2B02F82E00A3C9C9 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C73D5A2B02F82E00A3C9C9 /* UINavigationController+Extension.swift */; };
 		E6E4BF532B01B70300FEEE10 /* AddNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E4BF522B01B70300FEEE10 /* AddNoteView.swift */; };
@@ -587,9 +587,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ReadLog;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -625,9 +628,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ReadLog;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

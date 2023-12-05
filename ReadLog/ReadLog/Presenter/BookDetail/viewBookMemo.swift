@@ -42,6 +42,7 @@ extension Memo{
    //kena repair date viewing
 
 struct viewBookMemo: View {
+    @Environment(\.managedObjectContext) private var viewContext
     let memos: [Memo]
     
     static let memoDateFormatter: DateFormatter = {

@@ -15,7 +15,7 @@ struct NoteLabel: View {
     }
     
     var body: some View {
-        Text(type.rawValue)
+        Text(type.noteText)
             .body2(.black)
             .frame(width: 150, height: 40, alignment: .center)
             .background(type.noteColor)
