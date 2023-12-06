@@ -42,6 +42,7 @@ extension Memo{
    //kena repair date viewing
 
 struct viewBookMemo: View {
+    @Environment(\.managedObjectContext) private var viewContext
     let memos: [Memo]
     
     static let memoDateFormatter: DateFormatter = {
@@ -84,7 +85,7 @@ struct viewBookMemo: View {
                                             .foregroundColor(.secondary)
                                         Spacer()
                                         //LabelView(text: memo.label)
-                                        NoteLabel(.impressive)
+                                        NoteLabel(type: .constant(.impressive))
                                     }
                                     Text(memo.content)
                                         .bodyDefault(Color.primary)

@@ -8,14 +8,10 @@
 import SwiftUI
 
 struct NoteLabel: View {
-    private var type: Note
-    
-    init(_ type: Note) {
-        self.type = type
-    }
-    
+    @Binding var type: Note
+
     var body: some View {
-        Text(type.rawValue)
+        Text(type.noteText)
             .body2(.black)
             .frame(width: 150, height: 40, alignment: .center)
             .background(type.noteColor)
@@ -25,7 +21,7 @@ struct NoteLabel: View {
 
 #Preview {
     VStack {
-        NoteLabel(.impressive)
-        NoteLabel(.myThink)
+        NoteLabel(type: .constant(.impressive))
+        NoteLabel(type: .constant(.myThink))
     }
 }

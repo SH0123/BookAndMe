@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct AddNoteView: View {
+    @Environment(\.managedObjectContext) private var viewContext
     @State private var showScannerSheet = false
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
+    @State private var noteSelectionShow = false
+    
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
+    private var bookInfo: BookInfo {
+        BookInfo(context: self.viewContext)
+    }
     
     var body: some View {
         ZStack {
@@ -22,7 +28,7 @@ struct AddNoteView: View {
                 header
                 ZStack(alignment: .topLeading) {
                     textField
-                    NoteLabel(noteType)
+                    labelButton(type: $noteType)
                         .padding(EdgeInsets(top: -20, leading: -20, bottom: 0, trailing: 0))
                 }
             }
@@ -39,12 +45,20 @@ struct AddNoteView: View {
 // Component
 private extension AddNoteView {
     
-    func labelButton(type: Note) -> some View {
-        Button {
-            // label 변경
-        } label: {
-            NoteLabel(type)
-        }
+    func labelButton(type: Binding<Note>) -> some View {
+        Button(action: {
+            noteSelectionShow = true
+        }, label: {
+            NoteLabel(type: type)
+        }).confirmationDialog( "노트 타입", isPresented: $noteSelectionShow) {
+            Button(Note.impressive.noteText) {
+                noteType = .impressive
+            }
+            Button(Note.myThink.noteText) {
+                    noteType = .myThink
+                }
+            }
+            message: {Text("메모 타입을 선택해주세요")}
     }
     
     var header: some View {
@@ -108,11 +122,34 @@ private extension AddNoteView {
             self.showScannerSheet = false
         }
     }
-                
 }
+
+// CoreData Connection
+private extension AddNoteView {
+    func addItem() {
+        let note = ReadLog(context: viewContext)
+        note.id = UUID()
+        note.label = Int16(noteType.rawValue)
+        note.book = bookInfo
+        note.log = contents
+        
+        if var readLog = bookInfo.readLog {
+            readLog = readLog.adding(note) as NSSet
+            bookInfo.readLog = readLog
+        } else {
+            bookInfo.readLog = [note]
+        }
+        
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+}
+
 
 #Preview {
     AddNoteView()
 }
-
-
