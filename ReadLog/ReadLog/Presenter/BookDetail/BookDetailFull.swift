@@ -33,8 +33,11 @@ struct BookDetailFull: View {
                     }
                 }
                 
+                //TODO: When the button is pressed, add book into readList
                 ToolbarItem(placement: .topBarTrailing){
-                    //Button() complete reading
+                    Button("완독"){
+                }
+                    .body1(Color.primary)
                 }
             }
         }

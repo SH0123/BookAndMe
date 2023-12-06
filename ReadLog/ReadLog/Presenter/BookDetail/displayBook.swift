@@ -21,16 +21,10 @@ struct displayBook: View {
     ) private var books: FetchedResults<BookInfo>
     
     
-    /*var bookTitle: String = "보통의 언어들"
-    var bookAuthor: String = "김이나"
-    var bookPublisher: String = "위즈덤 하우스"
-    var bookCover: String = "bookExample"*/
-    
     var body: some View {
         if let book = books.first {
             ZStack{
                 HStack{
-                    //NavigationLink(destination:BookInfoView(bookInfo: book)){
                     if let imageData = book.image, let uiImage = UIImage(data:imageData){
                         Image(uiImage: uiImage)
                             .resizable()
@@ -56,8 +50,6 @@ struct displayBook: View {
                             .padding(.bottom,2)
                     }
                     .padding(.leading,10)
-                    
-                    // } book tu kena CoreData kot
                 }
                 .padding()
                 
