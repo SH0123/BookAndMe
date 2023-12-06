@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 //DailyProgress and ReadingTrackerModel definitions
 
@@ -19,6 +20,7 @@ struct DailyProgress: Identifiable {
 // ViewModel to handle the logic
 class ReadingTrackerModel: ObservableObject {
     @Published var totalBookPages = 400 // total number of pages in book
+    @Published var lastPageRead = 50 //Store the last page read
     @Published var dailyProgress: [DailyProgress] = [
         DailyProgress(day: "Mon", pagesRead: 0),
         DailyProgress(day: "Tue", pagesRead: 0),
@@ -29,11 +31,32 @@ class ReadingTrackerModel: ObservableObject {
         DailyProgress(day: "Sun", pagesRead: 0),
     ]
     
+    /*private var context: NSManagedObjectContext
+    
+    init(context: NSManagedObjectContext) {
+            self.context = PersistenceController.preview.container.viewContext
+        }*/
+    
     // Add current day's pages to daily progress
-    func addDailyProgress(pagesRead: Int) {
+    func addDailyProgress(newPageRead: Int) {
         let day = getCurrentDay()
         if let index = dailyProgress.firstIndex(where: { $0.day == day }) {
-            dailyProgress[index].pagesRead += pagesRead // Increment the day's progress
+            let pagesReadToday = newPageRead - lastPageRead
+            if pagesReadToday > 0 {
+                dailyProgress[index].pagesRead += pagesReadToday
+        
+               /* //For record in Core Data
+                let newProgress = ReadingList (context: context)
+                newProgress.readtime = Date()
+                newProgress.readpage = Int32(pagesReadToday)
+                
+                do{
+                    try context.save()
+                }catch{
+                    print("Failed to save context: \(error)")
+                }*/
+            }
+            lastPageRead = newPageRead //Update last page read to the new input
         }
     }
     
@@ -47,7 +70,6 @@ class ReadingTrackerModel: ObservableObject {
         Double(totalPagesRead) / Double(totalBookPages)
     }
     
-    // Dummy function to get the current day
     func getCurrentDay() -> String {
         let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "E" // "E" date format symbol for the day of the week
@@ -56,12 +78,14 @@ class ReadingTrackerModel: ObservableObject {
     }
 }
 
-import SwiftUI
 
 struct ReadingTrackerView: View {
-    @StateObject private var viewModel = ReadingTrackerModel()
+    
+    //@Environment(\.managedObjectContext) private var viewContext
+    
+    @StateObject private var viewModel = ReadingTrackerModel(/*context: context*/)
     @State private var pagesReadInput: String = ""
-    @FocusState private var isInputActive: Bool 
+    @FocusState private var isInputActive: Bool
 
 
     var body: some View {
@@ -104,14 +128,15 @@ struct ReadingTrackerView: View {
             .frame(height:47)
             .background(Color("lightBlue"),in: RoundedRectangle(cornerRadius: 10))
             .onSubmit {
-                if let pagesRead = Int(pagesReadInput), pagesRead > 0 {
-                    viewModel.addDailyProgress(pagesRead: pagesRead)
+                if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
+                    viewModel.addDailyProgress(newPageRead: newPageRead)
                     pagesReadInput = "" // Clear the input field
                 }
             }
             Spacer()
         }
         .padding()
+        .background(Color("backgroundColor"))
     }
 }
 
@@ -132,13 +157,11 @@ struct progressBar: View {
             }
             .clipShape(RoundedRectangle(cornerRadius: 45))
         }
+        
     }
+    
 }
 
 #Preview{
         ReadingTrackerView()
     }
-
-
-
-
