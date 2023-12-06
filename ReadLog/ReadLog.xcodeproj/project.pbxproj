@@ -29,6 +29,7 @@
 		E66509D42B14B6FD005ACFA5 /* BookShelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B184D02B142C6600776177 /* BookShelfView.swift */; };
 		E6667EEB2B154DB7006E6ED5 /* BookSubInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6667EEA2B154DB7006E6ED5 /* BookSubInfo.swift */; };
 		E6667EED2B154E51006E6ED5 /* PaginationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6667EEC2B154E51006E6ED5 /* PaginationViewModel.swift */; };
+		E67C71B12B208F10001409BE /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E67C71B02B208F10001409BE /* Memo.swift */; };
 		E6B184D32B142FD400776177 /* BookShelfCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B184D22B142FD400776177 /* BookShelfCell.swift */; };
 		E6C73D5B2B02F82E00A3C9C9 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6C73D5A2B02F82E00A3C9C9 /* UINavigationController+Extension.swift */; };
 		E6E4BF532B01B70300FEEE10 /* AddNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E4BF522B01B70300FEEE10 /* AddNoteView.swift */; };
@@ -69,6 +70,7 @@
 		E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextStyle+Extension.swift"; sourceTree = "<group>"; };
 		E6667EEA2B154DB7006E6ED5 /* BookSubInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSubInfo.swift; sourceTree = "<group>"; };
 		E6667EEC2B154E51006E6ED5 /* PaginationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationViewModel.swift; sourceTree = "<group>"; };
+		E67C71B02B208F10001409BE /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		E6B184D02B142C6600776177 /* BookShelfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookShelfView.swift; sourceTree = "<group>"; };
 		E6B184D22B142FD400776177 /* BookShelfCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookShelfCell.swift; sourceTree = "<group>"; };
 		E6C73D5A2B02F82E00A3C9C9 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				E6E4BF582B01C88500FEEE10 /* Note.swift */,
+				E67C71B02B208F10001409BE /* Memo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 				E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */,
 				E6E68EDB2AF1DD7B00172557 /* ReadLogApp.swift in Sources */,
 				E6035B872B0CEF5600C34007 /* ReadingBookView.swift in Sources */,
+				E67C71B12B208F10001409BE /* Memo.swift in Sources */,
 				E6F5AD272B113B8D00A605D4 /* APIResponse.swift in Sources */,
 				E6E4BF562B01BF4000FEEE10 /* Header.swift in Sources */,
 				E6E4BF532B01B70300FEEE10 /* AddNoteView.swift in Sources */,

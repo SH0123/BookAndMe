@@ -10,11 +10,7 @@ import UIKit
 import CoreData
 
 struct displayBook: View {
-    
     @Environment(\.managedObjectContext) private var viewContext
-    //var bookISBN: String
-    
-    //Fetch book info
     @FetchRequest (
         sortDescriptors: [],
         predicate: NSPredicate(format: "isbn == %@", "newBook1")
@@ -51,27 +47,17 @@ struct displayBook: View {
                     }
                     .padding(.leading,10)
                 }
-                .padding()
-                
                 .frame(width: 323.0, height: 200)
-                .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .shadow(color: .black.opacity(0.1), radius:8, x: 0, y: 4)
+                .background(Color.white)
                 .overlay(RoundedRectangle(cornerRadius:10)
                     .stroke(Color("gray"), lineWidth: 1)
-                         
-                         
                 )
-                
             }
-            .frame(width: 300, height: 200)
         }else{
             Text("Book not found").title(Color.primary)
         }
-        
-        
     }
-        
 }
 
 #Preview {

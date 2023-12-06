@@ -87,18 +87,10 @@ struct ReadingTrackerView: View {
     @State private var pagesReadInput: String = ""
     @FocusState private var isInputActive: Bool
 
-
     var body: some View {
         VStack {
-            // 1. Progress Bar
             progressBar(value: viewModel.progressPercentage)
-                .frame(width: 323, height: 20)
-                .padding(.horizontal)
-
-            // Spacer to adjust space between the progress bar and the circles
             Spacer(minLength: 20)
-
-            // 2. Daily Progress Circles
             HStack {
                 ForEach(viewModel.dailyProgress) { progress in
                     Circle()
@@ -108,11 +100,7 @@ struct ReadingTrackerView: View {
                         .body3(Color.primary)
                 }
             }
-            
             viewBookMemo(memos: Memo.sampleData)
-                .frame(width:350)
-
-            // 3. Text Field to Accept Integer Value
             HStack {
                 Text("어디까지 읽으셨나요?")
                     .body1(Color.primary)
@@ -135,32 +123,39 @@ struct ReadingTrackerView: View {
             }
             Spacer()
         }
-        .padding()
         .background(Color("backgroundColor"))
     }
 }
 
-struct progressBar: View {
-    var value: Double
-    var thickness: CGFloat = 15
-
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                Rectangle().frame(width: geometry.size.width, height: thickness)
-                    .opacity(0.3)
-                    .foregroundColor(Color("gray"))
-
-                Rectangle().frame(width: min(CGFloat(self.value)*geometry.size.width, geometry.size.width), height: thickness)
-                    .foregroundColor(Color("lightBlue"))
-                    .animation(.linear, value: value)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 45))
-        }
-        
-    }
+// function
+private extension ReadingTrackerView {
     
 }
+
+// Component
+private extension ReadingTrackerView {
+    struct progressBar: View {
+        var value: Double
+        var thickness: CGFloat = 15
+
+        var body: some View {
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    Rectangle().frame(width: geometry.size.width, height: thickness)
+                        .opacity(0.3)
+                        .foregroundColor(Color("gray"))
+
+                    Rectangle().frame(width: min(CGFloat(value) * geometry.size.width, geometry.size.width), height: thickness)
+                        .foregroundColor(Color("lightBlue"))
+                        .animation(.linear, value: value)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 45))
+            }
+            .frame(height: 15)
+        }
+    }
+}
+
 
 #Preview{
         ReadingTrackerView()

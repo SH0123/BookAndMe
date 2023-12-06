@@ -132,6 +132,7 @@ private extension AddNoteView {
         note.label = Int16(noteType.rawValue)
         note.book = bookInfo
         note.log = contents
+        note.date = Date()
         
         if var readLog = bookInfo.readLog {
             readLog = readLog.adding(note) as NSSet
