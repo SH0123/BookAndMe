@@ -84,18 +84,37 @@ private extension BookDetailFull {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
         }
-        
     }
     
-    func fetchAllBookNotes(isbn: String) -> Set<ReadLog>? {
-        let fetchRequest: NSFetchRequest<BookInfo>
+    func fetchLastWeekReadingData(isbn: String) -> ReadingList {
+        let today: Date = Date()
+        let monTodayDiff: Int = (6 + Calendar.current.dateComponents([.weekday], from: today).weekday!) % 7
+        let monday: Date = Calendar.current.date(byAdding:.day, value: -1*monTodayDiff, to: today)!
         
-        fetchRequest = BookInfo.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "isbn LIKE %@", isbn)
+        let fetchRequest: NSFetchRequest<ReadingList>
+        
+        fetchRequest = ReadingList.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "%@ LIKE %K && %K < %@ ",isbn, #keyPath(ReadingList.book.isbn), #keyPath(ReadingList.readtime), monday as NSDate)
         
         do {
             let objects = try viewContext.fetch(fetchRequest)
-            return objects.first?.readLog as? Set<ReadLog>
+            return objects.first!
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+    
+    func fetchAllBookNotes(isbn: String) -> [ReadLog]{
+        let fetchRequest: NSFetchRequest<ReadLog>
+        
+        fetchRequest = ReadLog.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K LIKE %@",#keyPath(ReadLog.book.isbn), isbn)
+        
+        do {
+            let objects = try viewContext.fetch(fetchRequest)
+            return objects
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
