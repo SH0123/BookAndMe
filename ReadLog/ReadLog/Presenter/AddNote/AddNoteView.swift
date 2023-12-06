@@ -12,6 +12,7 @@ struct AddNoteView: View {
     @State private var showScannerSheet = false
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
+    @State private var noteSelectionShow = false
     
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
@@ -27,7 +28,7 @@ struct AddNoteView: View {
                 header
                 ZStack(alignment: .topLeading) {
                     textField
-                    NoteLabel(noteType)
+                    labelButton(type: $noteType)
                         .padding(EdgeInsets(top: -20, leading: -20, bottom: 0, trailing: 0))
                 }
             }
@@ -44,12 +45,20 @@ struct AddNoteView: View {
 // Component
 private extension AddNoteView {
     
-    func labelButton(type: Note) -> some View {
-        Button {
-            // label 변경
-        } label: {
-            NoteLabel(type)
-        }
+    func labelButton(type: Binding<Note>) -> some View {
+        Button(action: {
+            noteSelectionShow = true
+        }, label: {
+            NoteLabel(type: type)
+        }).confirmationDialog( "노트 타입", isPresented: $noteSelectionShow) {
+            Button(Note.impressive.noteText) {
+                noteType = .impressive
+            }
+            Button(Note.myThink.noteText) {
+                    noteType = .myThink
+                }
+            }
+            message: {Text("메모 타입을 선택해주세요")}
     }
     
     var header: some View {
@@ -141,3 +150,6 @@ private extension AddNoteView {
 }
 
 
+#Preview {
+    AddNoteView()
+}

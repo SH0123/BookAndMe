@@ -85,7 +85,7 @@ struct viewBookMemo: View {
                                             .foregroundColor(.secondary)
                                         Spacer()
                                         //LabelView(text: memo.label)
-                                        NoteLabel(.impressive)
+                                        NoteLabel(type: .constant(.impressive))
                                     }
                                     Text(memo.content)
                                         .bodyDefault(Color.primary)

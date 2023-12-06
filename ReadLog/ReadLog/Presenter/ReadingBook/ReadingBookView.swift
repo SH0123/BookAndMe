@@ -139,7 +139,7 @@ struct ReadingBookView: View {
                                                 .offset(x: 15)
                                             Spacer()
                                             //LabelView(text: memo.label)
-                                            NoteLabel(.impressive)
+                                            NoteLabel(type: .constant(.impressive))
                                         }
                                         .frame(height: 30)
                                         
