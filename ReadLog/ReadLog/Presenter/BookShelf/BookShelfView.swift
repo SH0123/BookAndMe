@@ -23,12 +23,17 @@ struct BookShelfView: View {
                     .ignoresSafeArea()
                 VStack(spacing: 40) {
                     header
-                    List {
-                        ForEach(0..<interpolatedBookList.count/bookCountInRow, id: \.self) {idx in
-                            BookShelfCell(renderedBook: dataForRow(idx: idx))
+                    TabView {
+                        ForEach(0..<3) { index in
+                            VStack {
+                                ForEach(0..<interpolatedBookList.count/bookCountInRow, id: \.self) {idx in
+                                    BookShelfCell(renderedBook: dataForRow(idx: idx))
+                                }
+                            }
                         }
                     }
-                    .listStyle(.plain)
+                    .tabViewStyle(PageTabViewStyle())
+                    .frame(height: 650)
                 }
             }
         }
@@ -36,6 +41,7 @@ struct BookShelfView: View {
         .toolbar(.hidden)
     }
 }
+
 
 private extension BookShelfView {
     
@@ -49,7 +55,7 @@ private extension BookShelfView {
         .tint(.black)
         .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
     }
-    
+
     func interpolateBookList(_ bookList: [BookExample]) -> [BookExample?] {
         let bookCount = bookList.count
         let addBookCount = (bookCountInRow - bookCount % bookCountInRow) % bookCountInRow

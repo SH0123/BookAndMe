@@ -11,26 +11,32 @@ struct BookShelfCell: View {
     var renderedBook: [BookExample?]
     
     var body: some View {
-        VStack(spacing: 5) {
-            bookRow(renderedBook).padding(.horizontal, 20)
-            horizontalLine
+        Spacer(minLength: 70)
+        ForEach(0..<3, id:\.self){ _ in
+            VStack(spacing: 5) {
+                bookRow(renderedBook).padding(.horizontal, 20)
+                horizontalLine
+            }
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.backgroundColor)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.bottom, 5)
         }
-        .listRowSeparator(.hidden)
-        .listRowBackground(Color.backgroundColor)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.bottom, 5)
+        Spacer(minLength: 70)
     }
 }
 
 private extension BookShelfCell {
     @ViewBuilder
     func bookRow(_ bookList: [BookExample?]) -> some View {
-        HStack(alignment: .center) {
-            bookCell(bookList[0])
-            Spacer()
-            bookCell(bookList[1])
-            Spacer()
-            bookCell(bookList[2])
+        VStack{
+            HStack(alignment: .center) {
+                bookCell(bookList[0])
+                Spacer()
+                bookCell(bookList[1])
+                Spacer()
+                bookCell(bookList[2])
+            }
         }
     }
     
@@ -66,10 +72,9 @@ struct BookExample: Identifiable {
     
     static var mock: [BookExample?] {
         return [
-            BookExample(id: 0, imageName: "bookExample"),
             BookExample(id: 1, imageName: "bookExample"),
+            BookExample(id: 2, imageName: "bookExample"),
             BookExample(id: 3, imageName: "bookExample"),
-            BookExample(id: 4, imageName: "bookExample"),
             nil,
             
         ]
