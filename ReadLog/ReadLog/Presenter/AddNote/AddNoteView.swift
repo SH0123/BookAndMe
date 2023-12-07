@@ -94,7 +94,7 @@ private extension AddNoteView {
                         ToolbarItemGroup(placement: .keyboard) {
                             Spacer()
                             Button {
-                                // save
+                                addItem()
                             } label: {
                                 Text("노트 저장")
                                     .foregroundStyle(Color.black)

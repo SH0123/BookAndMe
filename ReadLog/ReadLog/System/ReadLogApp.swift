@@ -11,8 +11,8 @@ import SwiftUI
 struct ReadLogApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
-//            BookSearchView()
+            BookDetailFull("newBook3")
+                .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
     }
 }

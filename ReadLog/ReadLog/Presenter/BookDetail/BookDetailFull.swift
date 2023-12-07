@@ -11,24 +11,43 @@ import CoreData
 struct BookDetailFull: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) var dismiss
-    @FetchRequest (
-        sortDescriptors: [],
-        predicate: NSPredicate(format: "isbn == %@", "newBook3")
-    ) private var value: FetchedResults<BookInfo>
+    @StateObject private var viewModel: ReadingTrackerViewModel
+    @State private var pagesReadInput: String = ""
+    @FocusState private var isInputActive: Bool
+    private var bookInfo: BookInfo
+    let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
     let isbn: String
     
+    init(_ isbn: String) {
+        // book1
+        let newBook1 = BookInfo(context: PersistenceController.shared.container.viewContext)
+        newBook1.isbn = "newBook3"
+        newBook1.author = "Kim"
+        newBook1.pagecount = 400
+        newBook1.readList = nil
+        if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
+                newBook1.image = imageData
+            }
+        self.isbn = isbn
+        self.bookInfo = newBook1
+        self._viewModel = StateObject(wrappedValue: ReadingTrackerViewModel(context: PersistenceController.shared.container.viewContext, totalPage: Int(newBook1.pagecount)))
+    }
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                VStack {
+            VStack {
+                ScrollView {
                     displayBook(isbn: self.isbn)
                         .padding(EdgeInsets(top: 20, leading: 0, bottom: 40, trailing: 0))
-                    ReadingTrackerView()
+                    progressBar(value: viewModel.progressPercentage)
+                    Spacer(minLength: 20)
+                    trackingCircles(viewModel: self.viewModel)
+                    bookNotes(memos: Memo.sampleData)
                 }
+                pageInput
             }
-            .padding()
+            .padding(.horizontal)
             .background(Color("backgroundColor"))
-            
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action:{
@@ -47,6 +66,9 @@ struct BookDetailFull: View {
                 }
             }
         }
+        .onAppear(perform: {
+            viewModel.setDailyProgress(isbn: "newBook3")
+        })
     }
 }
 // function
@@ -61,45 +83,6 @@ private extension BookDetailFull {
         do {
             let object = try viewContext.fetch(fetchRequest)
             return object.first
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-    }
-    
-    func fetchReadingData(isbn: String) -> [ReadingList]{
-        let today: Date = Date()
-        let monTodayDiff: Int = (6 + Calendar.current.dateComponents([.weekday], from: today).weekday!) % 7
-        let monday: Date = Calendar.current.date(byAdding:.day, value: -1*monTodayDiff, to: today)!
-        
-        let fetchRequest: NSFetchRequest<ReadingList>
-        
-        fetchRequest = ReadingList.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "%@ LIKE %K && %K >= %@ ",isbn, #keyPath(ReadingList.book.isbn), #keyPath(ReadingList.readtime), monday as NSDate)
-        
-        do {
-            let objects = try viewContext.fetch(fetchRequest)
-            return objects
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-    }
-    
-    func fetchLastWeekReadingData(isbn: String) -> ReadingList {
-        let today: Date = Date()
-        let monTodayDiff: Int = (6 + Calendar.current.dateComponents([.weekday], from: today).weekday!) % 7
-        let monday: Date = Calendar.current.date(byAdding:.day, value: -1*monTodayDiff, to: today)!
-        
-        let fetchRequest: NSFetchRequest<ReadingList>
-        
-        fetchRequest = ReadingList.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: false)]
-        fetchRequest.predicate = NSPredicate(format: "%@ LIKE %K && %K < %@ ",isbn, #keyPath(ReadingList.book.isbn), #keyPath(ReadingList.readtime), monday as NSDate)
-        
-        do {
-            let objects = try viewContext.fetch(fetchRequest)
-            return objects.first!
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
@@ -122,7 +105,7 @@ private extension BookDetailFull {
     }
 }
 
-// Component
+// MARK: - 책 정보 뷰
 private extension BookDetailFull {
     @ViewBuilder
     func displayBook(isbn: String) -> some View {
@@ -165,11 +148,99 @@ private extension BookDetailFull {
         }else{
             Text("Book not found").title(Color.primary)
         }
-
     }
 }
 
+// MARK: - progress view
+private extension BookDetailFull {
+    func progressBar(value: Double) -> some View {
+        let thickness: CGFloat = 15
+        
+        return GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                Rectangle().frame(width: geometry.size.width, height: thickness)
+                    .opacity(0.3)
+                    .foregroundColor(Color("gray"))
+                
+                Rectangle().frame(width: min(CGFloat(value) * geometry.size.width, geometry.size.width), height: thickness)
+                    .foregroundColor(Color("lightBlue"))
+                    .animation(.linear, value: value)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 45))
+        }
+        .frame(height: 15)
+    }
+}
+
+// MARK: - Daily Tracking view
+private extension BookDetailFull {
+    struct trackingCircles: View {
+        @StateObject var viewModel: ReadingTrackerViewModel
+        var body: some View {
+            HStack {
+                ForEach(viewModel.dailyProgress) { progress in
+                    Circle()
+                        .fill(progress.pagesRead > 0 ? Color("lightBlue") : Color("gray"))
+                        .frame(width: 45, height: 45)
+                        .overlay(Text("\(progress.pagesRead)p"))
+                        .body3(Color.primary)
+                }
+            }
+        }
+    }
+}
+
+//MARK: - Book Note view
+private extension BookDetailFull {
+    func bookNotes(memos: [Memo]) -> some View {
+        LazyVStack {
+            ForEach(memos){memo in
+                Divider()
+                VStack(alignment: .leading, spacing:10) {
+                    HStack {
+                        Text(memoDateFormatter.string(from: memo.date))
+                            .bodyDefault(Color("gray"))
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        NoteLabel(type: .constant(.impressive))
+                    }
+                    Text(memo.content)
+                        .bodyDefault(Color.primary)
+                }
+                .padding(.vertical, 10)
+            }
+        }
+        .listStyle(PlainListStyle())
+    }
+}
+
+// MARK: - today page input view
+private extension BookDetailFull {
+    var pageInput: some View {
+        HStack {
+            Text("어디까지 읽으셨나요?")
+                .body1(Color.primary)
+            Spacer()
+            TextField("페이지 번호...", text: $pagesReadInput)
+                .frame(width:120, height: 37)
+                .keyboardType(.numberPad)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .foregroundColor(isInputActive ? .black : Color("gray")).body2(Color.primary)
+                .focused($isInputActive)
+        }
+        .padding()
+        .frame(height:47)
+        .background(Color("lightBlue"),in: RoundedRectangle(cornerRadius: 10))
+        .onSubmit {
+            if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
+                viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo)
+                pagesReadInput = "" // Clear the input field
+            }
+        }
+        
+    }
+}
 #Preview {
-    BookDetailFull(isbn: "newBook1")
+    BookDetailFull("newBook3")
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

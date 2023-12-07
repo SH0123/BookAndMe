@@ -82,6 +82,15 @@ struct PersistenceController {
         readingList4.book = newBook3
         
         let readingList5 = ReadingList(context: viewContext)
+        readingList4.id = UUID()
+        readingList4.readpage = 90
+        readingList4.readtime = Date.yyyyMdFormatter.date(from: "2023년 12월 5일")
+        readingList4.recent = false
+        readingList4.pinned = false
+        
+        readingList4.book = newBook3
+        
+        let readingList6 = ReadingList(context: viewContext)
         readingList5.id = UUID()
         readingList5.readpage = 190
         readingList5.readtime = Date.yyyyMdFormatter.date(from: "2023년 12월 7일")
@@ -89,7 +98,7 @@ struct PersistenceController {
         readingList5.pinned = false
         
         readingList5.book = newBook3
-        newBook3.readingList = [readingList3, readingList4, readingList5]
+        newBook3.readingList = [readingList3, readingList4, readingList5, readingList6]
         
         // ReadList
         let readList1 = ReadList(context: viewContext)
