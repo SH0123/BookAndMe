@@ -26,9 +26,8 @@ final class ReadingTrackerViewModel: ObservableObject {
     }
     private var viewContext: NSManagedObjectContext
      
-    init(context: NSManagedObjectContext, totalPage: Int) {
+    init(context: NSManagedObjectContext) {
         self.viewContext = PersistenceController.shared.container.viewContext
-        self.totalBookPages = totalPage
      }
     
     func setDailyProgress(isbn: String) {
@@ -53,7 +52,6 @@ final class ReadingTrackerViewModel: ObservableObject {
         lastPageRead = lastPage
     }
     
-    // Add current day's pages to daily progress
     func addDailyProgress(newPageRead: Int, bookInfo: BookInfo) {
         // TODO: if newPageRead > totalBookPages handling
         let day = getCurrentDay(date: Date())
@@ -63,8 +61,12 @@ final class ReadingTrackerViewModel: ObservableObject {
                 dailyProgress[index].pagesRead += pagesReadToday
                 addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
             }
-            lastPageRead = newPageRead //Update last page read to the new input
+            lastPageRead = newPageRead
         }
+    }
+    
+    func setTotalBookPages(page: Int) {
+        totalBookPages = page
     }
     
     private func getCurrentDay(date: Date) -> String {

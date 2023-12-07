@@ -106,7 +106,7 @@ struct BookInfoView: View {
                         .background(Color.lightBlue)
                         .cornerRadius(5.0)
                     } else {
-                        NavigationLink(destination: BookDetailFull()) {
+                        NavigationLink(destination: BookDetailFull(dbBookData)) {
                             Button {
                                 print("go to book detail page.")
                             } label: {
@@ -139,7 +139,7 @@ struct BookInfoView: View {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyy년 MM월 dd일"
                     
-                    self.buttonText = dateFormatter.string(from: readingList.readtime!)
+//                    self.buttonText = dateFormatter.string(from: readingList!.readtime)
                 } else {
                     
                 }
@@ -296,7 +296,7 @@ struct BookInfoView: View {
         newReading.readtime = Date()
         newReading.book = book
         
-        book.readingList = newReading
+        book.readingList = [newReading]
         newReading.book = book
         
         do {

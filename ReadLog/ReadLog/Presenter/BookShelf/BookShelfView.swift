@@ -27,12 +27,21 @@ struct BookShelfView: View {
                     .ignoresSafeArea()
                 VStack(spacing: 40) {
                     header
-                    List {
-                        ForEach(0..<interpolatedBookList.count/bookCountInRow, id: \.self) {idx in
-                            BookShelfCell(renderedBook: dataForRow(idx: idx))
+                    if interpolatedBookList.count == 0 {
+                        Group {
+                            Spacer()
+                            Text("아직 읽은 책이 없어요")
+                            Text("책을 읽고 책장에 전시해보세요")
+                            Spacer()
+                        }.body1(Color.darkGray)
+                    } else {
+                        List {
+                            ForEach(0..<interpolatedBookList.count/bookCountInRow, id: \.self) {idx in
+                                BookShelfCell(renderedBook: dataForRow(idx: idx))
+                            }
                         }
+                        .listStyle(.plain)
                     }
-                    .listStyle(.plain)
                 }
             }
         }

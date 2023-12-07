@@ -14,30 +14,19 @@ struct BookDetailFull: View {
     @StateObject private var viewModel: ReadingTrackerViewModel
     @State private var pagesReadInput: String = ""
     @FocusState private var isInputActive: Bool
-    private var bookInfo: BookInfo
+    private var bookInfo: BookInfo?
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
-    let isbn: String
     
-    init(_ isbn: String) {
-        // book1
-        let newBook1 = BookInfo(context: PersistenceController.shared.container.viewContext)
-        newBook1.isbn = "newBook3"
-        newBook1.author = "Kim"
-        newBook1.pagecount = 400
-        newBook1.readList = nil
-        if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
-                newBook1.image = imageData
-            }
-        self.isbn = isbn
-        self.bookInfo = newBook1
-        self._viewModel = StateObject(wrappedValue: ReadingTrackerViewModel(context: PersistenceController.shared.container.viewContext, totalPage: Int(newBook1.pagecount)))
+    init(_ bookInfo: BookInfo?) {
+        self.bookInfo = bookInfo
+        self._viewModel = StateObject(wrappedValue: ReadingTrackerViewModel(context: PersistenceController.shared.container.viewContext))
     }
 
     var body: some View {
         NavigationStack {
             VStack {
                 ScrollView {
-                    displayBook(isbn: self.isbn)
+                    displayBook(isbn: (self.bookInfo?.isbn)!)
                         .padding(EdgeInsets(top: 20, leading: 0, bottom: 40, trailing: 0))
                     progressBar(value: viewModel.progressPercentage)
                     Spacer(minLength: 20)
@@ -68,6 +57,7 @@ struct BookDetailFull: View {
         }
         .onAppear(perform: {
             viewModel.setDailyProgress(isbn: "newBook3")
+            viewModel.setTotalBookPages(page: Int((bookInfo?.page)!))
         })
     }
 }
@@ -233,14 +223,14 @@ private extension BookDetailFull {
         .background(Color("lightBlue"),in: RoundedRectangle(cornerRadius: 10))
         .onSubmit {
             if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
-                viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo)
-                pagesReadInput = "" // Clear the input field
+                viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
+                pagesReadInput = ""
             }
         }
         
     }
 }
-#Preview {
-    BookDetailFull("newBook3")
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-}
+//#Preview {
+//    BookDetailFull("newBook3")
+//        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+//}
