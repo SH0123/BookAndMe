@@ -12,8 +12,8 @@
         <attribute name="publisher" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="wish" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <relationship name="readingList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReadingList" inverseName="book" inverseEntity="ReadingList"/>
-        <relationship name="readList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReadList" inverseName="book" inverseEntity="ReadList"/>
+        <relationship name="readingList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadingList" inverseName="book" inverseEntity="ReadingList"/>
+        <relationship name="readList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadList" inverseName="book" inverseEntity="ReadList"/>
         <relationship name="readLog" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadLog" inverseName="book" inverseEntity="ReadLog"/>
     </entity>
     <entity name="ReadingList" representedClassName="ReadingList" syncable="YES" codeGenerationType="class">

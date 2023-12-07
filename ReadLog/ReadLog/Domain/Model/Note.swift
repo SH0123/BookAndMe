@@ -8,9 +8,8 @@
 import Foundation
 import SwiftUI
 
-enum Note: String {
-    case impressive = "인상 깊은 문장"
-    case myThink = "나의 생각"
+enum Note: Int {
+    case impressive, myThink
 }
 
 extension Note {
@@ -20,6 +19,15 @@ extension Note {
             return .customPink
         case .myThink:
             return .skyBlue
+        }
+    }
+    
+    var noteText: String {
+        switch self {
+        case .impressive:
+            return "인상 깊은 문장"
+        case .myThink:
+            return "나의 생각"
         }
     }
 }
