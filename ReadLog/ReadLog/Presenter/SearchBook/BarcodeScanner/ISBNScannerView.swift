@@ -20,8 +20,8 @@ struct ISBNScannerView: UIViewControllerRepresentable {
             if let metadataObject = metadataObjects.first {
                 guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
                 guard let stringValue = readableObject.stringValue else { return }
-//                AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
                 parent.didFindCode(stringValue)
+                parent.dismissCover()
             }
         }
     }
@@ -29,7 +29,9 @@ struct ISBNScannerView: UIViewControllerRepresentable {
     @Binding var isScanning: Bool
     
     var didFindCode: (String) -> Void
-
+    
+    var dismissCover: () -> Void
+    
     func makeCoordinator() -> Coordinator {
         return Coordinator(parent: self)
     }

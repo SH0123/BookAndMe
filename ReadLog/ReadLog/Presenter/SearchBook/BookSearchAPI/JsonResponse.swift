@@ -1,13 +1,13 @@
 //
-//  APIResponse.swift
+//  JsonResponse.swift
 //  ReadLog
 //
-//  Created by 유석원 on 11/25/23.
+//  Created by 유석원 on 12/4/23.
 //
 
 import Foundation
 
-struct APIResponse: Codable {
+struct JsonResponse: Codable {
     let version: String
     let logo: String
     let title: String
@@ -19,9 +19,5 @@ struct APIResponse: Codable {
     let query: String
     let searchCategoryId: Int
     let searchCategoryName: String
-    let item: [BookInfoData_Temporal]
-    
-//    private enum CodingKeys: String, CodingKey {
-//        case 
-//    }
+    let item: [BookDataJsonResponse]
 }

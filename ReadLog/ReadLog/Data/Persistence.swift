@@ -30,7 +30,7 @@ struct PersistenceController {
         
         // add book1 to reading List
         let readingList1 = ReadingList(context: viewContext)
-        readingList1.id = 1
+        readingList1.id = UUID()
         readingList1.readpage = 20
         readingList1.readtime = Date()
         readingList1.book = newBook1
@@ -55,7 +55,7 @@ struct PersistenceController {
         
         // add book2 to reading List
         let readingList2 = ReadingList(context: viewContext)
-        readingList2.id = 2
+        readingList2.id = UUID()
         readingList2.readpage = 32
         readingList2.readtime = Date()
         readingList2.book = newBook2
