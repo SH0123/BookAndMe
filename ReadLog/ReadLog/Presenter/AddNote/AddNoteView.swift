@@ -94,7 +94,7 @@ private extension AddNoteView {
                         ToolbarItemGroup(placement: .keyboard) {
                             Spacer()
                             Button {
-                                // save
+                                addItem()
                             } label: {
                                 Text("노트 저장")
                                     .foregroundStyle(Color.black)
@@ -132,6 +132,7 @@ private extension AddNoteView {
         note.label = Int16(noteType.rawValue)
         note.book = bookInfo
         note.log = contents
+        note.date = Date()
         
         if var readLog = bookInfo.readLog {
             readLog = readLog.adding(note) as NSSet
