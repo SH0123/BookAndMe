@@ -10,18 +10,18 @@ import SwiftUI
 struct BookSearchView: View {
     @State private var searchText = ""
     
-    @State var bookNthCycle = 0
-    
     @State var isShowingScanner = false
-    @State var scannedCode: String?
     
     @State var keywordSearchMode = true
+    
+    @State var isAPIRequestInProgress = false
     
     @StateObject private var viewModel = PaginationViewModel()
     
     var body: some View {
         
         NavigationStack {
+            
             VStack {
                 HStack {
                     SearchBar(text: $searchText, viewModel: viewModel)
@@ -49,8 +49,7 @@ struct BookSearchView: View {
                 if viewModel.results.isEmpty {
                     Spacer()
                     Text("검색을 통해 책을 찾아보세요")
-                        .foregroundStyle(.secondary)
-                        .font(.title)
+                        .display(.secondary)
                 } else {
                     ScrollView {
                         LazyVStack {
@@ -68,14 +67,9 @@ struct BookSearchView: View {
                         
                     }
                 }
-                
-                
                 Spacer()
-                
-                
-                
-                
             }
+            .background(Color("backgroundColor"))
             .navigationTitle("책 검색")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -83,24 +77,26 @@ struct BookSearchView: View {
                     Button {
                         print("Use barcode search")
                         self.isShowingScanner = true
+                        self.isAPIRequestInProgress = false
                         self.searchText = ""
-                        self.scannedCode = ""
-//                        viewModel.clear()
                     } label: {
                         Image(systemName: "barcode.viewfinder").tint(Color.black)
                     }
                     .fullScreenCover(isPresented: $isShowingScanner) {
                         NavigationStack {
                             VStack {
-                                ISBNScannerView(isScanning: $isShowingScanner) { code in
-                                    self.scannedCode = code
-
-                                    print("scanned code: \(scannedCode!)")
-                   
-                                    self.isShowingScanner = false
+                                ISBNScannerView(isScanning: $isShowingScanner, didFindCode: { code in
+                                    guard !isAPIRequestInProgress else { return }
+                                    isAPIRequestInProgress = true
                                     
-                                    viewModel.isbnSearchData(isbn: scannedCode!)
-                                }
+                                    print("scanned code: \(code)")
+                                    
+                                    viewModel.isbnSearchData(isbn: code) { success in
+                                        isAPIRequestInProgress = false
+                                    }
+                                }, dismissCover: {
+                                    self.isShowingScanner = false
+                                })
                                 .ignoresSafeArea(.all)
                             }
                             .navigationTitle("바코드 스캔")
@@ -123,11 +119,7 @@ struct BookSearchView: View {
                 }
             }
         }
-        
     }
-    
-    
-    
 }
 
 #Preview {

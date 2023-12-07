@@ -29,6 +29,7 @@ struct SearchBar: View {
                     // hide keyboard
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
+                .body3(.black)
                 .foregroundColor(.primary)
                 
                 if !text.isEmpty {
@@ -48,6 +49,8 @@ struct SearchBar: View {
         }
         .padding(.horizontal)
     }
+    
+    
 }
 
 //#Preview {

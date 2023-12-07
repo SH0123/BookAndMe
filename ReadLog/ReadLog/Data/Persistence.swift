@@ -21,8 +21,8 @@ struct PersistenceController {
         newBook1.author = "Kim"
         newBook1.readList = nil
         if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
-                newBook1.image = imageData
-            }
+                  newBook1.image = imageData
+              }
         
         // book2
         let newBook2 = BookInfo(context: viewContext)

@@ -8,7 +8,7 @@
 import Foundation
 
 class PaginationViewModel: ObservableObject {
-    @Published var results: [BookInfoData_Temporal] = []
+    @Published var results: [BookInfoData] = []
     
     private var currentPage = 1
     
@@ -31,6 +31,7 @@ class PaginationViewModel: ObservableObject {
     func clear() {
         currentPage = 1
         totalPages = 10
+        isFetching = false
         keyword = ""
         results.removeAll()
     }
@@ -63,7 +64,7 @@ class PaginationViewModel: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 
-                let decodedData = try decoder.decode(APIResponse.self, from: data)
+                let decodedData = try decoder.decode(JsonResponse.self, from: data)
                 
                 if decodedData.totalResults / 20 < 10 {
                     self.totalPages = (decodedData.totalResults - 1) / 20 + 1
@@ -71,7 +72,40 @@ class PaginationViewModel: ObservableObject {
                 
                 DispatchQueue.main.async {
                     print(decodedData.item.count)
-                    self.results.append(contentsOf: decodedData.item)
+                    
+                    let bookDataArray: [BookInfoData] = decodedData.item.map { bookData in
+                        if let itemPage = bookData.subInfo?.itemPage {
+                            let bookData = BookInfoData(
+                                id: bookData.id,
+                                isbn: bookData.isbn,
+                                title: bookData.title,
+                                author: bookData.author,
+                                description: bookData.description,
+                                coverImage: bookData.coverImage,
+                                publisher: bookData.publisher,
+                                price: bookData.price,
+                                link: bookData.link,
+                                itemPage: itemPage
+                            )
+                            return bookData
+                        } else {
+                            let bookData = BookInfoData(
+                                id: bookData.id,
+                                isbn: bookData.isbn,
+                                title: bookData.title,
+                                author: bookData.author,
+                                description: bookData.description,
+                                coverImage: bookData.coverImage,
+                                publisher: bookData.publisher,
+                                price: bookData.price,
+                                link: bookData.link,
+                                itemPage: 0
+                            )
+                            return bookData
+                        }
+                    }
+                    
+                    self.results.append(contentsOf: bookDataArray)
                 }
             } catch {
                 print("Error decoding JSON: \(error)")
@@ -87,9 +121,10 @@ class PaginationViewModel: ObservableObject {
         }
     }
     
-    func isbnSearchData(isbn: String) {
+    func isbnSearchData(isbn: String, completion: @escaping (Bool) -> Void) {
         clear()
         keywordSearchMode = false
+        totalPages = 1
         
         guard !isFetching else { return }
         
@@ -116,12 +151,46 @@ class PaginationViewModel: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 
-                let decodedData = try decoder.decode(APIResponse.self, from: data)
+                let decodedData = try decoder.decode(JsonResponse.self, from: data)
                 
                 DispatchQueue.main.async {
                     print(decodedData.item.count)
-                    self.results.append(contentsOf: decodedData.item)
-//                    self.results.append(decodedData.item.first!)
+                    
+                    let bookDataArray: [BookInfoData] = decodedData.item.map { bookData in
+                        if let itemPage = bookData.subInfo?.itemPage {
+                            let bookData = BookInfoData(
+                                id: bookData.id,
+                                isbn: bookData.isbn,
+                                title: bookData.title,
+                                author: bookData.author,
+                                description: bookData.description,
+                                coverImage: bookData.coverImage,
+                                publisher: bookData.publisher,
+                                price: bookData.price,
+                                link: bookData.link,
+                                itemPage: itemPage
+                            )
+                            return bookData
+                        } else {
+                            let bookData = BookInfoData(
+                                id: bookData.id,
+                                isbn: bookData.isbn,
+                                title: bookData.title,
+                                author: bookData.author,
+                                description: bookData.description,
+                                coverImage: bookData.coverImage,
+                                publisher: bookData.publisher,
+                                price: bookData.price,
+                                link: bookData.link,
+                                itemPage: 0
+                            )
+                            return bookData
+                        }
+                        
+                        
+                    }
+                    
+                    self.results.append(contentsOf: bookDataArray)
                 }
             } catch {
                 print("Error decoding JSON: \(error)")
