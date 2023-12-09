@@ -10,7 +10,7 @@ import SwiftUI
 
 struct BookProfileContainer: View {
 //    @Binding var bookInfo: BookInfoData_Temporal
-    var bookInfo: BookInfoData_Temporal
+    var bookInfo: BookInfoData
     
     // set bookNthCycle to 0 temporarily
     var bookNthCycle = 0
@@ -26,20 +26,32 @@ struct BookProfileContainer: View {
             
             VStack(alignment: .leading) {
                 Text(bookInfo.title)
+                    .body1(.black)
                     .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 Text(bookInfo.author)
+                    .body3(.black)
                     .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 Text(bookInfo.publisher)
+                    .body3(.black)
                     .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 
                 if bookNthCycle != 0 {
                     Text("지금까지 \(bookNthCycle)회독 했어요")
+                        .body2(.darkBrown)
                         .multilineTextAlignment(.leading)
                         .padding(.vertical, 6)
                     
+                }
+                
+                // show page number if possible
+                
+                if bookInfo.itemPage != 0 {
+                    Text("쪽 수: \(bookInfo.itemPage)")
+                        .body3(.black)
+                        .padding(.vertical, 6)
                 }
             }
             .padding(.vertical, 8)

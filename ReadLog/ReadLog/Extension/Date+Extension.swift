@@ -15,4 +15,10 @@ extension Date {
         dateFormatter.timeZone = TimeZone(abbreviation: "KST")
         return dateFormatter
     }()
+    
+    static let dayOfWeekFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "E"
+        return dateFormatter
+    }()
 }

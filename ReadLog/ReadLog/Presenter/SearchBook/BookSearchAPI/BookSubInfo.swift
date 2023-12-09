@@ -8,7 +8,5 @@
 import Foundation
 
 struct BookSubInfo: Codable {
-    let subTitle: String
-    let originalTitle: String
-    let itemPage: Int
+    let itemPage: Int?
 }

@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct BookShelfCell: View {
-    var renderedBook: [BookExample?]
+    var renderedBook: [BookInfo?]
     
     var body: some View {
         Spacer(minLength: 70)
@@ -28,30 +29,32 @@ struct BookShelfCell: View {
 
 private extension BookShelfCell {
     @ViewBuilder
-    func bookRow(_ bookList: [BookExample?]) -> some View {
-        VStack{
-            HStack(alignment: .center) {
-                bookCell(bookList[0])
-                Spacer()
-                bookCell(bookList[1])
-                Spacer()
-                bookCell(bookList[2])
-            }
+    func bookRow(_ bookList: [BookInfo?]) -> some View {
+        HStack(alignment: .center) {
+            bookCell(bookList[0])
+            Spacer()
+            bookCell(bookList[1])
+            Spacer()
+            bookCell(bookList[2])
         }
     }
     
     @ViewBuilder
-    func bookCell(_ book: BookExample?) -> some View {
+    func bookCell(_ book: BookInfo?) -> some View {
         if let book = book {
-            Image(book.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 80)
-                .shadow(radius: 4, y: 4)
-                .onTapGesture {
-                    // move to detail page
+            if let imageData = book.image, let uiImage =
+                UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 80)
+                    .shadow(radius: 4, y: 4)
+                    .onTapGesture {
+                        // move to detail page
+                    }
                 }
-        } else {
+            }
+        else {
             Spacer()
                 .frame(width: 80)
         }
@@ -81,6 +84,3 @@ struct BookExample: Identifiable {
     }
 }
 
-#Preview {
-    BookShelfCell(renderedBook: BookExample.mock)
-}
