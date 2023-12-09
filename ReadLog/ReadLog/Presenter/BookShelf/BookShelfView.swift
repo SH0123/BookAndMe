@@ -1,19 +1,13 @@
-//
-//  BookShelfView.swift
-//  ReadLog
-//
-//  Created by sanghyo on 11/27/23.
-//
-
 import SwiftUI
 
 struct BookShelfView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest (sortDescriptors:
                     [NSSortDescriptor(keyPath: \ReadList.enddate, ascending: false)], predicate:  NSPredicate(format: "recent == true" ),
-        animation: .default)
+                   animation: .default)
     private var fetchedBookList: FetchedResults<ReadList>
     private let bookCountInRow: Int = 3
+    private let rowInPage: Int = 3
     private var interpolatedBookList: [BookInfo?] {
         get {
             return interpolateBookList(fetchedBookList)
@@ -35,23 +29,29 @@ struct BookShelfView: View {
                             Spacer()
                         }.body1(Color.darkGray)
                     } else {
-                        List {
-                            ForEach(0..<interpolatedBookList.count/bookCountInRow, id: \.self) {idx in
-                                BookShelfCell(renderedBook: dataForRow(idx: idx))
+                        TabView {
+                            ForEach(0..<interpolatedBookList.count/bookCountInRow/rowInPage) { page in
+                                VStack {
+                                    ForEach((page * rowInPage)..<min((page+1) * rowInPage, interpolatedBookList.count/bookCountInRow), id: \.self) {idx in
+                                        BookShelfCell(renderedBook: dataForRow(idx: idx))
+                                    }
+                                }
                             }
+                            .listStyle(.plain)
                         }
-                        .listStyle(.plain)
+                        .tabViewStyle(PageTabViewStyle())
+                        .frame(height: 650)
                     }
                 }
             }
+            
+            .toolbar(.hidden)
         }
-        
-        .toolbar(.hidden)
     }
 }
 
+
 private extension BookShelfView {
-    
     var header: some View {
         HStack {
             Spacer()
