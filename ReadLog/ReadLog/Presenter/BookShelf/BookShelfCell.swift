@@ -39,18 +39,17 @@ private extension BookShelfCell {
     @ViewBuilder
     func bookCell(_ book: BookInfo?) -> some View {
         if let book = book {
-            if let imageData = book.image, let uiImage =
-                UIImage(data: imageData) {
+            NavigationLink(destination: BookDetailFull(book).navigationBarBackButtonHidden(true)){
+                if let imageData = book.image, let uiImage =
+                    UIImage(data: imageData) {
                     Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80)
-                    .shadow(radius: 4, y: 4)
-                    .onTapGesture {
-                        // move to detail page
-                    }
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80)
+                        .shadow(radius: 4, y: 4)
                 }
             }
+        }
         else {
             Spacer()
                 .frame(width: 80)

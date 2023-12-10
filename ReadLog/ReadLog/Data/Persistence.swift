@@ -26,6 +26,7 @@ struct PersistenceController {
         
         // book2
         let newBook2 = BookInfo(context: viewContext)
+        newBook2.title = "title2"
         newBook2.isbn = "newBook2"
         newBook2.author = "Kim2"
         newBook2.readList = nil

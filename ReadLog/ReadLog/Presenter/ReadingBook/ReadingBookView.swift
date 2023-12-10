@@ -30,9 +30,15 @@ struct ReadingBookView: View {
                     Text("읽고 있는 책 목록")
                         .display(Color.black)
                     
-                    Text("0권 / \(items.count)권")
-                        .body2(Color.black)
-                        .frame(width: 231, height: 21, alignment: .top)
+                    if (currentIndex != items.count){
+                        Text("\(currentIndex + 1)권 / \(items.count)권")
+                            .body2(Color.black)
+                            .frame(width: 231, height: 21, alignment: .top)
+                    } else {
+                        Text(" ")
+                            .body2(Color.black)
+                            .frame(width: 231, height: 21, alignment: .top)
+                    }
                     
                     BooksView(items: items, currentIndex: $currentIndex)
                     
