@@ -12,19 +12,20 @@ struct BookInfoView: View {
     // core data
     @Environment(\.managedObjectContext) private var viewContext
     
-//    @FetchRequest(
-//        sortDescriptors: [
-//            NSSortDescriptor(keyPath: \BookInfo.id, ascending: false)
-//        ],
-//        animation: .default
-//    )
-//    private var dbBookData: FetchedResults<BookInfo>
+    @FetchRequest(
+        sortDescriptors: [
+            NSSortDescriptor(keyPath: \BookInfo.id, ascending: false)
+        ],
+        animation: .default
+    )
+    private var dbBookData: FetchedResults<BookInfo>
     
-    @State private var dbBookData:BookInfo?
+    @State private var bookDataFromDB:BookInfo?
     
     // view variables
     var bookInfo: BookInfoData
     
+    @State var bookWithPage: BookInfoData?
     @State var like = false
     @State var buttonText = "독서 시작"
     
@@ -75,7 +76,7 @@ struct BookInfoView: View {
                     }
                     
                     // book data does not exist in core data
-                    if dbBookData == nil {
+                    if dbBookData.isEmpty {
                         Button {
                             print("start to read the book.")
                             
@@ -87,13 +88,16 @@ struct BookInfoView: View {
                             } else {
                                 // call isbn search api and take subinfo data
                                 // save data to core data
-                                let bookWithPage = getBookDataWithPage(isbn: bookInfo.isbn)
-                                
-                                if bookWithPage != nil {
-                                    saveBookData(newBook: bookWithPage!)
-                                    addToReadingList(bookId: Int32(bookWithPage!.id))
+                                getBookDataWithPage(isbn: bookInfo.isbn) { result in
+                                    if let bookWithPage = result {
+                                        saveBookData(newBook: bookWithPage)
+                                        addToReadingList(bookId: Int32(bookWithPage.id))
+                                    }
                                 }
-                                
+                            }
+                            
+                            if let book = dbBookData.first {
+                                self.bookDataFromDB = book
                             }
                             
                         } label: {
@@ -106,7 +110,7 @@ struct BookInfoView: View {
                         .background(Color.lightBlue)
                         .cornerRadius(5.0)
                     } else {
-                        NavigationLink(destination: BookDetailFull(dbBookData)) {
+                        NavigationLink(destination: BookDetailFull(bookDataFromDB)) {
                             Button {
                                 print("go to book detail page.")
                             } label: {
@@ -130,18 +134,24 @@ struct BookInfoView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
-            dbBookData = findBook(bookId: Int32(bookInfo.id))
-            
-            if dbBookData != nil {
-                self.like = dbBookData!.wish
+            dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
+            if !dbBookData.isEmpty {
+                self.like = dbBookData.first!.wish
                 
-                if let readingList = dbBookData!.readingList {
+                if let readingList = dbBookData.first!.readingList as? Set<ReadingList> {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyy년 MM월 dd일"
                     
-//                    self.buttonText = dateFormatter.string(from: readingList!.readtime)
-                } else {
+                    let recent = readingList.filter { $0.recent == true }
                     
+                    if !recent.isEmpty {
+                        self.buttonText = dateFormatter.string(from: recent.first!.readtime!)
+                    }
+                    
+                }
+                
+                if let book = dbBookData.first {
+                    self.bookDataFromDB = book
                 }
             }
         }
@@ -150,44 +160,43 @@ struct BookInfoView: View {
             // if book data is not in db and added to wishlist, saves book data (wish = true)
             // if book data is in db, save changes
             
-            if dbBookData == nil {
+            if dbBookData.isEmpty {
                 if like {
                     if bookInfo.itemPage == 0 {
-                        let bookWithPage = getBookDataWithPage(isbn: bookInfo.isbn)
-                        
-                        if bookWithPage != nil {
-                            saveBookData(newBook: bookWithPage!)
+                        getBookDataWithPage(isbn: bookInfo.isbn) { result in
+                            if let bookWithPage = result {
+                                saveBookData(newBook: bookWithPage)
+                            }
                         }
                     } else {
                         saveBookData(newBook: bookInfo)
                     }
-                    
                 }
             } else {
-                if like != dbBookData!.wish {
-                    // save changes
+                if like != dbBookData.first!.wish {
                     updateBookWish(bookId: Int32(bookInfo.id))
                 }
             }
         }
     }
     
-    func getBookDataWithPage(isbn: String) -> BookInfoData? {
+    func getBookDataWithPage(isbn: String, completion: @escaping (BookInfoData?) -> Void) {
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=\(ApiKey.aladinKey)&itemIdType=ISBN13&ItemId=\(isbn)&output=js&Version=20131101"
         
         guard let url = URL(string: requestUrl) else {
-            return nil
+            completion(nil)
+            return
         }
-        
-        var book: BookInfoData?
         
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 print("Error: \(error)")
+                completion(nil)
                 return
             }
             
             guard let data = data else {
+                completion(nil)
                 return
             }
             
@@ -233,20 +242,20 @@ struct BookInfoView: View {
                         }
                     }
                     
-                    if !bookDataArray.isEmpty {
-                        book = bookDataArray[0]
+                    if let bookWithPage = bookDataArray.first {
+                        completion(bookWithPage)
+                    } else {
+                        completion(nil)
                     }
                     
                 }
             } catch {
                 print("Error decoding JSON: \(error)")
+                completion(nil)
             }
         }
         
         task.resume()
-        
-        print("found book's page number: \(book!.itemPage)")
-        return book
     }
     
     func findBook(bookId: Int32) -> BookInfo? {
@@ -274,7 +283,10 @@ struct BookInfoView: View {
         dbNewBook.publisher = newBook.publisher
         dbNewBook.title = newBook.title
         dbNewBook.wish = like
-        dbNewBook.image = UIImage(data: URLImage(urlString: newBook.coverImage).data!)?.pngData()
+        
+        if let urlImageData = URLImage(urlString: newBook.coverImage).data, let bookCoverImage = UIImage(data: urlImageData), let imageData = bookCoverImage.pngData() {
+            dbNewBook.image = imageData
+        }
         
         do {
             try viewContext.save()
@@ -302,6 +314,9 @@ struct BookInfoView: View {
         do {
             try viewContext.save()
             print("saved readingList to db")
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+            self.buttonText = dateFormatter.string(from: newReading.readtime!)
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
