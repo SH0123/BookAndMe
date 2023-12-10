@@ -30,17 +30,23 @@ struct BookShelfView: View {
                         }.body1(Color.darkGray)
                     } else {
                         TabView {
-                            ForEach(0..<interpolatedBookList.count/bookCountInRow/rowInPage) { page in
+                            ForEach(0..<interpolatedBookList.count/bookCountInRow/rowInPage+1, id:\.self) { page in
                                 VStack {
-                                    ForEach((page * rowInPage)..<min((page+1) * rowInPage, interpolatedBookList.count/bookCountInRow), id: \.self) {idx in
-                                        BookShelfCell(renderedBook: dataForRow(idx: idx))
+                                    ForEach((page*rowInPage)..<(page+1)*rowInPage, id: \.self) {idx in
+                                        if (idx < interpolatedBookList.count/bookCountInRow) {
+                                            BookShelfCell(renderedBook: dataForRow(idx: idx))
+                                        }
+                                        else {
+                                            Spacer()
+                                                .frame(height: 202.5)
+                                        }
                                     }
                                 }
                             }
                             .listStyle(.plain)
                         }
                         .tabViewStyle(PageTabViewStyle())
-                        .frame(height: 650)
+                        .frame(height: 600)
                     }
                 }
             }

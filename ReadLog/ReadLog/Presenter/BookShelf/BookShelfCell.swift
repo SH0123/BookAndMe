@@ -12,18 +12,14 @@ struct BookShelfCell: View {
     var renderedBook: [BookInfo?]
     
     var body: some View {
-        Spacer(minLength: 70)
-        ForEach(0..<3, id:\.self){ _ in
-            VStack(spacing: 5) {
-                bookRow(renderedBook).padding(.horizontal, 20)
-                horizontalLine
-            }
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.backgroundColor)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.bottom, 5)
+        VStack(spacing: 5) {
+            bookRow(renderedBook).padding(.horizontal, 10)
+            horizontalLine
         }
-        Spacer(minLength: 70)
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.backgroundColor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.bottom, 5)
     }
 }
 
@@ -32,10 +28,11 @@ private extension BookShelfCell {
     func bookRow(_ bookList: [BookInfo?]) -> some View {
         HStack(alignment: .center) {
             bookCell(bookList[0])
-            Spacer()
+                .padding(.horizontal, 20)
             bookCell(bookList[1])
-            Spacer()
+                .padding(.horizontal, 20)
             bookCell(bookList[2])
+                .padding(.horizontal, 20)
         }
     }
     
@@ -63,7 +60,7 @@ private extension BookShelfCell {
     var horizontalLine: some View {
         Rectangle()
             .foregroundStyle(Color.white)
-            .frame(height: 6)
+            .frame(width: 380, height: 6)
             .shadow(radius: 4, y: 4)
     }
     
@@ -75,9 +72,10 @@ struct BookExample: Identifiable {
     
     static var mock: [BookExample?] {
         return [
+            BookExample(id: 0, imageName: "bookExample"),
             BookExample(id: 1, imageName: "bookExample"),
-            BookExample(id: 2, imageName: "bookExample"),
             BookExample(id: 3, imageName: "bookExample"),
+            BookExample(id: 4, imageName: "bookExample"),
             nil,
             
         ]

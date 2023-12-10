@@ -115,8 +115,78 @@ struct PersistenceController {
         readList2.startdate = nil
         readList2.enddate = nil
         
-        newBook1.readList = [readList1]
-        newBook3.readList = [readList2]
+        let readList3 = ReadList(context: viewContext)
+        readList3.id = UUID()
+        readList3.book = newBook1
+        readList3.recent = true
+        readList3.startdate = nil
+        readList3.enddate = nil
+        
+        let readList4 = ReadList(context: viewContext)
+        readList4.id = UUID()
+        readList4.book = newBook3
+        readList4.recent = true
+        readList4.startdate = nil
+        readList4.enddate = nil
+        
+        let readList5 = ReadList(context: viewContext)
+        readList5.id = UUID()
+        readList5.book = newBook1
+        readList5.recent = true
+        readList5.startdate = nil
+        readList5.enddate = nil
+        
+        let readList6 = ReadList(context: viewContext)
+        readList6.id = UUID()
+        readList6.book = newBook3
+        readList6.recent = true
+        readList6.startdate = nil
+        readList6.enddate = nil
+        
+        let readList7 = ReadList(context: viewContext)
+        readList7.id = UUID()
+        readList7.book = newBook1
+        readList7.recent = true
+        readList7.startdate = nil
+        readList7.enddate = nil
+        
+        let readList8 = ReadList(context: viewContext)
+        readList8.id = UUID()
+        readList8.book = newBook3
+        readList8.recent = true
+        readList8.startdate = nil
+        readList8.enddate = nil
+        
+        let readList9 = ReadList(context: viewContext)
+        readList9.id = UUID()
+        readList9.book = newBook1
+        readList9.recent = true
+        readList9.startdate = nil
+        readList9.enddate = nil
+        
+        let readList10 = ReadList(context: viewContext)
+        readList10.id = UUID()
+        readList10.book = newBook3
+        readList10.recent = true
+        readList10.startdate = nil
+        readList10.enddate = nil
+        
+        let readList11 = ReadList(context: viewContext)
+        readList11.id = UUID()
+        readList11.book = newBook1
+        readList11.recent = true
+        readList11.startdate = nil
+        readList11.enddate = nil
+        
+        let readList12 = ReadList(context: viewContext)
+        readList12.id = UUID()
+        readList12.book = newBook3
+        readList12.recent = true
+        readList12.startdate = nil
+        readList12.enddate = nil
+        
+        newBook1.readList = [readList1, readList3, readList5, readList7, readList9, readList11]
+        newBook3.readList = [readList2, readList4, readList6, readList8, readList10, readList12]
         
         // log
         let newLog2 = ReadLog(context: viewContext)
