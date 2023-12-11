@@ -30,9 +30,15 @@ struct ReadingBookView: View {
                     Text("읽고 있는 책 목록")
                         .display(Color.black)
                     
-                    Text("0권 / \(items.count)권")
-                        .body2(Color.black)
-                        .frame(width: 231, height: 21, alignment: .top)
+                    if (currentIndex != items.count){
+                        Text("\(currentIndex + 1)권 / \(items.count)권")
+                            .body2(Color.black)
+                            .frame(width: 231, height: 21, alignment: .top)
+                    } else {
+                        Text("새로운 책을 추가해 보세요")
+                            .body2(Color.black)
+                            .frame(width: 231, height: 21, alignment: .top)
+                    }
                     
                     BooksView(items: items, currentIndex: $currentIndex)
                     
@@ -52,32 +58,34 @@ struct ReadingBookView: View {
                             .background(Color(red: 0.76, green: 0.76, blue: 0.76))
                         Spacer()
                         if items.indices.contains(currentIndex) {
-                            if let readLog = items[currentIndex].book!.readLog {
-                                if let swiftSet = readLog as? Set<ReadLog>, !swiftSet.isEmpty {
-                                    VStack(alignment: .leading, spacing:8){
-                                        HStack {
-                                            Text("\(swiftSet.first!.date!, formatter: Self.memoDateFormatter)")
-                                                .bodyDefault(Color("gray"))
-                                                .foregroundColor(.secondary)
-                                                .offset(x: 15)
-                                            Spacer()
-                                            //LabelView(text: memo.label)
-                                            NoteLabel(type: .constant(.impressive))
-                                        }
-                                        .frame(height: 30)
-                                        
-                                        Text(swiftSet.first!.log!)
-                                            .bodyDefault(Color.primary)
-                                            .frame(width: 330, height: 110)
-                                            .offset(x: 10)
-                                        
-                                    }//where vstack ends
-                                    .frame(width: 350)
-                                } else {
-                                    Text("책에 대한 기록이 아직 없어요.\n탭 해서 기록을 추가해 보세요")
-                                        .bodyDefault(Color("gray"))
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
+                            if let book = items[currentIndex].book{
+                                if let readLog = book.readLog {
+                                    if let swiftSet = readLog as? Set<ReadLog>, !swiftSet.isEmpty {
+                                        VStack(alignment: .leading, spacing:8){
+                                            HStack {
+                                                Text("\(swiftSet.first!.date!, formatter: Self.memoDateFormatter)")
+                                                    .bodyDefault(Color("gray"))
+                                                    .foregroundColor(.secondary)
+                                                    .offset(x: 15)
+                                                Spacer()
+                                                //LabelView(text: memo.label)
+                                                NoteLabel(type: .constant(convertNoteLabel(labelInt: Int(swiftSet.first!.label))))
+                                            }
+                                            .frame(height: 30)
+                                            
+                                            Text(swiftSet.first!.log!)
+                                                .bodyDefault(Color.primary)
+                                                .frame(width: 330, height: 110)
+                                                .offset(x: 10)
+                                            
+                                        }//where vstack ends
+                                        .frame(width: 350)
+                                    } else {
+                                        Text("책에 대한 기록이 아직 없어요.\n탭 해서 기록을 추가해 보세요")
+                                            .bodyDefault(Color("gray"))
+                                            .foregroundColor(.secondary)
+                                            .multilineTextAlignment(.center)
+                                    }
                                 }
                             }
                         }
@@ -105,6 +113,10 @@ struct ReadingBookView: View {
         formatter.dateFormat = "yyyy년 MM월 dd일"
         return formatter
     }()
+    
+    private func convertNoteLabel(labelInt: Int) -> Note {
+        return labelInt == 0 ? .impressive : .myThink
+    }
     
 }
 #Preview {
