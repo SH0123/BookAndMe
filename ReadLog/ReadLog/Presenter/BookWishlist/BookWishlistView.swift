@@ -24,26 +24,15 @@ struct BookWishlistView: View {
         NavigationStack {
             VStack {
                 if dbBookData.isEmpty {
-                    Text("검색을 통해 책을 찾아보세요")
+                    Spacer()
+                    Text("아직 찜 목록에 아무 것도 없어요!")
                         .display(.secondary)
                 } else {
                     ScrollView {
                         LazyVStack {
                             ForEach(dbBookData) { item in
-                                let book = BookInfoData(
-                                    id: Int(item.id),
-                                    isbn: item.isbn!,
-                                    title: item.title!,
-                                    author: item.author!,
-                                    description: item.bookDescription!,
-                                    coverImage: "",
-                                    publisher: item.publisher!,
-                                    link: item.link!,
-                                    itemPage: Int(item.page),
-                                    dbImage: item.image!,
-                                    dbWish: item.wish!,
-                                    dbNthCycle: Int(item.nthCycle)
-                                )
+                                let book = convertToBookInfo(book: item)
+                                
                                 NavigationLink(destination: BookInfoView(bookInfo: book)) {
                                     BookProfileContainer(bookInfo: book)
                                 }
@@ -51,9 +40,10 @@ struct BookWishlistView: View {
                         }
                     }
                 }
+                Spacer()
             }
-            .background(Color("backgroundColor"))
-            .navigationTitle("책 검색")
+            
+            .navigationTitle("찜 목록")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -64,5 +54,24 @@ struct BookWishlistView: View {
                 }
             }
         }
+        .background(Color("backgroundColor"))
+    }
+    
+    func convertToBookInfo(book: FetchedResults<BookInfo>.Element) -> BookInfoData {
+        return BookInfoData(
+            id: Int(book.id),
+            isbn: book.isbn!,
+            title: book.title!,
+            author: book.author!,
+            description: book.bookDescription!,
+            coverImage: "",
+            publisher: book.publisher!,
+            link: book.link!,
+            itemPage: Int(book.page),
+            dbImage: book.image,
+            dbWish: book.wish,
+            dbNthCycle: Int(book.nthCycle)
+        )
     }
 }
+

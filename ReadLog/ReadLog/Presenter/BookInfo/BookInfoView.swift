@@ -20,7 +20,7 @@ struct BookInfoView: View {
     )
     private var dbBookData: FetchedResults<BookInfo>
     
-    @State private var bookDataFromDB:BookInfo?
+    @State private var bookDataFromDB: BookInfo?
     
     // view variables
     var bookInfo: BookInfoData
@@ -76,29 +76,29 @@ struct BookInfoView: View {
                     }
                     
                     // book data does not exist in core data
-                    if dbBookData.isEmpty {
+                    if buttonText == "독서 시작" {
                         Button {
                             print("start to read the book.")
-                            
-                            // if bookInfo object has page number, api call is not required.
-                            if bookInfo.itemPage != 0 {
-                                // save to core data
-                                saveBookData(newBook: bookInfo)
-                                addToReadingList(bookId: Int32(bookInfo.id))
-                            } else {
-                                // call isbn search api and take subinfo data
-                                // save data to core data
-                                getBookDataWithPage(isbn: bookInfo.isbn) { result in
-                                    if let bookWithPage = result {
-                                        saveBookData(newBook: bookWithPage)
-                                        addToReadingList(bookId: Int32(bookWithPage.id))
+                            if dbBookData.isEmpty {
+                                // if bookInfo object has page number, api call is not required.
+                                if bookInfo.itemPage != 0 {
+                                    // save to core data
+                                    saveBookData(newBook: bookInfo)
+                                    addToReadingList(bookId: Int32(bookInfo.id))
+                                } else {
+                                    // call isbn search api and take subinfo data
+                                    // save data to core data
+                                    getBookDataWithPage(isbn: bookInfo.isbn) { result in
+                                        if let bookWithPage = result {
+                                            saveBookData(newBook: bookWithPage)
+                                            addToReadingList(bookId: Int32(bookWithPage.id))
+                                        }
                                     }
                                 }
+                            } else {
+                                addToReadingList(bookId: Int32(bookInfo.id))
                             }
                             
-                            if let book = dbBookData.first {
-                                self.bookDataFromDB = book
-                            }
                             
                         } label: {
                             Text(buttonText)
@@ -110,7 +110,10 @@ struct BookInfoView: View {
                         .background(Color.lightBlue)
                         .cornerRadius(5.0)
                     } else {
-                        NavigationLink(destination: BookDetailFull(bookDataFromDB)) {
+                        
+                        NavigationLink(destination: BookDetailFull(dbBookData.first).navigationBarBackButtonHidden(true)) {
+                            
+                            
                             Button {
                                 print("go to book detail page.")
                             } label: {
@@ -122,6 +125,7 @@ struct BookInfoView: View {
                             .foregroundColor(.black)
                             .background(Color.lightBlue)
                             .cornerRadius(5.0)
+                            .disabled(true)
                         }
                     }
                 }
@@ -276,6 +280,7 @@ struct BookInfoView: View {
     }
     
     func saveBookData(newBook: BookInfoData) {
+        print("Save book to core data.")
         let dbNewBook = BookInfo(context: viewContext)
         dbNewBook.id = Int32(newBook.id)
         dbNewBook.author = newBook.author
@@ -288,40 +293,26 @@ struct BookInfoView: View {
         dbNewBook.title = newBook.title
         dbNewBook.wish = like
         
-        guard let url = URL(string: bookInfo.coverImage) else {
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let error = error {
-                print("Error downloading image: \(error)")
-                return
-            }
-            
-            guard let imageData = data, let uiImage = UIImage(data: imageData) else {
-                print("Invalid image data")
-                return
-            }
-            
-            if let img = uiImage.pngData() {
-                dbNewBook.image = img
-                
-                do {
-                    try viewContext.save()
-                    print("saved book to db")
-                } catch {
-                    let nsError = error as NSError
-                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        fetchImage(urlString: newBook.coverImage) { imageData in
+            DispatchQueue.main.async {
+                if let imageData = imageData {
+                    dbNewBook.image = imageData
+                    
+                    viewContext.perform {
+                        do {
+                            try viewContext.save()
+                            print("Book data saved with image.")
+                        } catch {
+                            let nsError = error as NSError
+                            fatalError("Error saving book data: \(nsError), \(nsError.userInfo)")
+                        }
+                    }
+                } else {
+                    print("Failed to fetch or convert image data.")
                 }
             }
+            
         }
-        
-        task.resume()
-        
-//        if let urlImageData = URLImage(urlString: newBook.coverImage).data, let bookCoverImage = UIImage(data: urlImageData), let imageData = bookCoverImage.pngData() {
-//            dbNewBook.image = imageData
-//        }
-        
         
     }
     
@@ -365,5 +356,30 @@ struct BookInfoView: View {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
+    }
+    
+    func fetchImage(urlString: String, completion: @escaping (Data?) -> Void) {
+        let convertedUrl = urlString.replacingOccurrences(of: "coversum", with: "cover200")
+        
+        guard let url = URL(string: convertedUrl) else {
+            completion(nil)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                print("Error downloading image: \(error)")
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                completion(data)
+            }
+        }
+        
+        task.resume()
     }
 }

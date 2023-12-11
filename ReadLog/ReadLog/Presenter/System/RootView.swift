@@ -16,7 +16,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("읽고있어요", systemImage: "book")
                 }
-            BookSearchView()
+            BookWishlistView()
                 .tabItem {
                     Label("찜했어요", systemImage: "heart")
                 }
