@@ -35,7 +35,7 @@ struct ReadingBookView: View {
                             .body2(Color.black)
                             .frame(width: 231, height: 21, alignment: .top)
                     } else {
-                        Text(" ")
+                        Text("새로운 책을 추가해 보세요")
                             .body2(Color.black)
                             .frame(width: 231, height: 21, alignment: .top)
                     }
@@ -58,32 +58,34 @@ struct ReadingBookView: View {
                             .background(Color(red: 0.76, green: 0.76, blue: 0.76))
                         Spacer()
                         if items.indices.contains(currentIndex) {
-                            if let readLog = items[currentIndex].book!.readLog {
-                                if let swiftSet = readLog as? Set<ReadLog>, !swiftSet.isEmpty {
-                                    VStack(alignment: .leading, spacing:8){
-                                        HStack {
-                                            Text("\(swiftSet.first!.date!, formatter: Self.memoDateFormatter)")
-                                                .bodyDefault(Color("gray"))
-                                                .foregroundColor(.secondary)
-                                                .offset(x: 15)
-                                            Spacer()
-                                            //LabelView(text: memo.label)
-                                            NoteLabel(type: .constant(.impressive))
-                                        }
-                                        .frame(height: 30)
-                                        
-                                        Text(swiftSet.first!.log!)
-                                            .bodyDefault(Color.primary)
-                                            .frame(width: 330, height: 110)
-                                            .offset(x: 10)
-                                        
-                                    }//where vstack ends
-                                    .frame(width: 350)
-                                } else {
-                                    Text("책에 대한 기록이 아직 없어요.\n탭 해서 기록을 추가해 보세요")
-                                        .bodyDefault(Color("gray"))
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
+                            if let book = items[currentIndex].book{
+                                if let readLog = book.readLog {
+                                    if let swiftSet = readLog as? Set<ReadLog>, !swiftSet.isEmpty {
+                                        VStack(alignment: .leading, spacing:8){
+                                            HStack {
+                                                Text("\(swiftSet.first!.date!, formatter: Self.memoDateFormatter)")
+                                                    .bodyDefault(Color("gray"))
+                                                    .foregroundColor(.secondary)
+                                                    .offset(x: 15)
+                                                Spacer()
+                                                //LabelView(text: memo.label)
+                                                NoteLabel(type: .constant(.impressive))
+                                            }
+                                            .frame(height: 30)
+                                            
+                                            Text(swiftSet.first!.log!)
+                                                .bodyDefault(Color.primary)
+                                                .frame(width: 330, height: 110)
+                                                .offset(x: 10)
+                                            
+                                        }//where vstack ends
+                                        .frame(width: 350)
+                                    } else {
+                                        Text("책에 대한 기록이 아직 없어요.\n탭 해서 기록을 추가해 보세요")
+                                            .bodyDefault(Color("gray"))
+                                            .foregroundColor(.secondary)
+                                            .multilineTextAlignment(.center)
+                                    }
                                 }
                             }
                         }

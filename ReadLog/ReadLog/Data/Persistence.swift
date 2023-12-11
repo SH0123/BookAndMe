@@ -172,6 +172,7 @@ struct PersistenceController {
         readList10.startdate = nil
         readList10.enddate = nil
         
+        
         let readList11 = ReadList(context: viewContext)
         readList11.id = UUID()
         readList11.book = newBook1
@@ -186,8 +187,24 @@ struct PersistenceController {
         readList12.startdate = nil
         readList12.enddate = nil
         
-        newBook1.readList = [readList1, readList3, readList5, readList7, readList9, readList11]
-        newBook3.readList = [readList2, readList4, readList6, readList8, readList10, readList12]
+        
+        let readList13 = ReadList(context: viewContext)
+        readList13.id = UUID()
+        readList13.book = newBook1
+        readList13.recent = true
+        readList13.startdate = nil
+        readList13.enddate = nil
+        
+        let readList14 = ReadList(context: viewContext)
+        readList14.id = UUID()
+        readList14.book = newBook3
+        readList14.recent = true
+        readList14.startdate = nil
+        readList14.enddate = nil
+        
+        
+        newBook1.readList = [readList1, readList3, readList5, readList7, readList9, readList11, readList13]
+        newBook3.readList = [readList2, readList4, readList6, readList8, readList10, readList12, readList14]
         
         // log
         let newLog2 = ReadLog(context: viewContext)
