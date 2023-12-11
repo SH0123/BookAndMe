@@ -18,7 +18,7 @@ struct AddNoteView: View {
     
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
-    private var bookInfo: BookInfo = .init(context: PersistenceController.preview.container.viewContext)
+    private var bookInfo: BookInfo
     
     init(_ bookInfo: BookInfo, _ note: Binding<[ReadLog]>) {
         self.bookInfo = bookInfo

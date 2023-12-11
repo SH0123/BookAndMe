@@ -14,6 +14,7 @@ struct BookDetailFull: View {
     @StateObject private var viewModel: ReadingTrackerViewModel
     @State private var pagesReadInput: String = ""
     @State private var bookMemos: [ReadLog] = []
+    @State private var showingAlert: Bool = false
     @FocusState private var isInputActive: Bool
     private var bookInfo: BookInfo?
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
@@ -75,18 +76,27 @@ struct BookDetailFull: View {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button {
-//                        if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
-//                            viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
-//                            pagesReadInput = ""
-//                            hideKeyboard()
-//                        }
+                        if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead, newPageRead <= viewModel.totalBookPages {
+                            viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
+                            pagesReadInput = ""
+                            hideKeyboard()
+                        } else {
+                            showingAlert = true
+                        }
                     } label: {
                         Text("저장")
                             .foregroundStyle(Color.black)
                     }
                 }
+                
+            }
+            .alert("숫자 형식이 올바르지 않습니다.", isPresented: $showingAlert) {
+                Button("확인") {
+                    pagesReadInput = ""
+                }
             }
         }
+        
         .onAppear(perform: {
             viewModel.setDailyProgress(isbn: bookInfo!.isbn!)
             viewModel.setTotalBookPages(page: Int((bookInfo?.page)!))
@@ -270,6 +280,12 @@ private extension BookDetailFull {
         .padding()
         .frame(height:47)
         .background(Color("lightBlue"),in: RoundedRectangle(cornerRadius: 10))
+//        .onSubmit {
+//            if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
+//                viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
+//                pagesReadInput = ""
+//            }
+//        }
     }
 }
 //#Preview {
