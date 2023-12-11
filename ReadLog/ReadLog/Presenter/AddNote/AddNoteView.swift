@@ -14,11 +14,15 @@ struct AddNoteView: View {
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
     @State private var noteSelectionShow = false
+    @Binding private var notes: [ReadLog]
     
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
-    private var bookInfo: BookInfo {
-        BookInfo(context: self.viewContext)
+    private var bookInfo: BookInfo = .init(context: PersistenceController.preview.container.viewContext)
+    
+    init(_ bookInfo: BookInfo, _ note: Binding<[ReadLog]>) {
+        self.bookInfo = bookInfo
+        self._notes = note
     }
     
     var body: some View {
@@ -35,7 +39,7 @@ struct AddNoteView: View {
             }
             .padding(.horizontal, 32)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+//        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .toolbar(.hidden)
         .fullScreenCover(isPresented: $showScannerSheet, content: {
             scannerView
@@ -72,7 +76,6 @@ private extension AddNoteView {
             }
             Spacer()
             Button {
-                // scan
                 showScannerSheet = true
             } label: {
                 Image(systemName: "doc.viewfinder")
@@ -89,13 +92,15 @@ private extension AddNoteView {
                 .bodyDefault(.darkGray)
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $contents)
-                    .bodyDefault(.black)
+                    .bodyDefaultMultiLine(.black)
+                    .padding(EdgeInsets(top: -5, leading: -7, bottom: 0, trailing: 0))
                     .scrollContentBackground(.hidden)
                     .toolbar {
                         ToolbarItemGroup(placement: .keyboard) {
                             Spacer()
                             Button {
                                 addItem()
+                                dismiss()
                             } label: {
                                 Text("노트 저장")
                                     .foregroundStyle(Color.black)
@@ -106,7 +111,6 @@ private extension AddNoteView {
                 if contents.isEmpty {
                     Text(placeholder)
                         .bodyDefault(.darkGray)
-                        .padding(.vertical, 7.5)
                 }
             }
         }
@@ -135,15 +139,16 @@ private extension AddNoteView {
         note.log = contents
         note.date = Date()
         
-        if var readLog = bookInfo.readLog {
-            readLog = readLog.adding(note) as NSSet
-            bookInfo.readLog = readLog
+        if var log = bookInfo.readLog {
+            log = log.adding(note) as NSSet
+            bookInfo.readLog = log
         } else {
             bookInfo.readLog = [note]
         }
         
         do {
             try viewContext.save()
+            notes.append(note)
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
@@ -151,7 +156,3 @@ private extension AddNoteView {
     }
 }
 
-
-#Preview {
-    AddNoteView()
-}

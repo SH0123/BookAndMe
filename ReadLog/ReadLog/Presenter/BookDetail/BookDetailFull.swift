@@ -13,6 +13,7 @@ struct BookDetailFull: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: ReadingTrackerViewModel
     @State private var pagesReadInput: String = ""
+    @State private var bookMemos: [ReadLog] = []
     @FocusState private var isInputActive: Bool
     private var bookInfo: BookInfo?
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
@@ -37,7 +38,7 @@ struct BookDetailFull: View {
                                 Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
                             }
                             Spacer()
-                            NavigationLink(destination:AddNoteView()){
+                            NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos)){
                                 Image(systemName: "plus.app")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
@@ -48,7 +49,7 @@ struct BookDetailFull: View {
                         }
                         .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
                         .background(Color("backgroundColor"))
-                    bookNotes(memos: Memo.sampleData)
+                    bookNoteView(memos: bookMemos)
                 }
                 pageInput
             }
@@ -70,11 +71,26 @@ struct BookDetailFull: View {
                     }
                     .body1(Color.primary)
                 }
+                
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button {
+//                        if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
+//                            viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
+//                            pagesReadInput = ""
+//                            hideKeyboard()
+//                        }
+                    } label: {
+                        Text("저장")
+                            .foregroundStyle(Color.black)
+                    }
+                }
             }
         }
         .onAppear(perform: {
-            viewModel.setDailyProgress(isbn: "newBook3")
+            viewModel.setDailyProgress(isbn: bookInfo!.isbn!)
             viewModel.setTotalBookPages(page: Int((bookInfo?.page)!))
+            bookMemos = fetchAllBookNotes(isbn: bookInfo?.isbn)
         })
     }
 }
@@ -96,7 +112,8 @@ private extension BookDetailFull {
         }
     }
     
-    func fetchAllBookNotes(isbn: String) -> [ReadLog]{
+    func fetchAllBookNotes(isbn: String?) -> [ReadLog] {
+        guard let isbn else { return [] }
         let fetchRequest: NSFetchRequest<ReadLog>
         
         fetchRequest = ReadLog.fetchRequest()
@@ -199,25 +216,40 @@ private extension BookDetailFull {
 
 //MARK: - Book Note view
 private extension BookDetailFull {
-    func bookNotes(memos: [Memo]) -> some View {
-        LazyVStack {
-            ForEach(memos){memo in
-                Divider()
-                VStack(alignment: .leading, spacing:10) {
-                    HStack {
-                        Text(memoDateFormatter.string(from: memo.date))
-                            .bodyDefault(Color("gray"))
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        NoteLabel(type: .constant(.impressive))
-                    }
-                    Text(memo.content)
-                        .bodyDefault(Color.primary)
+    @ViewBuilder
+    func bookNoteView(memos: [ReadLog]) -> some View {
+        if !memos.isEmpty {
+            LazyVStack {
+                ForEach(memos) { memo in
+                    bookNote(memo: memo)
                 }
-                .padding(.vertical, 10)
             }
+        } else {
+           Text("저장된 노트가 없습니다.")
+                .bodyDefault(Color("gray"))
         }
-        .listStyle(PlainListStyle())
+    }
+    
+    func bookNote(memo: ReadLog) -> some View {
+        VStack {
+            Divider()
+            VStack(alignment: .leading, spacing:10) {
+                HStack {
+                    Text(memoDateFormatter.string(from: memo.date!))
+                        .bodyDefault(Color("gray"))
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    NoteLabel(type: .constant(convertLabel(labelType: Int(memo.label))))
+                }
+                Text(memo.log ?? "")
+                    .bodyDefault(Color.primary)
+            }
+            .padding(.vertical, 10)
+        }
+    }
+    
+    func convertLabel(labelType: Int) -> Note {
+        return labelType == 0 ? .impressive : .myThink
     }
 }
 
@@ -238,13 +270,6 @@ private extension BookDetailFull {
         .padding()
         .frame(height:47)
         .background(Color("lightBlue"),in: RoundedRectangle(cornerRadius: 10))
-        .onSubmit {
-            if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
-                viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
-                pagesReadInput = ""
-            }
-        }
-        
     }
 }
 //#Preview {
