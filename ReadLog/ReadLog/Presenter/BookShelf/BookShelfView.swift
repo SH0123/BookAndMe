@@ -30,7 +30,7 @@ struct BookShelfView: View {
                         }.body1(Color.darkGray)
                     } else {
                         TabView {
-                            ForEach(0..<(interpolatedBookList.count-1) / bookCountInRow / rowInPage + 1, id:\.self) { page in // 책 1~9권까지는 1, 10~18까지는 2, ... 리턴
+                            ForEach(0..<(interpolatedBookList.count-1) / (bookCountInRow * rowInPage) + 1, id:\.self) { page in // 책 1~9권까지는 1, 10~18까지는 2, ... 리턴
                                 VStack {
                                     ForEach((page*rowInPage)..<(page+1)*rowInPage, id: \.self) {idx in // 각 페이지당 1~3번째 줄 가져옴
                                         if (idx < interpolatedBookList.count/bookCountInRow) {
