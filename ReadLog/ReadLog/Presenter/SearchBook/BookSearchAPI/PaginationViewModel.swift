@@ -83,9 +83,11 @@ class PaginationViewModel: ObservableObject {
                                 description: bookData.description,
                                 coverImage: bookData.coverImage,
                                 publisher: bookData.publisher,
-                                price: bookData.price,
                                 link: bookData.link,
-                                itemPage: itemPage
+                                itemPage: itemPage,
+                                dbImage: nil,
+                                dbWish: false,
+                                dbNthCycle: 0
                             )
                             return bookData
                         } else {
@@ -97,9 +99,11 @@ class PaginationViewModel: ObservableObject {
                                 description: bookData.description,
                                 coverImage: bookData.coverImage,
                                 publisher: bookData.publisher,
-                                price: bookData.price,
                                 link: bookData.link,
-                                itemPage: 0
+                                itemPage: 0,
+                                dbImage: nil,
+                                dbWish: false,
+                                dbNthCycle: 0
                             )
                             return bookData
                         }
@@ -166,9 +170,11 @@ class PaginationViewModel: ObservableObject {
                                 description: bookData.description,
                                 coverImage: bookData.coverImage,
                                 publisher: bookData.publisher,
-                                price: bookData.price,
                                 link: bookData.link,
-                                itemPage: itemPage
+                                itemPage: itemPage,
+                                dbImage: nil,
+                                dbWish: false,
+                                dbNthCycle: 0
                             )
                             return bookData
                         } else {
@@ -180,9 +186,11 @@ class PaginationViewModel: ObservableObject {
                                 description: bookData.description,
                                 coverImage: bookData.coverImage,
                                 publisher: bookData.publisher,
-                                price: bookData.price,
                                 link: bookData.link,
-                                itemPage: 0
+                                itemPage: 0,
+                                dbImage: nil,
+                                dbWish: false,
+                                dbNthCycle: 0
                             )
                             return bookData
                         }

@@ -220,9 +220,11 @@ struct BookInfoView: View {
                                 description: bookData.description,
                                 coverImage: bookData.coverImage,
                                 publisher: bookData.publisher,
-                                price: bookData.price,
                                 link: bookData.link,
-                                itemPage: itemPage
+                                itemPage: itemPage,
+                                dbImage: nil,
+                                dbWish: false,
+                                dbNthCycle: 0
                             )
                             return bookData
                         } else {
@@ -234,9 +236,11 @@ struct BookInfoView: View {
                                 description: bookData.description,
                                 coverImage: bookData.coverImage,
                                 publisher: bookData.publisher,
-                                price: bookData.price,
                                 link: bookData.link,
-                                itemPage: 0
+                                itemPage: 0,
+                                dbImage: nil,
+                                dbWish: false,
+                                dbNthCycle: 0
                             )
                             return bookData
                         }
@@ -284,17 +288,41 @@ struct BookInfoView: View {
         dbNewBook.title = newBook.title
         dbNewBook.wish = like
         
-        if let urlImageData = URLImage(urlString: newBook.coverImage).data, let bookCoverImage = UIImage(data: urlImageData), let imageData = bookCoverImage.pngData() {
-            dbNewBook.image = imageData
+        guard let url = URL(string: bookInfo.coverImage) else {
+            return
         }
         
-        do {
-            try viewContext.save()
-            print("saved book to db")
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                print("Error downloading image: \(error)")
+                return
+            }
+            
+            guard let imageData = data, let uiImage = UIImage(data: imageData) else {
+                print("Invalid image data")
+                return
+            }
+            
+            if let img = uiImage.pngData() {
+                dbNewBook.image = img
+                
+                do {
+                    try viewContext.save()
+                    print("saved book to db")
+                } catch {
+                    let nsError = error as NSError
+                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                }
+            }
         }
+        
+        task.resume()
+        
+//        if let urlImageData = URLImage(urlString: newBook.coverImage).data, let bookCoverImage = UIImage(data: urlImageData), let imageData = bookCoverImage.pngData() {
+//            dbNewBook.image = imageData
+//        }
+        
+        
     }
     
     func addToReadingList(bookId: Int32) {

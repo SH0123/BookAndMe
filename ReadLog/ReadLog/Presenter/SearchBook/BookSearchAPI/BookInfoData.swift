@@ -15,7 +15,12 @@ struct BookInfoData: Codable, Identifiable {
     let description: String
     let coverImage: String
     let publisher: String
-    let price: Int
+//    let price: Int
     let link: String
     let itemPage: Int
+    
+    let dbImage: Data?
+    let dbWish: Bool
+    let dbNthCycle: Int
+    
 }

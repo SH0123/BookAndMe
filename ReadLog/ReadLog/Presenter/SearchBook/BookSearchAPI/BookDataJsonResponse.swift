@@ -15,7 +15,7 @@ struct BookDataJsonResponse: Codable {
     let description: String
     let coverImage: String
     let publisher: String
-    let price: Int
+//    let price: Int
     let link: String
     let subInfo: BookSubInfo?
     
@@ -27,7 +27,7 @@ struct BookDataJsonResponse: Codable {
         case description
         case coverImage = "cover"
         case publisher
-        case price = "priceStandard"
+//        case price = "priceStandard"
         case link
         case subInfo
     }
