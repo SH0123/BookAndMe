@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AddNoteView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
     @State private var showScannerSheet = false
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
@@ -64,7 +65,7 @@ private extension AddNoteView {
     var header: some View {
         HStack {
             Button {
-                // back
+                dismiss()
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 25))

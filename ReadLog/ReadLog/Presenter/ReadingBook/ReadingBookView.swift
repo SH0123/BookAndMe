@@ -61,8 +61,7 @@ struct ReadingBookView: View {
                                                 .foregroundColor(.secondary)
                                                 .offset(x: 15)
                                             Spacer()
-                                            //LabelView(text: memo.label)
-                                            NoteLabel(type: .constant(.impressive))
+                                            NoteLabel(type: .constant(convertNoteLabel(labelInt: Int(swiftSet.first!.label))))
                                         }
                                         .frame(height: 30)
                                         
@@ -105,6 +104,10 @@ struct ReadingBookView: View {
         formatter.dateFormat = "yyyy년 MM월 dd일"
         return formatter
     }()
+    
+    private func convertNoteLabel(labelInt: Int) -> Note {
+        return labelInt == 0 ? .impressive : .myThink
+    }
     
 }
 #Preview {
