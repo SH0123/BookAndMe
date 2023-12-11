@@ -16,7 +16,6 @@ struct ContentView: View {
                 .tabItem {
                     Label("읽고있어요", systemImage: "book")
                 }
-            //TODO: 두번째 탭 찜 목록으로 바꾸기
             BookSearchView()
                 .tabItem {
                     Label("찜했어요", systemImage: "heart")
@@ -24,6 +23,10 @@ struct ContentView: View {
             BookShelfView()
                 .tabItem {
                     Label("다읽었어요", systemImage: "books.vertical")
+                }
+            SettingView()
+                .tabItem {
+                    Label("설정", systemImage: "gearshape")
                 }
         }
         

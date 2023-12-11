@@ -31,6 +31,23 @@ struct BookDetailFull: View {
                     progressBar(value: viewModel.progressPercentage)
                     Spacer(minLength: 20)
                     trackingCircles(viewModel: self.viewModel)
+                    HStack{
+                            VStack(alignment: .leading){
+                                Text("독서 기록").title(Color.primary)
+                                Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
+                            }
+                            Spacer()
+                            NavigationLink(destination:AddNoteView()){
+                                Image(systemName: "plus.app")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 24, height: 24)
+                            }
+                            .foregroundStyle(Color.primary)
+                            
+                        }
+                        .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
+                        .background(Color("backgroundColor"))
                     bookNotes(memos: Memo.sampleData)
                 }
                 pageInput
