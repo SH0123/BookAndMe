@@ -335,6 +335,7 @@ struct BookInfoView: View {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy년 MM월 dd일"
             self.buttonText = dateFormatter.string(from: newReading.readtime!)
+            tab = 0
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
