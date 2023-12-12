@@ -72,9 +72,10 @@ class PaginationViewModel: ObservableObject {
                 
                 DispatchQueue.main.async {
                     print(decodedData.item.count)
-                    
-                    let bookDataArray: [BookInfoData] = decodedData.item.map { bookData in
+                    let filteredData = decodedData.item.filter { $0.isbn != "" }
+                    let bookDataArray: [BookInfoData] = filteredData.map { bookData in
                         if let itemPage = bookData.subInfo?.itemPage {
+                            
                             let bookData = BookInfoData(
                                 id: bookData.id,
                                 isbn: bookData.isbn,
