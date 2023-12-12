@@ -25,6 +25,7 @@ final class ReadingTrackerViewModel: ObservableObject {
         Double(lastPageRead) / Double(totalBookPages)
     }
     private var viewContext: NSManagedObjectContext
+    private var pinned: Bool = false
      
     init(context: NSManagedObjectContext) {
         self.viewContext = PersistenceController.shared.container.viewContext
@@ -34,8 +35,9 @@ final class ReadingTrackerViewModel: ObservableObject {
         var lastPage = 0
         if let lastWeekReadingList = fetchLastWeekReadingData(isbn: isbn) {
             lastPage = Int(lastWeekReadingList.readpage)
+            pinned = lastWeekReadingList.pinned
         }
-        let thisWeekReadingList = fetchReadingData(isbn: isbn)
+        let thisWeekReadingList = fetchThisWeekReadingData(isbn: isbn)
         
         for idx in 0..<thisWeekReadingList.count {
             let day = thisWeekReadingList[idx].readtime!
@@ -53,7 +55,12 @@ final class ReadingTrackerViewModel: ObservableObject {
     }
     
     func addDailyProgress(newPageRead: Int, bookInfo: BookInfo) {
-        // TODO: if newPageRead > totalBookPages handling
+        // set last data recent = false
+        let lastReadingList = fetchAllReadingData(isbn: bookInfo.isbn!)
+        for idx in 0..<lastReadingList.count {
+            updateRecentValue(entity: lastReadingList[idx])
+        }
+        
         let day = getCurrentDay(date: Date())
         if let index = dailyProgress.firstIndex(where: { $0.day == day }) {
             let pagesReadToday = newPageRead - lastPageRead
@@ -81,7 +88,7 @@ final class ReadingTrackerViewModel: ObservableObject {
 }
 
 private extension ReadingTrackerViewModel {
-    func fetchReadingData(isbn: String) -> [ReadingList] {
+    func fetchThisWeekReadingData(isbn: String) -> [ReadingList] {
         let today: Date = Date()
         let monTodayDiff: Int = (5 + Calendar.current.dateComponents([.weekday], from: today).weekday!) % 7
         let monday: Date = makeDayMidnight(date: Calendar.current.date(byAdding:.day, value: -1*monTodayDiff, to: today)!)
@@ -120,11 +127,39 @@ private extension ReadingTrackerViewModel {
         }
     }
     
+    func fetchAllReadingData(isbn: String) -> [ReadingList] {
+        let fetchRequest: NSFetchRequest<ReadingList>
+        
+        fetchRequest = ReadingList.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "book.isbn LIKE %@",isbn)
+        
+        do {
+            let objects = try viewContext.fetch(fetchRequest)
+            return objects
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+    
+    func updateRecentValue(entity: ReadingList) {
+        entity.recent = false
+        
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+    
+    
     func addTodayBookPage(page: Int, bookInfo: BookInfo) {
         let readingPage = ReadingList(context: viewContext)
         readingPage.id = UUID()
         readingPage.readpage = Int32(page)
-        readingPage.pinned = false
+        readingPage.pinned = pinned
         readingPage.readtime = Date()
         readingPage.recent = true
         readingPage.book = bookInfo

@@ -10,21 +10,34 @@ import SwiftUI
 struct SettingView: View {
     var body: some View {
         NavigationStack {
-            header
-            List {
-                HStack {
-                    Text("스냅북 버전")
-                    Spacer()
-                    Text("1.0.0")
+            ZStack(alignment: .topLeading) {
+                Color.backgroundColor
+                    .ignoresSafeArea()
+                VStack(spacing: 10) {
+                    header
+                    HStack {
+                        Text("스냅북 버전")
+                            .title(.black)
+                        Spacer()
+                        Text("1.0.0")
+                    }
+                    Divider()
+                    NavigationLink {
+                        LicenseView()
+                    } label: {
+                        HStack {
+                            Text("오픈소스 라이센스")
+                                .title(.black)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                    }
+                    Divider()
                 }
-                NavigationLink {
-                    LicenseView()
-                } label: {
-                    Text("오픈소스 라이센스")
-                }
+                .padding(.horizontal, 10)
+                .background(Color.backgroundColor)
             }
-            .title(.black)
-            .listStyle(.plain)
+            
         }
     }
     

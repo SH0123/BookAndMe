@@ -29,15 +29,15 @@ struct BookProfileContainer: View {
             
             VStack(alignment: .leading) {
                 Text(bookInfo.title)
-                    .body1(.black)
+                    .body2(.black)
                     .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 Text(bookInfo.author)
-                    .body3(.black)
+                    .mini(.black)
                     .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 Text(bookInfo.publisher)
-                    .body3(.black)
+                    .mini(.black)
                     .multilineTextAlignment(.leading)
                     .padding(.vertical, 6)
                 
@@ -54,11 +54,7 @@ struct BookProfileContainer: View {
         }
         .background(Color.primary.colorInvert())
         .clipShape(RoundedRectangle(cornerRadius: 6))
-        .shadow(color: .primary, radius: 1, x: 2, y: 2)
-//        .overlay(
-//            RoundedRectangle(cornerRadius: 6)
-//                .stroke(Color(.darkGray), lineWidth: 1)
-//        )
+        .shadow(radius: 4, x: 2, y: 2)
         .padding(.vertical, 8)
         .padding(.horizontal)
     }

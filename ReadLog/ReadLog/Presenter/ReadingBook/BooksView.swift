@@ -10,6 +10,7 @@ import CoreData
 
 struct BooksView : View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Binding var tab: Int
     var items: FetchedResults<ReadingList>
     
     let pageWidth: CGFloat = 265 // 한 페이지 너비
@@ -24,7 +25,7 @@ struct BooksView : View {
             
             LazyHStack(spacing: spacing) {
                 ForEach(items, id: \.self) { item in
-                    NavigationLink(destination: BookDetailFull(item.book).navigationBarBackButtonHidden(true)) {
+                    NavigationLink(destination: BookDetailFull(item.book, isRead: false).navigationBarBackButtonHidden(true)) {
                         ZStack{
                             Rectangle()
                                 .foregroundColor(.clear)
@@ -45,7 +46,11 @@ struct BooksView : View {
                                 }
                                 else {
                                     if let title = book.title {
-                                        Text(title)
+                                        VStack {
+                                            Text(title)
+                                            Text("이미지를 로딩중입니다")
+                                                .foregroundStyle(Color.skyBlue)
+                                        }
                                     }
                                     else {
                                         Spacer()
@@ -68,14 +73,15 @@ struct BooksView : View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                 }
-                                    
+                                
                             }
                             .frame(width: 25, height: 25)
                             .offset(x: 105, y: -135)
                         }
                     }
+                    .frame(width: pageWidth)
                 }
-                NavigationLink(destination: BookSearchView().navigationBarBackButtonHidden(true)) {
+                Button(action: {tab = 1}, label: {
                     ZStack{
                         Rectangle()
                             .foregroundColor(.clear)
@@ -88,7 +94,7 @@ struct BooksView : View {
                         Image("simple-line-icons:plus")
                             .frame(width: 70, height: 70)
                     }
-                }
+                })
                 
             }
             .offset(x: offset)

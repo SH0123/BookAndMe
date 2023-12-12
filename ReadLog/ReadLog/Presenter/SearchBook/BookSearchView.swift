@@ -9,16 +9,13 @@ import SwiftUI
 
 struct BookSearchView: View {
     @Environment(\.dismiss) var dismiss
-    
     @State private var searchText = ""
-    
     @State var isShowingScanner = false
-    
     @State var keywordSearchMode = true
-    
     @State var isAPIRequestInProgress = false
-    
+    @Binding var tab: Int
     @StateObject private var viewModel = PaginationViewModel()
+    @FocusState private var isInputActive: Bool
     
     var body: some View {
         
@@ -30,6 +27,7 @@ struct BookSearchView: View {
                 VStack {
                     ZStack {
                         HStack {
+                            
                             Spacer()
                             Text("책 검색")
                                 .display(Color.black)
@@ -38,15 +36,14 @@ struct BookSearchView: View {
                         }
                         .tint(.black)
                         .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
-                        
+
                         HStack {
-                            Button(action:{
+                            Button(action: {
                                 self.dismiss()
                             }) {
                                 Image(systemName: "chevron.left")
                                     .foregroundStyle(Color.primary)
                             }
-                            
                             Spacer()
                             Button {
                                 print("Use barcode search")
@@ -107,8 +104,10 @@ struct BookSearchView: View {
                         .padding(.horizontal, 16)
                         .padding(.top, 4)
                     }
+                    Spacer().frame(maxHeight: 20)
+                        .offset(y: 0)
                     HStack {
-                        SearchBar(text: $searchText, viewModel: viewModel)
+                        SearchBar(text: $searchText, viewModel: viewModel, isFocused: $isInputActive)
                         
                         Button {
                             print("Search book by book title")
@@ -138,7 +137,7 @@ struct BookSearchView: View {
                         ScrollView {
                             LazyVStack {
                                 ForEach(viewModel.results) { book in
-                                    NavigationLink(destination: BookInfoView(bookInfo: book).navigationBarBackButtonHidden(true)) {
+                                    NavigationLink(destination: BookInfoView(tab: $tab, bookInfo: book).navigationBarBackButtonHidden(true)) {
                                         BookProfileContainer(bookInfo: book)
                                     }
                                     .onAppear {
@@ -156,9 +155,12 @@ struct BookSearchView: View {
             }
 
         }
+        .onTapGesture {
+            isInputActive = false
+        }
     }
 }
 
 #Preview {
-    BookSearchView()
+    BookSearchView(tab: .constant(1))
 }

@@ -10,6 +10,7 @@ import CoreData
 
 struct ReadingBookView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Binding var tab: Int
     
     // Book info
     @FetchRequest(
@@ -29,6 +30,7 @@ struct ReadingBookView: View {
                 VStack{
                     Text("읽고 있는 책 목록")
                         .display(Color.black)
+                        .offset(y: 0)
                     
                     if (currentIndex != items.count){
                         Text("\(currentIndex + 1)권 / \(items.count)권")
@@ -40,7 +42,7 @@ struct ReadingBookView: View {
                             .frame(width: 231, height: 21, alignment: .top)
                     }
                     
-                    BooksView(items: items, currentIndex: $currentIndex)
+                    BooksView(tab: $tab, items: items, currentIndex: $currentIndex)
                     
                     Spacer()
                         .frame(height: 10)
@@ -119,6 +121,6 @@ struct ReadingBookView: View {
     }
     
 }
-#Preview {
-    ReadingBookView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-}
+//#Preview {
+//    ReadingBookView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+//}

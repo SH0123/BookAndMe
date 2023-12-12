@@ -1,9 +1,11 @@
 import SwiftUI
+import CoreData
 
 struct BookShelfView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    // 중복된 isbn에 대해서 한개만 뜨도록 설정
     @FetchRequest (sortDescriptors:
-                    [NSSortDescriptor(keyPath: \ReadList.enddate, ascending: false)], predicate:  NSPredicate(format: "recent == true" ),
+                    [NSSortDescriptor(keyPath: \ReadList.enddate, ascending: false)],
                    animation: .default)
     private var fetchedBookList: FetchedResults<ReadList>
     private let bookCountInRow: Int = 3
@@ -61,7 +63,6 @@ struct BookShelfView: View {
         }
     }
 }
-
 
 private extension BookShelfView {
     var header: some View {
