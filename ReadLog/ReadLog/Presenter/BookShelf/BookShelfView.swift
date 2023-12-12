@@ -77,11 +77,18 @@ private extension BookShelfView {
     }
     
     func interpolateBookList(_ readList: FetchedResults<ReadList>) -> [BookInfo?] {
+        // 같은 책 1개만 가져올 수 있도록
+        var dictionary: [String: Bool] = [:]
         let bookCount = readList.count
         let addBookCount = (bookCountInRow - bookCount % bookCountInRow) % bookCountInRow
         let nilArray: [BookInfo?] = Array<BookInfo?>(repeating: nil, count: addBookCount)
-        let bookList = readList.map {readRecord in
-            return readRecord.book }
+        var bookList: [BookInfo?] = []
+        for record in readList {
+            if !dictionary.keys.contains(record.book!.isbn!) {
+                dictionary[record.book!.isbn!] = true
+                bookList.append(record.book!)
+            }
+        }
         return bookList + nilArray
     }
     

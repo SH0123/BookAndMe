@@ -75,14 +75,12 @@ private extension AddNoteView {
                 dismiss()
             } label: {
                 Image(systemName: "chevron.left")
-                    .font(.system(size: 25))
             }
             Spacer()
             Button {
                 showScannerSheet = true
             } label: {
                 Image(systemName: "doc.viewfinder")
-                    .font(.system(size: 25))
             }
         }
         .tint(.black)

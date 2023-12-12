@@ -33,9 +33,11 @@ struct BookDetailFull: View {
                 ScrollView {
                     displayBook(isbn: (self.bookInfo?.isbn)!)
                         .padding(EdgeInsets(top: 20, leading: 0, bottom: 40, trailing: 0))
-                    progressBar(value: viewModel.progressPercentage)
-                    Spacer(minLength: 20)
-                    trackingCircles(viewModel: self.viewModel)
+                    if !isRead {
+                        progressBar(value: viewModel.progressPercentage)
+                        Spacer(minLength: 20)
+                        trackingCircles(viewModel: self.viewModel)
+                    }
                     Spacer(minLength: 20)
                     HStack{
                         VStack(alignment: .leading){
