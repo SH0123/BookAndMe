@@ -9,11 +9,11 @@ import SwiftUI
 import CoreData
 
 struct BookInfoView: View {
-    // core data
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) var dismiss
     @Binding var tab: Int
     
+    // core data
+    @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
         sortDescriptors: [
             NSSortDescriptor(keyPath: \BookInfo.id, ascending: false)
@@ -21,8 +21,6 @@ struct BookInfoView: View {
         animation: .default
     )
     private var dbBookData: FetchedResults<BookInfo>
-    
-    @State private var bookDataFromDB: BookInfo?
     
     // view variables
     var bookInfo: BookInfoData
@@ -86,6 +84,7 @@ struct BookInfoView: View {
                         if buttonText == "독서 시작" {
                             Button {
                                 print("start to read the book.")
+                                dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
                                 if dbBookData.isEmpty {
                                     // if bookInfo object has page number, api call is not required.
                                     if bookInfo.itemPage != 0 {
@@ -157,17 +156,13 @@ struct BookInfoView: View {
                     }
                     
                 }
-                
-                if let book = dbBookData.first {
-                    self.bookDataFromDB = book
-                }
             }
         }
         .onDisappear {
             // save wishlist changes
             // if book data is not in db and added to wishlist, saves book data (wish = true)
             // if book data is in db, save changes
-            
+            dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
             if dbBookData.isEmpty {
                 if like {
                     if bookInfo.itemPage == 0 {
