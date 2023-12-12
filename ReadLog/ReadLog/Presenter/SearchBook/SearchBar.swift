@@ -29,7 +29,7 @@ struct SearchBar: View {
                     // hide keyboard
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
-                .frame(height: 25)
+                .frame(height: 30)
                 .body3(.black)
                 .foregroundColor(.primary)
                 .focused(isFocused)
@@ -39,7 +39,6 @@ struct SearchBar: View {
                         self.text = ""
                     }) {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 25))
                     }
                 } else {
                     EmptyView()

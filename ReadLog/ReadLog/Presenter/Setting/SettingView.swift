@@ -15,11 +15,14 @@ struct SettingView: View {
                     .ignoresSafeArea()
                 VStack(spacing: 10) {
                     header
+                    Spacer()
+                        .frame(maxHeight: 20)
                     HStack {
                         Text("스냅북 버전")
-                            .title(.black)
+                            .body1(.black)
                         Spacer()
                         Text("1.0.0")
+                            .body1(.black)
                     }
                     Divider()
                     NavigationLink {
@@ -27,14 +30,14 @@ struct SettingView: View {
                     } label: {
                         HStack {
                             Text("오픈소스 라이센스")
-                                .title(.black)
+                                .body1(.black)
                             Spacer()
                             Image(systemName: "chevron.right")
                         }
                     }
                     Divider()
                 }
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 20)
                 .background(Color.backgroundColor)
             }
             

@@ -11,10 +11,11 @@ import CoreData
 struct BookDetailFull: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) var dismiss
-    @StateObject private var viewModel: ReadingTrackerViewModel
+    @StateObject private var viewModel: ReadingTrackerViewModel 
     @State private var pagesReadInput: String = ""
     @State private var bookMemos: [ReadLog] = []
     @State private var showingAlert: Bool = false
+    @State private var isInit: Bool = true
     @FocusState private var isInputActive: Bool
     private var bookInfo: BookInfo?
     private var isRead: Bool = false
@@ -27,13 +28,17 @@ struct BookDetailFull: View {
     }
     
     var body: some View {
-
             VStack {
                 header
                 ScrollView {
                     displayBook(isbn: (self.bookInfo?.isbn)!)
                         .padding(EdgeInsets(top: 20, leading: 0, bottom: 40, trailing: 0))
                     if !isRead {
+                        HStack {
+                            Spacer()
+                            Text("독서 진행률 \(Int(viewModel.progressPercentage * 100))%")
+                                .mini(.black)
+                        }
                         progressBar(value: viewModel.progressPercentage)
                         Spacer(minLength: 20)
                         trackingCircles(viewModel: self.viewModel)
@@ -95,8 +100,11 @@ struct BookDetailFull: View {
             isInputActive = false
         }
         .onAppear(perform: {
-            viewModel.setDailyProgress(isbn: bookInfo!.isbn!)
-            viewModel.setTotalBookPages(page: Int((bookInfo?.page)!))
+            if isInit {
+                viewModel.setDailyProgress(isbn: bookInfo!.isbn!)
+                viewModel.setTotalBookPages(page: Int((bookInfo?.page)!))
+                isInit = false
+            }
             bookMemos = fetchAllBookNotes(isbn: bookInfo?.isbn)
         })
     }
