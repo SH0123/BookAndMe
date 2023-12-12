@@ -21,16 +21,18 @@ struct ReadingBookView: View {
         animation: .default)
     private var items: FetchedResults<ReadingList>
     @State var currentIndex: Int = 0
+    let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
     
     var body: some View {
         NavigationView{
-            ZStack {
+            ZStack(alignment: .topLeading) {
                 Color.backgroundColor
                     .ignoresSafeArea()
                 VStack{
-                    Text("읽고 있는 책 목록")
-                        .display(Color.black)
-                        .offset(y: 0)
+//                    Text("읽고 있는 책 목록")
+//                        .display(Color.black)
+//                        .offset(y: 0)
+                    Spacer().frame(maxHeight: 30)
                     
                     if (currentIndex != items.count){
                         Text("\(currentIndex + 1)권 / \(items.count)권")
@@ -45,14 +47,16 @@ struct ReadingBookView: View {
                     BooksView(tab: $tab, items: items, currentIndex: $currentIndex)
                     
                     Spacer()
-                        .frame(height: 10)
+                        .frame(maxHeight: 20)
                     
-                    HStack{
+                    HStack {
                         Text("최근 기록")
                             .title(Color.black)
                             .frame(width: 330, height: 21, alignment: .leading)
                             .padding(3)
                     }
+                    Spacer()
+                        .frame(height: windowScene?.windows.first?.safeAreaInsets.bottom == 0 ? 10 : 30)
                     VStack{
                         Rectangle()
                             .foregroundColor(.clear)
@@ -66,18 +70,18 @@ struct ReadingBookView: View {
                                         VStack(alignment: .leading, spacing:8){
                                             HStack {
                                                 Text("\(swiftSet.first!.date!, formatter: Self.memoDateFormatter)")
-                                                    .bodyDefault(Color("gray"))
+                                                    .bodyDefaultMultiLine(Color("gray"))
                                                     .foregroundColor(.secondary)
-                                                    .offset(x: 15)
+                                                    .offset(x: 10)
                                                 Spacer()
                                                 //LabelView(text: memo.label)
                                                 NoteLabel(type: .constant(convertNoteLabel(labelInt: Int(swiftSet.first!.label))))
                                             }
-                                            .frame(height: 30)
+                                            .frame(maxHeight: 30)
                                             
                                             Text(swiftSet.first!.log!)
                                                 .bodyDefault(Color.primary)
-                                                .frame(width: 330, height: 110)
+                                                .frame(maxWidth: 330, maxHeight: 110)
                                                 .offset(x: 10)
                                             
                                         }//where vstack ends
@@ -102,7 +106,7 @@ struct ReadingBookView: View {
                             .frame(width: 332, height: 1)
                             .background(Color(red: 0.76, green: 0.76, blue: 0.76))
                     }
-                    .frame(width: 350, height: 190)
+                    .frame(maxWidth: 350, maxHeight: windowScene?.windows.first?.safeAreaInsets.bottom == 0 ? 130 : 190)
                     
                 }
                 

@@ -341,7 +341,7 @@ private extension BookDetailFull {
                     NoteLabel(type: .constant(convertLabel(labelType: Int(memo.label))))
                 }
                 Text(memo.log ?? "")
-                    .bodyDefault(Color.primary)
+                    .bodyDefaultMultiLine(Color.primary)
             }
             .padding(.vertical, 10)
             Divider()

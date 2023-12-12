@@ -105,7 +105,6 @@ struct BookSearchView: View {
                         .padding(.top, 4)
                     }
                     Spacer().frame(maxHeight: 20)
-                        .offset(y: 0)
                     HStack {
                         SearchBar(text: $searchText, viewModel: viewModel, isFocused: $isInputActive)
                         

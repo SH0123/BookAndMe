@@ -60,7 +60,7 @@ struct BookInfoView: View {
                         Divider()
                         
                         Text(bookInfo.description)
-                            .bodyDefault(.black)
+                            .bodyDefaultMultiLine(.black)
                             .padding(.vertical, 15)
                             .padding(.horizontal)
                             .lineSpacing(20)

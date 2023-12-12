@@ -13,7 +13,7 @@ struct BooksView : View {
     @Binding var tab: Int
     var items: FetchedResults<ReadingList>
     
-    let pageWidth: CGFloat = 265 // 한 페이지 너비
+    let pageWidth: CGFloat = 245 // 한 페이지 너비 265
     let spacing: CGFloat = 28 // 뷰 사이의 공간 크기
     @Binding var currentIndex: Int // 현재 가리키는 page넘버
     @State var relativeOffset: CGFloat = 0// 손가락으로 page를 넘기는 정도
@@ -113,7 +113,7 @@ struct BooksView : View {
                     }
             )
         }
-        .frame(height: 328)
+        .frame(maxHeight: 310)
         .padding(.vertical, 15)
     }
 }
