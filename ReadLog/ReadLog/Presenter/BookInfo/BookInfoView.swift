@@ -11,6 +11,7 @@ import CoreData
 struct BookInfoView: View {
     // core data
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) var dismiss
     
     @FetchRequest(
         sortDescriptors: [
@@ -33,89 +34,78 @@ struct BookInfoView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                ScrollView {
-                    BookProfileContainer(bookInfo: bookInfo)
-                        .padding(.horizontal, 20)
-                    
-                    HStack {
-                        Text("책 소개")
-                            .title(.black)
-                        Spacer()
-                        Button {
-                            print("move to book purchase link")
-                            openURL(URL(string: bookInfo.link)!)
-                        } label: {
-                            Image(systemName: "link")
+            ZStack {
+                Color.backgroundColor
+                    .ignoresSafeArea()
+                
+                VStack {
+                    header
+                    ScrollView {
+                        BookProfileContainer(bookInfo: bookInfo)
+                            .padding(.horizontal, 20)
+                        
+                        HStack {
+                            Text("책 소개")
+                                .title(.black)
+                            Spacer()
+                            Button {
+                                print("move to book purchase link")
+                                openURL(URL(string: bookInfo.link)!)
+                            } label: {
+                                Image(systemName: "link")
+                            }
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        
+                        Divider()
+                        
+                        Text(bookInfo.description)
+                            .bodyDefault(.black)
+                            .padding(.vertical, 15)
+                            .padding(.horizontal)
+                            .lineSpacing(20)
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 10)
+                    
+                    Spacer()
                     
                     Divider()
                     
-                    Text(bookInfo.description)
-                        .bodyDefault(.black)
-                        .padding(.vertical, 15)
-                        .padding(.horizontal)
-                        .lineSpacing(20)
-                }
-                
-                Spacer()
-                
-                Divider()
-                
-                HStack {
-                    Button {
-                        print("add/delete from wishlist")
-                        like.toggle()
-                    } label: {
-                        Image(systemName: like ? "heart.fill" : "heart")
-                            .foregroundColor(.customPink)
-                            .font(.system(size: 35))
-                    }
-                    
-                    // book data does not exist in core data
-                    if buttonText == "독서 시작" {
+                    HStack {
                         Button {
-                            print("start to read the book.")
-                            if dbBookData.isEmpty {
-                                // if bookInfo object has page number, api call is not required.
-                                if bookInfo.itemPage != 0 {
-                                    // save to core data
-                                    saveBookData(newBook: bookInfo)
-                                    addToReadingList(bookId: Int32(bookInfo.id))
-                                } else {
-                                    // call isbn search api and take subinfo data
-                                    // save data to core data
-                                    getBookDataWithPage(isbn: bookInfo.isbn) { result in
-                                        if let bookWithPage = result {
-                                            saveBookData(newBook: bookWithPage)
-                                            addToReadingList(bookId: Int32(bookWithPage.id))
+                            print("add/delete from wishlist")
+                            like.toggle()
+                        } label: {
+                            Image(systemName: like ? "heart.fill" : "heart")
+                                .foregroundColor(.customPink)
+                                .font(.system(size: 35))
+                        }
+                        
+                        // book data does not exist in core data
+                        if buttonText == "독서 시작" {
+                            Button {
+                                print("start to read the book.")
+                                if dbBookData.isEmpty {
+                                    // if bookInfo object has page number, api call is not required.
+                                    if bookInfo.itemPage != 0 {
+                                        // save to core data
+                                        saveBookData(newBook: bookInfo)
+                                        addToReadingList(bookId: Int32(bookInfo.id))
+                                    } else {
+                                        // call isbn search api and take subinfo data
+                                        // save data to core data
+                                        getBookDataWithPage(isbn: bookInfo.isbn) { result in
+                                            if let bookWithPage = result {
+                                                saveBookData(newBook: bookWithPage)
+                                                addToReadingList(bookId: Int32(bookWithPage.id))
+                                            }
                                         }
                                     }
+                                } else {
+                                    addToReadingList(bookId: Int32(bookInfo.id))
                                 }
-                            } else {
-                                addToReadingList(bookId: Int32(bookInfo.id))
-                            }
-                            
-                            
-                        } label: {
-                            Text(buttonText)
-                                .title(.black)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .padding(.vertical, 10)
-                        .foregroundColor(.black)
-                        .background(Color.lightBlue)
-                        .cornerRadius(5.0)
-                    } else {
-                        
-                        NavigationLink(destination: BookDetailFull(dbBookData.first).navigationBarBackButtonHidden(true)) {
-                            
-                            
-                            Button {
-                                print("go to book detail page.")
+                                
+                                
                             } label: {
                                 Text(buttonText)
                                     .title(.black)
@@ -125,17 +115,31 @@ struct BookInfoView: View {
                             .foregroundColor(.black)
                             .background(Color.lightBlue)
                             .cornerRadius(5.0)
-                            .disabled(true)
+                        } else {
+                            
+                            NavigationLink(destination: BookDetailFull(dbBookData.first).navigationBarBackButtonHidden(true)) {
+                                
+                                
+                                Button {
+                                    print("go to book detail page.")
+                                } label: {
+                                    Text(buttonText)
+                                        .title(.black)
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .padding(.vertical, 10)
+                                .foregroundColor(.black)
+                                .background(Color.lightBlue)
+                                .cornerRadius(5.0)
+                                .disabled(true)
+                            }
                         }
                     }
+                    .padding(.top, 7)
+                    .padding(.horizontal, 15)
+                    .padding(.bottom, 15)
                 }
-                .padding(.top, 7)
-                .padding(.horizontal, 15)
-                .padding(.bottom, 15)
             }
-            .background(Color("backgroundColor"))
-            .navigationTitle("책 정보")
-            .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
             dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
@@ -381,5 +385,34 @@ struct BookInfoView: View {
         }
         
         task.resume()
+    }
+}
+
+private extension BookInfoView {
+    var header: some View {
+        ZStack {
+            HStack {
+                Spacer()
+                Text("책 정보")
+                    .display(Color.black)
+                Spacer()
+                
+            }
+            .tint(.black)
+            .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
+            
+            HStack {
+                Button(action:{
+                    self.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundStyle(Color.primary)
+                }
+                
+                Spacer()
+            }
+            .padding(.leading, 16)
+        }
+        
     }
 }

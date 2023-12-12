@@ -22,39 +22,33 @@ struct BookWishlistView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if dbBookData.isEmpty {
-                    Spacer()
-                    Text("아직 찜 목록에 아무 것도 없어요!")
-                        .display(.secondary)
-                } else {
-                    ScrollView {
-                        LazyVStack {
-                            ForEach(dbBookData) { item in
-                                let book = convertToBookInfo(book: item)
-                                
-                                NavigationLink(destination: BookInfoView(bookInfo: book)) {
-                                    BookProfileContainer(bookInfo: book)
+            ZStack {
+                Color.backgroundColor
+                    .ignoresSafeArea()
+                
+                VStack {
+                    header
+                    if dbBookData.isEmpty {
+                        Spacer()
+                        Text("아직 찜 목록에 아무 것도 없어요!")
+                            .display(.secondary)
+                    } else {
+                        ScrollView {
+                            LazyVStack {
+                                ForEach(dbBookData) { item in
+                                    let book = convertToBookInfo(book: item)
+                                    
+                                    NavigationLink(destination: BookInfoView(bookInfo: book).navigationBarBackButtonHidden(true)) {
+                                        BookProfileContainer(bookInfo: book)
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                Spacer()
-            }
-            
-            .navigationTitle("찜 목록")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: BookSearchView()) {
-                        Image(systemName: "magnifyingglass")
-                    }
-                    .foregroundStyle(.black)
+                    Spacer()
                 }
             }
         }
-        .background(Color("backgroundColor"))
     }
     
     func convertToBookInfo(book: FetchedResults<BookInfo>.Element) -> BookInfoData {
@@ -75,3 +69,27 @@ struct BookWishlistView: View {
     }
 }
 
+private extension BookWishlistView {
+    var header: some View {
+        ZStack {
+            HStack {
+                Spacer()
+                Text("찜 목록")
+                    .display(Color.black)
+                Spacer()
+                
+            }
+            .tint(.black)
+            .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
+            
+            HStack {
+                Spacer()
+                NavigationLink(destination: BookSearchView().navigationBarBackButtonHidden(true)) {
+                    Image(systemName: "magnifyingglass")
+                }
+            }
+            .padding(.trailing, 16)
+        }
+        
+    }
+}
