@@ -39,7 +39,7 @@ private extension BookShelfCell {
     @ViewBuilder
     func bookCell(_ book: BookInfo?) -> some View {
         if let book = book {
-            NavigationLink(destination: BookDetailFull(book).navigationBarBackButtonHidden(true)){
+            NavigationLink(destination: BookDetailFull(book, isRead: true).navigationBarBackButtonHidden(true)){
                 if let imageData = book.image, let uiImage =
                     UIImage(data: imageData) {
                     Image(uiImage: uiImage)

@@ -17,62 +17,55 @@ struct BookDetailFull: View {
     @State private var showingAlert: Bool = false
     @FocusState private var isInputActive: Bool
     private var bookInfo: BookInfo?
+    private var isRead: Bool = false
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
     
-    init(_ bookInfo: BookInfo?) {
+    init(_ bookInfo: BookInfo?, isRead: Bool) {
         self.bookInfo = bookInfo
+        self.isRead = isRead
         self._viewModel = StateObject(wrappedValue: ReadingTrackerViewModel(context: PersistenceController.shared.container.viewContext))
     }
-
+    
     var body: some View {
-        NavigationStack {
+
             VStack {
+                header
                 ScrollView {
                     displayBook(isbn: (self.bookInfo?.isbn)!)
                         .padding(EdgeInsets(top: 20, leading: 0, bottom: 40, trailing: 0))
                     progressBar(value: viewModel.progressPercentage)
                     Spacer(minLength: 20)
                     trackingCircles(viewModel: self.viewModel)
+                    Spacer(minLength: 20)
                     HStack{
-                            VStack(alignment: .leading){
-                                Text("독서 기록").title(Color.primary)
+                        VStack(alignment: .leading){
+                            Text("독서 기록").title(Color.primary)
+                            HStack {
                                 Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
+                                Spacer()
+                                NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos)){
+                                    Image(systemName: "plus.app")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 24, height: 24)
+                                }
+                                .foregroundStyle(Color.primary)
                             }
-                            Spacer()
-                            NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos)){
-                                Image(systemName: "plus.app")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 24, height: 24)
-                            }
-                            .foregroundStyle(Color.primary)
-                            
                         }
-                        .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
-                        .background(Color("backgroundColor"))
+                    }
+                    .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
+                    .background(Color("backgroundColor"))
+                    Divider()
                     bookNoteView(memos: bookMemos)
                 }
-                pageInput
+                .scrollIndicators(.hidden)
+                if !isRead {
+                    pageInput
+                }
             }
             .padding(.horizontal)
             .background(Color("backgroundColor"))
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action:{
-                        self.dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundStyle(Color.primary)
-                    }
-                }
-                
-                //TODO: When the button is pressed, add book into readList
-                ToolbarItem(placement: .topBarTrailing){
-                    Button("완독"){
-                    }
-                    .body1(Color.primary)
-                }
-                
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button {
@@ -95,8 +88,10 @@ struct BookDetailFull: View {
                     pagesReadInput = ""
                 }
             }
-        }
         
+        .onTapGesture {
+            isInputActive = false
+        }
         .onAppear(perform: {
             viewModel.setDailyProgress(isbn: bookInfo!.isbn!)
             viewModel.setTotalBookPages(page: Int((bookInfo?.page)!))
@@ -137,6 +132,81 @@ private extension BookDetailFull {
             fatalError("Unresolved Error\(nsError)")
         }
     }
+    
+    func fetchAllReadingList(isbn: String) -> [ReadingList] {
+        let fetchRequest: NSFetchRequest<ReadingList>
+        
+        fetchRequest = ReadingList.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "book.isbn LIKE %@",isbn)
+        
+        do {
+            let objects = try viewContext.fetch(fetchRequest)
+            return objects
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+    
+    func deleteAllReadList(readingList: [ReadingList]) {
+        for idx in 0..<readingList.count {
+            viewContext.delete(readingList[idx])
+        }
+        
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+        
+    }
+    
+    func addReadList(entity: BookInfo, sdate: Date, edate: Date) {
+        let readBook = ReadList(context: viewContext)
+        readBook.id = UUID()
+        readBook.startdate = sdate
+        readBook.enddate = edate
+        readBook.book = entity
+        
+        if var readList = bookInfo?.readList {
+            readList = readList.adding(readBook) as NSSet
+            bookInfo?.readList = readList
+        } else {
+            bookInfo?.readList = [readBook]
+        }
+        
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+    
+    func readComplete(isbn: String?) {
+        guard let isbn else { return }
+        // fetch start, end date
+        let startDate: Date
+        let endDate: Date
+        let readingList = fetchAllReadingList(isbn: isbn)
+        if readingList.isEmpty {
+            return
+        }
+        
+        //TODO: date handling
+        startDate = readingList.first?.readtime ?? Date()
+        endDate = readingList.last?.readtime ?? Date()
+        
+        // delete all reading list
+        deleteAllReadList(readingList: readingList)
+        
+        // add read list
+        if let bookInfo {
+            addReadList(entity: bookInfo, sdate: startDate, edate: endDate)
+        }
+    }
 }
 
 // MARK: - 책 정보 뷰
@@ -150,29 +220,39 @@ private extension BookDetailFull {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 96, height: 140)
-                            .background(Color.white)
+                            .frame(width: 100)
+                            .clipped()
+                            .padding(.horizontal, 15)
+                            .padding(.vertical, 5)
                     }else{
                         Image(systemName: "book")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 96, height: 140)
-                            .background(Color.white)
+                            .frame(width: 100)
+                            .clipped()
+                            .padding(.horizontal, 15)
+                            .padding(.vertical, 5)
                     }
                     VStack(alignment: .leading){
                         Text(book.title ?? "Unknown Title")
-                            .title(Color.primary)
-                            .padding(.bottom,10)
+                            .body2(.black)
+                            .multilineTextAlignment(.leading)
+                            .padding(.vertical, 6)
                         Text(book.author ?? "Unknown Author")
-                            .body2(Color.primary)
-                            .padding(.bottom,2)
+                            .mini(.black)
+                            .multilineTextAlignment(.leading)
+                            .padding(.vertical, 6)
                         Text(book.publisher ?? "Unknown Publisher")
-                            .body2(Color.primary)
-                            .padding(.bottom,2)
+                            .mini(.black)
+                            .multilineTextAlignment(.leading)
+                            .padding(.vertical, 6)
                     }
-                    .padding(.leading,10)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 10)
+                    Spacer()
                 }
-                .frame(width: 323.0, height: 200)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .background(Color.white)
                 .overlay(RoundedRectangle(cornerRadius:10)
@@ -235,14 +315,13 @@ private extension BookDetailFull {
                 }
             }
         } else {
-           Text("저장된 노트가 없습니다.")
+            Text("저장된 노트가 없습니다.")
                 .bodyDefault(Color("gray"))
         }
     }
     
     func bookNote(memo: ReadLog) -> some View {
         VStack {
-            Divider()
             VStack(alignment: .leading, spacing:10) {
                 HStack {
                     Text(memoDateFormatter.string(from: memo.date!))
@@ -255,6 +334,7 @@ private extension BookDetailFull {
                     .bodyDefault(Color.primary)
             }
             .padding(.vertical, 10)
+            Divider()
         }
     }
     
@@ -280,13 +360,32 @@ private extension BookDetailFull {
         .padding()
         .frame(height:47)
         .background(Color("lightBlue"),in: RoundedRectangle(cornerRadius: 10))
-//        .onSubmit {
-//            if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead {
-//                viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
-//                pagesReadInput = ""
-//            }
-//        }
     }
+}
+
+private extension BookDetailFull {
+    var header: some View {
+        HStack {
+            Button(action:{
+                self.dismiss()
+            }) {
+                Image(systemName: "chevron.left")
+                    .foregroundStyle(Color.primary)
+            }
+            Spacer()
+            if !isRead {
+                Button("완독"){
+                    readComplete(isbn: bookInfo?.isbn)
+                    dismiss()
+                }
+                .body1(Color.primary)
+            } else {
+                Spacer()
+            }
+        }
+        .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
+    }
+
 }
 //#Preview {
 //    BookDetailFull("newBook3")

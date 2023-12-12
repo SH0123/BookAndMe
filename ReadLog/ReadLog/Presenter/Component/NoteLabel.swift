@@ -13,7 +13,7 @@ struct NoteLabel: View {
     var body: some View {
         Text(type.noteText)
             .body2(.black)
-            .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+            .frame(width: 130, height: 35)
             .background(type.noteColor)
     }
 }

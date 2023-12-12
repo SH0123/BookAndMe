@@ -12,6 +12,7 @@ struct BookInfoView: View {
     // core data
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) var dismiss
+    @Binding var tab: Int
     
     @FetchRequest(
         sortDescriptors: [
@@ -105,7 +106,6 @@ struct BookInfoView: View {
                                     addToReadingList(bookId: Int32(bookInfo.id))
                                 }
                                 
-                                
                             } label: {
                                 Text(buttonText)
                                     .title(.black)
@@ -117,7 +117,7 @@ struct BookInfoView: View {
                             .cornerRadius(5.0)
                         } else {
                             
-                            NavigationLink(destination: BookDetailFull(dbBookData.first).navigationBarBackButtonHidden(true)) {
+                            NavigationLink(destination: BookDetailFull(dbBookData.first, isRead: false).navigationBarBackButtonHidden(true)) {
                                 
                                 
                                 Button {

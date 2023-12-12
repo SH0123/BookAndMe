@@ -10,6 +10,7 @@ import CoreData
 
 struct BookWishlistView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Binding var tab: Int
     
     @FetchRequest(
         sortDescriptors: [
@@ -28,6 +29,7 @@ struct BookWishlistView: View {
                 
                 VStack {
                     header
+                        .offset(y: 0)
                     if dbBookData.isEmpty {
                         Spacer()
                         Text("아직 찜 목록에 아무 것도 없어요!")
@@ -38,7 +40,7 @@ struct BookWishlistView: View {
                                 ForEach(dbBookData) { item in
                                     let book = convertToBookInfo(book: item)
                                     
-                                    NavigationLink(destination: BookInfoView(bookInfo: book).navigationBarBackButtonHidden(true)) {
+                                    NavigationLink(destination: BookInfoView(tab: $tab, bookInfo: book).navigationBarBackButtonHidden(true)) {
                                         BookProfileContainer(bookInfo: book)
                                     }
                                 }
@@ -84,7 +86,7 @@ private extension BookWishlistView {
             
             HStack {
                 Spacer()
-                NavigationLink(destination: BookSearchView().navigationBarBackButtonHidden(true)) {
+                NavigationLink(destination: BookSearchView(tab: $tab).navigationBarBackButtonHidden(true)) {
                     Image(systemName: "magnifyingglass")
                 }
             }

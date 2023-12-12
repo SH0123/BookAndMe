@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SearchBar: View {
     @Binding var text: String
-//    var fetchData: (String) -> Void
     @StateObject var viewModel: PaginationViewModel
+    var isFocused: FocusState<Bool>.Binding
     
     var body: some View {
         HStack {
@@ -29,14 +29,17 @@ struct SearchBar: View {
                     // hide keyboard
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
+                .frame(height: 25)
                 .body3(.black)
                 .foregroundColor(.primary)
+                .focused(isFocused)
                 
                 if !text.isEmpty {
                     Button(action: {
                         self.text = ""
                     }) {
                         Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 25))
                     }
                 } else {
                     EmptyView()

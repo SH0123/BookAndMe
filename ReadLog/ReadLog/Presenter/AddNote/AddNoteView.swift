@@ -15,6 +15,7 @@ struct AddNoteView: View {
     @State private var contents: String = ""
     @State private var noteSelectionShow = false
     @Binding private var notes: [ReadLog]
+    @FocusState private var isInputActive: Bool
     
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
@@ -39,7 +40,9 @@ struct AddNoteView: View {
             }
             .padding(.horizontal, 32)
         }
-//        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .onTapGesture {
+            isInputActive = false
+        }
         .toolbar(.hidden)
         .fullScreenCover(isPresented: $showScannerSheet, content: {
             scannerView
@@ -95,6 +98,7 @@ private extension AddNoteView {
                     .bodyDefaultMultiLine(.black)
                     .padding(EdgeInsets(top: -5, leading: -7, bottom: 0, trailing: 0))
                     .scrollContentBackground(.hidden)
+                    .focused($isInputActive)
                     .toolbar {
                         ToolbarItemGroup(placement: .keyboard) {
                             Spacer()
