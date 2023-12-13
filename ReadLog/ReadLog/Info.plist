@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>스냅북</string>
+	<string>책과 나의 조각</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
 	<key>NSAppTransportSecurity</key>
