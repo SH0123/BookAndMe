@@ -35,7 +35,6 @@ final class ReadingTrackerViewModel: ObservableObject {
         var lastPage = 0
         if let lastWeekReadingList = fetchLastWeekReadingData(isbn: isbn) {
             lastPage = Int(lastWeekReadingList.readpage)
-            pinned = lastWeekReadingList.pinned
         }
         let thisWeekReadingList = fetchThisWeekReadingData(isbn: isbn)
         
@@ -56,9 +55,13 @@ final class ReadingTrackerViewModel: ObservableObject {
     
     func addDailyProgress(newPageRead: Int, bookInfo: BookInfo) {
         // set last data recent = false
-        let lastReadingList = fetchAllReadingData(isbn: bookInfo.isbn!)
-        for idx in 0..<lastReadingList.count {
-            updateRecentValue(entity: lastReadingList[idx])
+        let readingList = fetchAllReadingData(isbn: bookInfo.isbn!)
+        for idx in 0..<readingList.count {
+            updateRecentValue(entity: readingList[idx])
+        }
+        
+        if let lastReading = readingList.last {
+            self.pinned = lastReading.pinned
         }
         
         let day = getCurrentDay(date: Date())
