@@ -36,12 +36,12 @@ struct BookDetailFull: View {
                     if !isRead {
                         HStack {
                             Spacer()
-                            Text("독서 진행률 \(Int(viewModel.progressPercentage * 100))%")
+                            Text("\(viewModel.lastPageRead)p / \(viewModel.totalBookPages)p")
                                 .mini(.black)
                         }
                         progressBar(value: viewModel.progressPercentage)
                         Spacer(minLength: 20)
-                        trackingCircles(viewModel: self.viewModel)
+//                        trackingCircles(viewModel: self.viewModel)
                     }
                     Spacer(minLength: 20)
                     HStack{
