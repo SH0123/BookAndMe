@@ -63,19 +63,25 @@ final class ReadingTrackerViewModel: ObservableObject {
         if let lastReading = readingList.last {
             self.pinned = lastReading.pinned
         }
-        
-        let day = getCurrentDay(date: Date())
-        if let index = dailyProgress.firstIndex(where: { $0.day == day }) {
-            let pagesReadToday = newPageRead - lastPageRead
-            if pagesReadToday > 0 {
-                dailyProgress[index].pagesRead += pagesReadToday
-                addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
-            }
-            lastPageRead = newPageRead
-        }
+//        
+//        let day = getCurrentDay(date: Date())
+//        if let index = dailyProgress.firstIndex(where: { $0.day == day }) {
+//            let pagesReadToday = newPageRead - lastPageRead
+//            if pagesReadToday > 0 {
+//                dailyProgress[index].pagesRead += pagesReadToday
+//                addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
+//            }
+//            lastPageRead = newPageRead
+//        }
+        addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
+        lastPageRead = newPageRead
     }
     
-    func setTotalBookPages(page: Int) {
+    func setTotalBookPages(isbn: String, page: Int) {
+        let readingList = fetchAllReadingData(isbn: isbn)
+        if let lastReading = readingList.last {
+            lastPageRead = Int(lastReading.readpage)
+        }
         totalBookPages = page
     }
     

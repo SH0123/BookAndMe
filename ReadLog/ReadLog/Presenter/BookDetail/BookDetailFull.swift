@@ -101,8 +101,7 @@ struct BookDetailFull: View {
         }
         .onAppear(perform: {
             if isInit {
-                viewModel.setDailyProgress(isbn: bookInfo!.isbn!)
-                viewModel.setTotalBookPages(page: Int((bookInfo?.page)!))
+                viewModel.setTotalBookPages(isbn: bookInfo!.isbn!, page: Int((bookInfo?.page)!))
                 isInit = false
             }
             bookMemos = fetchAllBookNotes(isbn: bookInfo?.isbn)

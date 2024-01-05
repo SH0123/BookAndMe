@@ -101,7 +101,9 @@ private extension AddNoteView {
                         ToolbarItemGroup(placement: .keyboard) {
                             Spacer()
                             Button {
-                                addItem()
+                                addItem() { note in
+                                    notes.append(note)
+                                }
                                 dismiss()
                             } label: {
                                 Text("노트 저장")
@@ -133,7 +135,7 @@ private extension AddNoteView {
 
 // CoreData Connection
 private extension AddNoteView {
-    func addItem() {
+    func addItem(_ completion: @escaping (ReadLog)->()) {
         let note = ReadLog(context: viewContext)
         note.id = UUID()
         note.label = Int16(noteType.rawValue)
@@ -150,7 +152,8 @@ private extension AddNoteView {
         
         do {
             try viewContext.save()
-            notes.append(note)
+//            notes.append(note)
+            completion(note)
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
