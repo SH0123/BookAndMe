@@ -76,7 +76,7 @@ struct BookDetailFull: View {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button {
-                        if let newPageRead = Int(pagesReadInput), newPageRead > viewModel.lastPageRead, newPageRead <= viewModel.totalBookPages {
+                        if let newPageRead = Int(pagesReadInput), newPageRead <= viewModel.totalBookPages {
                             viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
                             pagesReadInput = ""
                             hideKeyboard()
@@ -93,6 +93,7 @@ struct BookDetailFull: View {
             .alert("숫자 형식이 올바르지 않습니다.", isPresented: $showingAlert) {
                 Button("확인") {
                     pagesReadInput = ""
+                    showingAlert = false
                 }
             }
         

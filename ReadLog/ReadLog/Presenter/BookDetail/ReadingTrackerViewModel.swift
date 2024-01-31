@@ -56,6 +56,7 @@ final class ReadingTrackerViewModel: ObservableObject {
     func addDailyProgress(newPageRead: Int, bookInfo: BookInfo) {
         // set last data recent = false
         let readingList = fetchAllReadingData(isbn: bookInfo.isbn!)
+        print(readingList.map { "\($0.readpage) \(String(describing: $0.readtime))"})
         for idx in 0..<readingList.count {
             updateRecentValue(entity: readingList[idx])
         }
@@ -63,17 +64,13 @@ final class ReadingTrackerViewModel: ObservableObject {
         if let lastReading = readingList.last {
             self.pinned = lastReading.pinned
         }
-//        
-//        let day = getCurrentDay(date: Date())
-//        if let index = dailyProgress.firstIndex(where: { $0.day == day }) {
-//            let pagesReadToday = newPageRead - lastPageRead
-//            if pagesReadToday > 0 {
-//                dailyProgress[index].pagesRead += pagesReadToday
-//                addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
-//            }
-//            lastPageRead = newPageRead
-//        }
-        addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
+        
+        if let index = readingList.firstIndex(where: { Date.yyyyMdFormatter.string(from: $0.readtime!) == Date.yyyyMdFormatter.string(from: Date()) }){
+            updateTodayReadingData(entity: readingList[index], newPage: newPageRead)
+        }
+        else {
+            addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
+        }
         lastPageRead = newPageRead
     }
     
@@ -154,6 +151,19 @@ private extension ReadingTrackerViewModel {
     
     func updateRecentValue(entity: ReadingList) {
         entity.recent = false
+        
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+    
+    func updateTodayReadingData(entity: ReadingList, newPage: Int) {
+        entity.readpage = Int32(newPage)
+        entity.recent = true
+        entity.pinned = self.pinned
         
         do {
             try viewContext.save()
