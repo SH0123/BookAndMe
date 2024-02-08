@@ -19,3 +19,5 @@
 | [Repository Pattern 사용에 대하여](https://github.com/SH0123/BookAndMe/issues/2) |   <img src = "https://img.shields.io/badge/complete-brightgreen"/>  | 
 | [Singleton Pattern 사용에 대하여](https://github.com/SH0123/BookAndMe/issues/3) |   <img src = "https://img.shields.io/badge/complete-brightgreen"/>  | 
 | [Struct와 Class중 어떤 것을 사용할 것인가 : Reference Count의 관점에서 선택해보자 (테스트 포함)](https://github.com/SH0123/BookAndMe/issues/2#issuecomment-1925634088) |   <img src = "https://img.shields.io/badge/complete-brightgreen"/>  | 
+| 동일한 역할을 하는 객체들의 코드를 재사용하고 결합도 또한 낮추는 방법 | |
+| 목적에 따른 데이터 구조 분리와 매핑 | |
