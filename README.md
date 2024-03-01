@@ -11,3 +11,13 @@
 
 
 <a href="https://apps.apple.com/us/app/%EC%B1%85%EA%B3%BC-%EB%82%98%EC%9D%98-%EC%A1%B0%EA%B0%81-%ED%8E%B8%ED%95%9C-%EB%8F%85%EC%84%9C-%EA%B8%B0%EB%A1%9D/id6474217358?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 250px; height: 83px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/ko-kr?size=250x83&amp;releaseDate=1702425600" alt="Download on the App Store" style="border-radius: 13px; width: 250px; height: 83px;"></a>
+
+## 공부 및 생각 기록
+
+| topic                      | status      |
+| -------------------------- | ---------- |
+| [Repository Pattern 사용에 대하여](https://github.com/SH0123/BookAndMe/issues/2) |   <img src = "https://img.shields.io/badge/complete-brightgreen"/>  | 
+| [Singleton Pattern 사용에 대하여](https://github.com/SH0123/BookAndMe/issues/3) |   <img src = "https://img.shields.io/badge/complete-brightgreen"/>  | 
+| [Struct와 Class중 어떤 것을 사용할 것인가 : Reference Count의 관점에서 선택해보자 (테스트 포함)](https://github.com/SH0123/BookAndMe/issues/2#issuecomment-1925634088) |   <img src = "https://img.shields.io/badge/complete-brightgreen"/>  | 
+| 동일한 역할을 하는 객체들의 코드를 재사용하고 결합도 또한 낮추는 방법 | |
+| 목적에 따른 데이터 구조 분리와 매핑 | |
