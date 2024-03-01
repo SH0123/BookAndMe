@@ -36,6 +36,15 @@ struct SettingView: View {
                         }
                     }
                     Divider()
+                    Button(action: moveToGuidPage) {
+                        HStack {
+                            Text("iCloud 백업 가이드")
+                                .body1(.black)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                    }
+                    Divider()
                 }
                 .padding(.horizontal, 20)
                 .background(Color.backgroundColor)
@@ -52,6 +61,12 @@ struct SettingView: View {
             Spacer()
         }
         .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
+    }
+    
+    private func moveToGuidPage() {
+        if let url = URL(string: "https://travelersh.notion.site/iCloud-053fcdab56a447ad9492fdb4d72d3814?pvs=4") {
+            UIApplication.shared.open(url, options:[:])
+        }
     }
 }
 

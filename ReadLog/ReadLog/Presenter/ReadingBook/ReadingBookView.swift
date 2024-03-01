@@ -112,6 +112,9 @@ struct ReadingBookView: View {
                 
             }
         }
+        .onAppear {
+            // 나라 위치별 코드 test
+        }
     }
     
     static let memoDateFormatter: DateFormatter = {

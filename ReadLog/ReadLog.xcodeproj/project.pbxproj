@@ -20,6 +20,7 @@
 		E61851852B0B9EFD0067811C /* BookInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61851842B0B9EFD0067811C /* BookInfoView.swift */; };
 		E6187EF42B03495700731321 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6187EF32B03495700731321 /* ScannerView.swift */; };
 		E6187EF62B03505300731321 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6187EF52B03505300731321 /* TextRecognizer.swift */; };
+		E618A6832B92136200FD6740 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E618A6822B92136200FD6740 /* BackupView.swift */; };
 		E622526B2AFB7AE600D33EC3 /* omyu pretty.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */; };
 		E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */; };
 		E62252702AFB7E7000D33EC3 /* TextStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E622526F2AFB7E7000D33EC3 /* TextStyle+Extension.swift */; };
@@ -67,6 +68,8 @@
 		E61851842B0B9EFD0067811C /* BookInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookInfoView.swift; sourceTree = "<group>"; };
 		E6187EF32B03495700731321 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		E6187EF52B03505300731321 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
+		E618A6812B9211EF00FD6740 /* ReadLog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReadLog.entitlements; sourceTree = "<group>"; };
+		E618A6822B92136200FD6740 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
 		E622526A2AFB7AE600D33EC3 /* omyu pretty.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "omyu pretty.ttf"; sourceTree = "<group>"; };
 		E622526C2AFB7B0400D33EC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E622526D2AFB7CB300D33EC3 /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
@@ -171,6 +174,7 @@
 			children = (
 				E6AA854F2B267A5F008225BA /* SettingView.swift */,
 				E6AA85512B2685B5008225BA /* LicenseView.swift */,
+				E618A6822B92136200FD6740 /* BackupView.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -248,6 +252,7 @@
 		E6E68ED92AF1DD7B00172557 /* ReadLog */ = {
 			isa = PBXGroup;
 			children = (
+				E618A6812B9211EF00FD6740 /* ReadLog.entitlements */,
 				E622526C2AFB7B0400D33EC3 /* Info.plist */,
 				E62252692AFB7ACF00D33EC3 /* Fonts */,
 				E6E68EF02AF1DEDB00172557 /* Extension */,
@@ -472,6 +477,7 @@
 				E622526E2AFB7CB300D33EC3 /* Color+Extension.swift in Sources */,
 				E6F85BDC2B21470700E645B6 /* ReadingTrackerViewModel.swift in Sources */,
 				E6667EED2B154E51006E6ED5 /* PaginationViewModel.swift in Sources */,
+				E618A6832B92136200FD6740 /* BackupView.swift in Sources */,
 				E6667EEB2B154DB7006E6ED5 /* BookSubInfo.swift in Sources */,
 				DB633C1B2B02FC8F004CEC27 /* Model.xcdatamodeld in Sources */,
 				DB0E01DA2B1FF5B600F19A04 /* BooksView.swift in Sources */,
@@ -620,8 +626,9 @@
 		E6E68EE62AF1DD7C00172557 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_Dev;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ReadLog/ReadLog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -630,6 +637,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReadLog/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Dev_ReadLog;
 				INFOPLIST_KEY_NSCameraUsageDescription = "책의 내용을 스캔하기 위해서 카메라 사용 허용이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -643,7 +651,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = travelerSH.ReadLog;
+				PRODUCT_BUNDLE_IDENTIFIER = travelerSH.ReadLog.Dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -660,6 +668,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ReadLog/ReadLog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
