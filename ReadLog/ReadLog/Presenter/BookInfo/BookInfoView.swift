@@ -16,11 +16,11 @@ struct BookInfoView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
         sortDescriptors: [
-            NSSortDescriptor(keyPath: \BookInfo.id, ascending: false)
+            NSSortDescriptor(keyPath: \BookInfoEntity.id, ascending: false)
         ],
         animation: .default
     )
-    private var dbBookData: FetchedResults<BookInfo>
+    private var dbBookData: FetchedResults<BookInfoEntity>
     
     // view variables
     var bookInfo: BookInfoData
@@ -91,6 +91,8 @@ struct BookInfoView: View {
                                         // save to core data
                                         saveBookData(newBook: bookInfo)
                                         addToReadingList(bookId: Int32(bookInfo.id))
+                                        // add To Reading List에서 pinned, recent 해주는 작업 필요없음. saveBookData에서 readingStatus True 해주면
+                                        //TODO: 첫번째 페이지에서 bookinfo 중에 readingStatus true인 값 가져오는 로직으로 변경
                                     } else {
                                         // call isbn search api and take subinfo data
                                         // save data to core data
@@ -144,18 +146,24 @@ struct BookInfoView: View {
             dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
             if !dbBookData.isEmpty {
                 self.like = dbBookData.first!.wish
-                
-                if let readingList = dbBookData.first!.readingList as? Set<ReadingList> {
+                if dbBookData.first!.readingStatus {
+                    self.buttonText = "독서 진행 중"
+                }
+                /*
+                if let readingList = dbBookData.first!.readingTrackings as? Set<ReadingTrackingEntity> {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyy년 MM월 dd일"
                     
-                    let recent = readingList.filter { $0.recent == true }
-                    
-                    if !recent.isEmpty {
-                        self.buttonText = dateFormatter.string(from: recent.first!.readtime!)
-                    }
+                    // TODO: 가장 처음 책을 읽기 시작한 날 buttonText에 넣는 로직으로 변경
+//                    let recent = readingList.filter { $0.recent == true }
+//                    
+//                    if !recent.isEmpty {
+//                        self.buttonText = dateFormatter.string(from: recent.first!.readtime!)
+//                    }
+                    self.buttonText = "독서 진행 중"
                     
                 }
+                 */
             }
         }
         .onDisappear {
@@ -265,8 +273,8 @@ struct BookInfoView: View {
         task.resume()
     }
     
-    func findBook(bookId: Int32) -> BookInfo? {
-        let fetchRequest: NSFetchRequest<BookInfo> = BookInfo.fetchRequest()
+    func findBook(bookId: Int32) -> BookInfoEntity? {
+        let fetchRequest: NSFetchRequest<BookInfoEntity> = BookInfoEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %d", bookId)
         
         do {
@@ -280,17 +288,19 @@ struct BookInfoView: View {
     
     func saveBookData(newBook: BookInfoData) {
         print("Save book to core data.")
-        let dbNewBook = BookInfo(context: viewContext)
+        let dbNewBook = BookInfoEntity(context: viewContext)
         dbNewBook.id = Int32(newBook.id)
         dbNewBook.author = newBook.author
         dbNewBook.bookDescription = newBook.description
         dbNewBook.isbn = newBook.isbn
         dbNewBook.link = newBook.link
-        dbNewBook.nthCycle = 0
+        dbNewBook.repeatTime = 0
         dbNewBook.page = Int32(newBook.itemPage)
         dbNewBook.publisher = newBook.publisher
         dbNewBook.title = newBook.title
         dbNewBook.wish = like
+        dbNewBook.pinned = false
+        dbNewBook.readingStatus = false
         
         fetchImage(urlString: newBook.coverImage) { imageData in
             DispatchQueue.main.async {
@@ -315,26 +325,27 @@ struct BookInfoView: View {
         
     }
     
+    
     func addToReadingList(bookId: Int32) {
         guard let book = findBook(bookId: bookId) else {
             return
         }
+        book.readingStatus = true
         
-        let newReading = ReadingList(context: viewContext)
-        newReading.recent = true
-        newReading.pinned = false
-        newReading.readtime = Date()
-        newReading.book = book
+        let newReading = ReadingTrackingEntity(context: viewContext)
+        newReading.readDate = Date()
+        newReading.readPage = 0
         
-        book.readingList = [newReading]
-        newReading.book = book
+        book.readingTrackings = [newReading]
+        newReading.bookInfo = book
         
         do {
             try viewContext.save()
             print("saved readingList to db")
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-            self.buttonText = dateFormatter.string(from: newReading.readtime!)
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+//            self.buttonText = dateFormatter.string(from: newReading.readDate!)
+            self.buttonText = "독서 진행 중"
             tab = 0
         } catch {
             let nsError = error as NSError

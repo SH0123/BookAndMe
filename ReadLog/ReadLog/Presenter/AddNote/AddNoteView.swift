@@ -14,14 +14,14 @@ struct AddNoteView: View {
     @State private var noteType: Note = .impressive
     @State private var contents: String = ""
     @State private var noteSelectionShow = false
-    @Binding private var notes: [ReadLog]
+    @Binding private var notes: [BookNoteEntity]
     @FocusState private var isInputActive: Bool
     
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
-    private var bookInfo: BookInfo
+    private var bookInfo: BookInfoEntity
     
-    init(_ bookInfo: BookInfo, _ note: Binding<[ReadLog]>) {
+    init(_ bookInfo: BookInfoEntity, _ note: Binding<[BookNoteEntity]>) {
         self.bookInfo = bookInfo
         self._notes = note
     }
@@ -135,24 +135,23 @@ private extension AddNoteView {
 
 // CoreData Connection
 private extension AddNoteView {
-    func addItem(_ completion: @escaping (ReadLog)->()) {
-        let note = ReadLog(context: viewContext)
+    func addItem(_ completion: @escaping (BookNoteEntity)->()) {
+        let note = BookNoteEntity(context: viewContext)
         note.id = UUID()
         note.label = Int16(noteType.rawValue)
-        note.book = bookInfo
-        note.log = contents
+        note.bookInfo = bookInfo
+        note.note = contents
         note.date = Date()
         
-        if var log = bookInfo.readLog {
-            log = log.adding(note) as NSSet
-            bookInfo.readLog = log
+        if var notes = bookInfo.bookNotes {
+            notes = notes.adding(note) as NSSet
+            bookInfo.bookNotes = notes
         } else {
-            bookInfo.readLog = [note]
+            bookInfo.bookNotes = [note]
         }
         
         do {
             try viewContext.save()
-//            notes.append(note)
             completion(note)
         } catch {
             let nsError = error as NSError

@@ -11,7 +11,7 @@ import CoreData
 struct BooksView : View {
     @Environment(\.managedObjectContext) private var viewContext
     @Binding var tab: Int
-    var items: FetchedResults<ReadingList>
+    var items: FetchedResults<BookInfoEntity>
     
     let pageWidth: CGFloat = 245 // 한 페이지 너비 265
     let spacing: CGFloat = 28 // 뷰 사이의 공간 크기
@@ -24,8 +24,8 @@ struct BooksView : View {
             let offset: CGFloat = baseOffset + relativeOffset
             
             LazyHStack(spacing: spacing) {
-                ForEach(items, id: \.self) { item in
-                    NavigationLink(destination: BookDetailFull(item.book, isRead: false).navigationBarBackButtonHidden(true)) {
+                ForEach(items, id: \.self) { item in 
+                    NavigationLink(destination: BookDetailFull(item, isRead: false).navigationBarBackButtonHidden(true)) {
                         ZStack{
                             Rectangle()
                                 .foregroundColor(.clear)
@@ -35,28 +35,27 @@ struct BooksView : View {
                                 .background(.white)
                                 .cornerRadius(10)
                                 .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
-                            if let book = item.book {
-                                if let imageData = book.image, let uiImage =
-                                    UIImage(data: imageData) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .padding(15)
-                                        .shadow(radius: 4, y: 4)
+                            if let imageData = item.image, let uiImage =
+                                UIImage(data: imageData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .padding(15)
+                                    .shadow(radius: 4, y: 4)
+                            }
+                            else {
+                                if let title = item.title {
+                                    VStack {
+                                        Text(title)
+                                        Text("이미지를 로딩중입니다")
+                                            .foregroundStyle(Color.skyBlue)
+                                    }
                                 }
                                 else {
-                                    if let title = book.title {
-                                        VStack {
-                                            Text(title)
-                                            Text("이미지를 로딩중입니다")
-                                                .foregroundStyle(Color.skyBlue)
-                                        }
-                                    }
-                                    else {
-                                        Spacer()
-                                    }
+                                    Spacer()
                                 }
                             }
+                            
                             Button(action: {
                                 item.pinned.toggle()
                                 do {

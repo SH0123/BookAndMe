@@ -13,15 +13,15 @@ struct BookDetailFull: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: ReadingTrackerViewModel 
     @State private var pagesReadInput: String = ""
-    @State private var bookMemos: [ReadLog] = []
+    @State private var bookMemos: [BookNoteEntity] = []
     @State private var showingAlert: Bool = false
     @State private var isInit: Bool = true
     @FocusState private var isInputActive: Bool
-    private var bookInfo: BookInfo?
+    private var bookInfo: BookInfoEntity?
     private var isRead: Bool = false
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
     
-    init(_ bookInfo: BookInfo?, isRead: Bool) {
+    init(_ bookInfo: BookInfoEntity?, isRead: Bool) {
         self.bookInfo = bookInfo
         self.isRead = isRead
         self._viewModel = StateObject(wrappedValue: ReadingTrackerViewModel(context: PersistenceController.shared.container.viewContext))
@@ -111,10 +111,10 @@ struct BookDetailFull: View {
 }
 // function
 private extension BookDetailFull {
-    func fetchBookInfo(isbn: String) -> BookInfo? {
-        let fetchRequest: NSFetchRequest<BookInfo>
+    func fetchBookInfo(isbn: String) -> BookInfoEntity? {
+        let fetchRequest: NSFetchRequest<BookInfoEntity>
         
-        fetchRequest = BookInfo.fetchRequest()
+        fetchRequest = BookInfoEntity.fetchRequest()
         fetchRequest.fetchLimit = 1
         fetchRequest.predicate = NSPredicate(format: "isbn LIKE %@", isbn)
         
@@ -127,28 +127,12 @@ private extension BookDetailFull {
         }
     }
     
-    func fetchAllBookNotes(isbn: String?) -> [ReadLog] {
+    func fetchAllBookNotes(isbn: String?) -> [BookNoteEntity] {
         guard let isbn else { return [] }
-        let fetchRequest: NSFetchRequest<ReadLog>
+        let fetchRequest: NSFetchRequest<BookNoteEntity>
         
-        fetchRequest = ReadLog.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "%K LIKE %@",#keyPath(ReadLog.book.isbn), isbn)
-        
-        do {
-            let objects = try viewContext.fetch(fetchRequest)
-            return objects
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-    }
-    
-    func fetchAllReadingList(isbn: String) -> [ReadingList] {
-        let fetchRequest: NSFetchRequest<ReadingList>
-        
-        fetchRequest = ReadingList.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "book.isbn LIKE %@",isbn)
+        fetchRequest = BookNoteEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%K LIKE %@",#keyPath(BookNoteEntity.bookInfo.isbn), isbn)
         
         do {
             let objects = try viewContext.fetch(fetchRequest)
@@ -159,7 +143,23 @@ private extension BookDetailFull {
         }
     }
     
-    func deleteAllReadList(readingList: [ReadingList]) {
+    func fetchAllReadingList(isbn: String) -> [ReadingTrackingEntity] {
+        let fetchRequest: NSFetchRequest<ReadingTrackingEntity>
+        
+        fetchRequest = ReadingTrackingEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "bookInfo.isbn LIKE %@",isbn)
+        
+        do {
+            let objects = try viewContext.fetch(fetchRequest)
+            return objects
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
+        }
+    }
+    
+    func deleteAllReadList(readingList: [ReadingTrackingEntity]) {
         for idx in 0..<readingList.count {
             viewContext.delete(readingList[idx])
         }
@@ -173,20 +173,32 @@ private extension BookDetailFull {
         
     }
     
-    func addReadList(entity: BookInfo, sdate: Date, edate: Date) {
-        let readBook = ReadList(context: viewContext)
-        readBook.id = UUID()
-        readBook.startdate = sdate
-        readBook.enddate = edate
-        readBook.book = entity
+    func doneReadingBook(entity: BookInfoEntity) {
+        entity.readingStatus = false
         
-        if var readList = bookInfo?.readList {
-            readList = readList.adding(readBook) as NSSet
-            bookInfo?.readList = readList
-        } else {
-            bookInfo?.readList = [readBook]
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved Error\(nsError)")
         }
+    }
+    
+    func addReadList(entity: BookInfoEntity, sdate: Date, edate: Date) {
+        entity.readingStatus = false
         
+        let readBook = ReadBookEntity(context: viewContext)
+        readBook.id = UUID()
+        readBook.startDate = sdate
+        readBook.endDate = edate
+        readBook.bookInfo = entity
+        
+        if var readList = bookInfo?.readBooks {
+            readList = readList.adding(readBook) as NSSet
+            bookInfo?.readBooks = readList
+        } else {
+            bookInfo?.readBooks = [readBook]
+        }
         do {
             try viewContext.save()
         } catch {
@@ -201,16 +213,17 @@ private extension BookDetailFull {
         let startDate: Date
         let endDate: Date
         let readingList = fetchAllReadingList(isbn: isbn)
+        print(readingList)
         if readingList.isEmpty {
             return
         }
         
         //TODO: date handling
-        startDate = readingList.first?.readtime ?? Date()
-        endDate = readingList.last?.readtime ?? Date()
+        startDate = readingList.first?.readDate ?? Date()
+        endDate = readingList.last?.readDate ?? Date()
         
-        // delete all reading list
-        deleteAllReadList(readingList: readingList)
+        // delete all reading list no need
+//        deleteAllReadList(readingList: readingList)
         
         // add read list
         if let bookInfo {
@@ -317,7 +330,7 @@ private extension BookDetailFull {
 //MARK: - Book Note view
 private extension BookDetailFull {
     @ViewBuilder
-    func bookNoteView(memos: [ReadLog]) -> some View {
+    func bookNoteView(memos: [BookNoteEntity]) -> some View {
         if !memos.isEmpty {
             LazyVStack {
                 ForEach(memos) { memo in
@@ -330,7 +343,7 @@ private extension BookDetailFull {
         }
     }
     
-    func bookNote(memo: ReadLog) -> some View {
+    func bookNote(memo: BookNoteEntity) -> some View {
         VStack {
             VStack(alignment: .leading, spacing:10) {
                 HStack {
@@ -340,7 +353,7 @@ private extension BookDetailFull {
                     Spacer()
                     NoteLabel(type: .constant(convertLabel(labelType: Int(memo.label))))
                 }
-                Text(memo.log ?? "")
+                Text(memo.note ?? "")
                     .bodyDefaultMultiLine(Color.primary)
             }
             .padding(.vertical, 10)
@@ -385,6 +398,7 @@ private extension BookDetailFull {
             Spacer()
             if !isRead {
                 Button("완독"){
+//                    doneReadingBook(entity: bookInfo!)
                     readComplete(isbn: bookInfo?.isbn)
                     dismiss()
                 }
