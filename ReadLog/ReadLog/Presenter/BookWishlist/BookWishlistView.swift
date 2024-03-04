@@ -14,12 +14,12 @@ struct BookWishlistView: View {
     
     @FetchRequest(
         sortDescriptors: [
-            NSSortDescriptor(keyPath: \BookInfo.title, ascending: true)
+            NSSortDescriptor(keyPath: \BookInfoEntity.title, ascending: true)
         ],
         predicate: NSPredicate(format: "wish == true"),
         animation: .default
     )
-    private var dbBookData: FetchedResults<BookInfo>
+    private var dbBookData: FetchedResults<BookInfoEntity>
     
     var body: some View {
         NavigationStack {
@@ -52,7 +52,7 @@ struct BookWishlistView: View {
         }
     }
     
-    func convertToBookInfo(book: FetchedResults<BookInfo>.Element) -> BookInfoData {
+    func convertToBookInfo(book: FetchedResults<BookInfoEntity>.Element) -> BookInfoData {
         return BookInfoData(
             id: Int(book.id),
             isbn: book.isbn!,
@@ -65,7 +65,7 @@ struct BookWishlistView: View {
             itemPage: Int(book.page),
             dbImage: book.image,
             dbWish: book.wish,
-            dbNthCycle: Int(book.nthCycle)
+            dbNthCycle: Int(book.repeatTime)
         )
     }
 }

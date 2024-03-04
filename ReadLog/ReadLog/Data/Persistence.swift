@@ -16,202 +16,176 @@ struct PersistenceController {
         let viewContext = result.container.viewContext
         
         // book1
-        let newBook1 = BookInfo(context: viewContext)
+        let newBook1 = BookInfoEntity(context: viewContext)
         newBook1.isbn = "newBook1"
         newBook1.author = "Kim"
-        newBook1.readList = nil
+        newBook1.readBooks = nil
         if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
                   newBook1.image = imageData
               }
         
         // book2
-        let newBook2 = BookInfo(context: viewContext)
+        let newBook2 = BookInfoEntity(context: viewContext)
         newBook2.title = "title2"
         newBook2.isbn = "newBook2"
         newBook2.author = "Kim2"
-        newBook2.readList = nil
-        newBook2.readingList = nil
+        newBook2.readBooks = nil
+        newBook2.readingTrackings = nil
         
         // book3
-        let newBook3 = BookInfo(context: viewContext)
+        let newBook3 = BookInfoEntity(context: viewContext)
         newBook3.isbn = "newBook3"
         newBook3.author = "Kim"
-        newBook3.readList = nil
+        newBook3.readBooks = nil
         if let bookCoverImage = UIImage(named: "bookExample"), let imageData = bookCoverImage.pngData() {
                 newBook3.image = imageData
             }
         
         // add book1 to reading List
-        let readingList1 = ReadingList(context: viewContext)
+        let readingList1 = ReadingTrackingEntity(context: viewContext)
         readingList1.id = UUID()
-        readingList1.readpage = 20
-        readingList1.readtime = Date()
-        readingList1.recent = true
-        readingList1.pinned = false
+        readingList1.readPage = 20
+        readingList1.readDate = Date()
         
-        readingList1.book = newBook1
-        newBook1.readingList = [readingList1]
+        readingList1.bookInfo = newBook1
+        newBook1.readingTrackings = [readingList1]
         
         // add book2 to reading List
-        let readingList2 = ReadingList(context: viewContext)
+        let readingList2 = ReadingTrackingEntity(context: viewContext)
         readingList2.id = UUID()
-        readingList2.readpage = 32
-        readingList2.readtime = Date()
-        readingList2.recent = true
-        readingList2.pinned = false
+        readingList2.readPage = 32
+        readingList2.readDate = Date()
         
-        readingList2.book = newBook2
-        newBook2.readingList = [readingList2]
+        readingList2.bookInfo = newBook2
+        newBook2.readingTrackings = [readingList2]
         
         // Reading Tracker Data
-        let readingList3 = ReadingList(context: viewContext)
+        let readingList3 = ReadingTrackingEntity(context: viewContext)
         readingList3.id = UUID()
-        readingList3.readpage = 50
-        readingList3.readtime = Date.yyyyMdFormatter.date(from: "2023년 12월 4일")
-        readingList3.recent = false
-        readingList3.pinned = false
+        readingList3.readPage = 50
+        readingList3.readDate = Date.yyyyMdFormatter.date(from: "2023년 12월 4일")
         
-        readingList3.book = newBook3
+        readingList3.bookInfo = newBook3
         
-        let readingList4 = ReadingList(context: viewContext)
+        let readingList4 = ReadingTrackingEntity(context: viewContext)
         readingList4.id = UUID()
-        readingList4.readpage = 70
-        readingList4.readtime = Date.yyyyMdFormatter.date(from: "2023년 12월 5일")
-        readingList4.recent = false
-        readingList4.pinned = false
+        readingList4.readPage = 70
+        readingList4.readDate = Date.yyyyMdFormatter.date(from: "2023년 12월 5일")
         
-        readingList4.book = newBook3
+        readingList4.bookInfo = newBook3
         
-        let readingList5 = ReadingList(context: viewContext)
+        let readingList5 = ReadingTrackingEntity(context: viewContext)
         readingList4.id = UUID()
-        readingList4.readpage = 90
-        readingList4.readtime = Date.yyyyMdFormatter.date(from: "2023년 12월 5일")
-        readingList4.recent = false
-        readingList4.pinned = false
+        readingList4.readPage = 90
+        readingList4.readDate = Date.yyyyMdFormatter.date(from: "2023년 12월 5일")
         
-        readingList4.book = newBook3
+        readingList4.bookInfo = newBook3
         
-        let readingList6 = ReadingList(context: viewContext)
+        let readingList6 = ReadingTrackingEntity(context: viewContext)
         readingList5.id = UUID()
-        readingList5.readpage = 190
-        readingList5.readtime = Date.yyyyMdFormatter.date(from: "2023년 12월 7일")
-        readingList5.recent = false
-        readingList5.pinned = false
+        readingList5.readPage = 190
+        readingList5.readDate = Date.yyyyMdFormatter.date(from: "2023년 12월 7일")
         
-        readingList5.book = newBook3
-        newBook3.readingList = [readingList3, readingList4, readingList5, readingList6]
+        readingList5.bookInfo = newBook3
+        newBook3.readingTrackings = [readingList3, readingList4, readingList5, readingList6]
         
         // ReadList
-        let readList1 = ReadList(context: viewContext)
+        let readList1 = ReadBookEntity(context: viewContext)
         readList1.id = UUID()
-        readList1.book = newBook1
-        readList1.recent = true
-        readList1.startdate = nil
-        readList1.enddate = nil
+        readList1.bookInfo = newBook1
+        readList1.startDate = nil
+        readList1.endDate = nil
         
-        let readList2 = ReadList(context: viewContext)
+        let readList2 = ReadBookEntity(context: viewContext)
         readList2.id = UUID()
-        readList2.book = newBook3
-        readList2.recent = true
-        readList2.startdate = nil
-        readList2.enddate = nil
+        readList2.bookInfo = newBook3
+        readList2.startDate = nil
+        readList2.endDate = nil
         
-        let readList3 = ReadList(context: viewContext)
+        let readList3 = ReadBookEntity(context: viewContext)
         readList3.id = UUID()
-        readList3.book = newBook1
-        readList3.recent = true
-        readList3.startdate = nil
-        readList3.enddate = nil
+        readList3.bookInfo = newBook1
+        readList3.startDate = nil
+        readList3.endDate = nil
         
-        let readList4 = ReadList(context: viewContext)
+        let readList4 = ReadBookEntity(context: viewContext)
         readList4.id = UUID()
-        readList4.book = newBook3
-        readList4.recent = true
-        readList4.startdate = nil
-        readList4.enddate = nil
+        readList4.bookInfo = newBook3
+        readList4.startDate = nil
+        readList4.endDate = nil
         
-        let readList5 = ReadList(context: viewContext)
+        let readList5 = ReadBookEntity(context: viewContext)
         readList5.id = UUID()
-        readList5.book = newBook1
-        readList5.recent = true
-        readList5.startdate = nil
-        readList5.enddate = nil
+        readList5.bookInfo = newBook1
+        readList5.startDate = nil
+        readList5.endDate = nil
         
-        let readList6 = ReadList(context: viewContext)
+        let readList6 = ReadBookEntity(context: viewContext)
         readList6.id = UUID()
-        readList6.book = newBook3
-        readList6.recent = true
-        readList6.startdate = nil
-        readList6.enddate = nil
+        readList6.bookInfo = newBook3
+        readList6.startDate = nil
+        readList6.endDate = nil
         
-        let readList7 = ReadList(context: viewContext)
+        let readList7 = ReadBookEntity(context: viewContext)
         readList7.id = UUID()
-        readList7.book = newBook1
-        readList7.recent = true
-        readList7.startdate = nil
-        readList7.enddate = nil
+        readList7.bookInfo = newBook1
+        readList7.startDate = nil
+        readList7.endDate = nil
         
-        let readList8 = ReadList(context: viewContext)
+        let readList8 = ReadBookEntity(context: viewContext)
         readList8.id = UUID()
-        readList8.book = newBook3
-        readList8.recent = true
-        readList8.startdate = nil
-        readList8.enddate = nil
+        readList8.bookInfo = newBook3
+        readList8.startDate = nil
+        readList8.endDate = nil
         
-        let readList9 = ReadList(context: viewContext)
+        let readList9 = ReadBookEntity(context: viewContext)
         readList9.id = UUID()
-        readList9.book = newBook1
-        readList9.recent = true
-        readList9.startdate = nil
-        readList9.enddate = nil
+        readList9.bookInfo = newBook1
+        readList9.startDate = nil
+        readList9.endDate = nil
         
-        let readList10 = ReadList(context: viewContext)
+        let readList10 = ReadBookEntity(context: viewContext)
         readList10.id = UUID()
-        readList10.book = newBook3
-        readList10.recent = true
-        readList10.startdate = nil
-        readList10.enddate = nil
+        readList10.bookInfo = newBook3
+        readList10.startDate = nil
+        readList10.endDate = nil
         
         
-        let readList11 = ReadList(context: viewContext)
+        let readList11 = ReadBookEntity(context: viewContext)
         readList11.id = UUID()
-        readList11.book = newBook1
-        readList11.recent = true
-        readList11.startdate = nil
-        readList11.enddate = nil
+        readList11.bookInfo = newBook1
+        readList11.startDate = nil
+        readList11.endDate = nil
         
-        let readList12 = ReadList(context: viewContext)
+        let readList12 = ReadBookEntity(context: viewContext)
         readList12.id = UUID()
-        readList12.book = newBook3
-        readList12.recent = true
-        readList12.startdate = nil
-        readList12.enddate = nil
+        readList12.bookInfo = newBook3
+        readList12.startDate = nil
+        readList12.endDate = nil
         
         
-        let readList13 = ReadList(context: viewContext)
+        let readList13 = ReadBookEntity(context: viewContext)
         readList13.id = UUID()
-        readList13.book = newBook1
-        readList13.recent = true
-        readList13.startdate = nil
-        readList13.enddate = nil
+        readList13.bookInfo = newBook1
+        readList13.startDate = nil
+        readList13.endDate = nil
         
-        let readList14 = ReadList(context: viewContext)
+        let readList14 = ReadBookEntity(context: viewContext)
         readList14.id = UUID()
-        readList14.book = newBook3
-        readList14.recent = true
-        readList14.startdate = nil
-        readList14.enddate = nil
+        readList14.bookInfo = newBook3
+        readList14.startDate = nil
+        readList14.endDate = nil
         
         
-        newBook1.readList = [readList1, readList3, readList5, readList7, readList9, readList11, readList13]
-        newBook3.readList = [readList2, readList4, readList6, readList8, readList10, readList12, readList14]
+        newBook1.readBooks = [readList1, readList3, readList5, readList7, readList9, readList11, readList13]
+        newBook3.readBooks = [readList2, readList4, readList6, readList8, readList10, readList12, readList14]
         
         // log
-        let newLog2 = ReadLog(context: viewContext)
-        newLog2.log = "강조할 공유하지 않겠다는 물이 있다. 셀카를 그 사람에게 물러난 점들을 그의 입장에서 충분히 타당하나 내가게는 개인적으로 타격이 없는 것들이 대부분이다."
-        newLog2.book = newBook2
+        let newLog2 = BookNoteEntity(context: viewContext)
+        newLog2.note = "강조할 공유하지 않겠다는 물이 있다. 셀카를 그 사람에게 물러난 점들을 그의 입장에서 충분히 타당하나 내가게는 개인적으로 타격이 없는 것들이 대부분이다."
+        newLog2.bookInfo = newBook2
         newLog2.date = Date()
-        newBook2.readLog = [newLog2]
+        newBook2.bookNotes = [newLog2]
         
         do {
             try viewContext.save()
@@ -227,7 +201,7 @@ struct PersistenceController {
     let container: NSPersistentCloudKitContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "Model")
+        container = NSPersistentCloudKitContainer(name: "CoreDataStorage")
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }

@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 struct BookShelfCell: View {
-    var renderedBook: [BookInfo?]
+    var renderedBook: [BookInfoEntity?]
     
     var body: some View {
         VStack(spacing: 5) {
@@ -25,7 +25,7 @@ struct BookShelfCell: View {
 
 private extension BookShelfCell {
     @ViewBuilder
-    func bookRow(_ bookList: [BookInfo?]) -> some View {
+    func bookRow(_ bookList: [BookInfoEntity?]) -> some View {
         HStack(alignment: .center) {
             bookCell(bookList[0])
                 .padding(.horizontal, 20)
@@ -37,7 +37,7 @@ private extension BookShelfCell {
     }
     
     @ViewBuilder
-    func bookCell(_ book: BookInfo?) -> some View {
+    func bookCell(_ book: BookInfoEntity?) -> some View {
         if let book = book {
             NavigationLink(destination: BookDetailFull(book, isRead: true).navigationBarBackButtonHidden(true)){
                 if let imageData = book.image, let uiImage =

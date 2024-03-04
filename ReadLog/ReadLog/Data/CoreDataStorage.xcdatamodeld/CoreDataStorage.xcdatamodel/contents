@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="BookInfoEntity" representedClassName="BookInfoEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="author" optional="YES" attributeType="String"/>
+        <attribute name="bookDescription" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary"/>
+        <attribute name="isbn" optional="YES" attributeType="String"/>
+        <attribute name="link" optional="YES" attributeType="String"/>
+        <attribute name="page" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pinned" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="publisher" optional="YES" attributeType="String"/>
+        <attribute name="readingStatus" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="repeatTime" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="wish" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="bookNotes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BookNoteEntity" inverseName="bookInfo" inverseEntity="BookNoteEntity"/>
+        <relationship name="readBooks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadBookEntity" inverseName="bookInfo" inverseEntity="ReadBookEntity"/>
+        <relationship name="readingTrackings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadingTrackingEntity" inverseName="bookInfo" inverseEntity="ReadingTrackingEntity"/>
+    </entity>
+    <entity name="BookNoteEntity" representedClassName="BookNoteEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="label" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <relationship name="bookInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookInfoEntity" inverseName="bookNotes" inverseEntity="BookInfoEntity"/>
+    </entity>
+    <entity name="ReadBookEntity" representedClassName="ReadBookEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="bookInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookInfoEntity" inverseName="readBooks" inverseEntity="BookInfoEntity"/>
+    </entity>
+    <entity name="ReadingTrackingEntity" representedClassName="ReadingTrackingEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="readDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="readPage" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="bookInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookInfoEntity" inverseName="readingTrackings" inverseEntity="BookInfoEntity"/>
+    </entity>
+</model>

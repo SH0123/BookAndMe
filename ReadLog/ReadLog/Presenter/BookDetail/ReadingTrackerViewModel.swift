@@ -34,13 +34,13 @@ final class ReadingTrackerViewModel: ObservableObject {
     func setDailyProgress(isbn: String) {
         var lastPage = 0
         if let lastWeekReadingList = fetchLastWeekReadingData(isbn: isbn) {
-            lastPage = Int(lastWeekReadingList.readpage)
+            lastPage = Int(lastWeekReadingList.readPage)
         }
         let thisWeekReadingList = fetchThisWeekReadingData(isbn: isbn)
         
         for idx in 0..<thisWeekReadingList.count {
-            let day = thisWeekReadingList[idx].readtime!
-            let readPage = Int(thisWeekReadingList[idx].readpage)
+            let day = thisWeekReadingList[idx].readDate!
+            let readPage = Int(thisWeekReadingList[idx].readPage)
             
             if let i = dailyProgress.firstIndex(where: { $0.day == getCurrentDay(date: day) }) {
                 let pagesReadThatDay = readPage - lastPage
@@ -53,19 +53,19 @@ final class ReadingTrackerViewModel: ObservableObject {
         lastPageRead = lastPage
     }
     
-    func addDailyProgress(newPageRead: Int, bookInfo: BookInfo) {
+    func addDailyProgress(newPageRead: Int, bookInfo: BookInfoEntity) {
         // set last data recent = false
         let readingList = fetchAllReadingData(isbn: bookInfo.isbn!)
-        print(readingList.map { "\($0.readpage) \(String(describing: $0.readtime))"})
-        for idx in 0..<readingList.count {
-            updateRecentValue(entity: readingList[idx])
-        }
+        print(readingList.map { "\($0.readPage) \(String(describing: $0.readDate))"})
+//        for idx in 0..<readingList.count {
+//            updateRecentValue(entity: readingList[idx])
+//        }
+//        
+//        if let lastReading = readingList.last {
+//            self.pinned = lastReading.pinned
+//        }
         
-        if let lastReading = readingList.last {
-            self.pinned = lastReading.pinned
-        }
-        
-        if let index = readingList.firstIndex(where: { Date.yyyyMdFormatter.string(from: $0.readtime!) == Date.yyyyMdFormatter.string(from: Date()) }){
+        if let index = readingList.firstIndex(where: { Date.yyyyMdFormatter.string(from: $0.readDate!) == Date.yyyyMdFormatter.string(from: Date()) }){
             updateTodayReadingData(entity: readingList[index], newPage: newPageRead)
         }
         else {
@@ -77,7 +77,7 @@ final class ReadingTrackerViewModel: ObservableObject {
     func setTotalBookPages(isbn: String, page: Int) {
         let readingList = fetchAllReadingData(isbn: isbn)
         if let lastReading = readingList.last {
-            lastPageRead = Int(lastReading.readpage)
+            lastPageRead = Int(lastReading.readPage)
         }
         totalBookPages = page
     }
@@ -94,16 +94,16 @@ final class ReadingTrackerViewModel: ObservableObject {
 }
 
 private extension ReadingTrackerViewModel {
-    func fetchThisWeekReadingData(isbn: String) -> [ReadingList] {
+    func fetchThisWeekReadingData(isbn: String) -> [ReadingTrackingEntity] {
         let today: Date = Date()
         let monTodayDiff: Int = (5 + Calendar.current.dateComponents([.weekday], from: today).weekday!) % 7
         let monday: Date = makeDayMidnight(date: Calendar.current.date(byAdding:.day, value: -1*monTodayDiff, to: today)!)
         
-        let fetchRequest: NSFetchRequest<ReadingList>
+        let fetchRequest: NSFetchRequest<ReadingTrackingEntity>
         
-        fetchRequest = ReadingList.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "book.isbn LIKE %@ && readtime >= %@ ",isbn,  monday as NSDate)
+        fetchRequest = ReadingTrackingEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "bookInfo.isbn LIKE %@ && readtime >= %@ ",isbn,  monday as NSDate)
         
         do {
             let objects = try viewContext.fetch(fetchRequest)
@@ -114,15 +114,15 @@ private extension ReadingTrackerViewModel {
         }
     }
 
-    func fetchLastWeekReadingData(isbn: String) -> ReadingList? {
+    func fetchLastWeekReadingData(isbn: String) -> ReadingTrackingEntity? {
         let today: Date = Date()
         let monTodayDiff: Int = (5 + Calendar.current.dateComponents([.weekday], from: today).weekday!) % 7
         let monday: Date = makeDayMidnight(date: Calendar.current.date(byAdding:.day, value: -1*monTodayDiff, to: today)!)
-        let fetchRequest: NSFetchRequest<ReadingList>
+        let fetchRequest: NSFetchRequest<ReadingTrackingEntity>
         
-        fetchRequest = ReadingList.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: false)]
-        fetchRequest.predicate = NSPredicate(format: "book.isbn LIKE %@ && readtime < %@ ",isbn, monday as NSDate)
+        fetchRequest = ReadingTrackingEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "bookInfo.isbn LIKE %@ && readDate < %@ ",isbn, monday as NSDate)
         
         do {
             let objects = try viewContext.fetch(fetchRequest)
@@ -133,12 +133,12 @@ private extension ReadingTrackerViewModel {
         }
     }
     
-    func fetchAllReadingData(isbn: String) -> [ReadingList] {
-        let fetchRequest: NSFetchRequest<ReadingList>
+    func fetchAllReadingData(isbn: String) -> [ReadingTrackingEntity] {
+        let fetchRequest: NSFetchRequest<ReadingTrackingEntity>
         
-        fetchRequest = ReadingList.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingList.readtime, ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "book.isbn LIKE %@",isbn)
+        fetchRequest = ReadingTrackingEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "bookInfo.isbn LIKE %@",isbn)
         
         do {
             let objects = try viewContext.fetch(fetchRequest)
@@ -149,7 +149,8 @@ private extension ReadingTrackerViewModel {
         }
     }
     
-    func updateRecentValue(entity: ReadingList) {
+    /*
+    func updateRecentValue(entity: ReadingTrackingEntity) {
         entity.recent = false
         
         do {
@@ -159,11 +160,10 @@ private extension ReadingTrackerViewModel {
             fatalError("Unresolved Error\(nsError)")
         }
     }
+     */
     
-    func updateTodayReadingData(entity: ReadingList, newPage: Int) {
-        entity.readpage = Int32(newPage)
-        entity.recent = true
-        entity.pinned = self.pinned
+    func updateTodayReadingData(entity: ReadingTrackingEntity, newPage: Int) {
+        entity.readPage = Int32(newPage)
         
         do {
             try viewContext.save()
@@ -174,20 +174,18 @@ private extension ReadingTrackerViewModel {
     }
     
     
-    func addTodayBookPage(page: Int, bookInfo: BookInfo) {
-        let readingPage = ReadingList(context: viewContext)
+    func addTodayBookPage(page: Int, bookInfo: BookInfoEntity) {
+        let readingPage = ReadingTrackingEntity(context: viewContext)
         readingPage.id = UUID()
-        readingPage.readpage = Int32(page)
-        readingPage.pinned = pinned
-        readingPage.readtime = Date()
-        readingPage.recent = true
-        readingPage.book = bookInfo
+        readingPage.readPage = Int32(page)
+        readingPage.readDate = Date()
+        readingPage.bookInfo = bookInfo
         
-        if var readingList = bookInfo.readingList {
+        if var readingList = bookInfo.readingTrackings {
             readingList = readingList.adding(readingPage) as NSSet
-            bookInfo.readingList = readingList
+            bookInfo.readingTrackings = readingList
         } else {
-            bookInfo.readingList = [readingPage]
+            bookInfo.readingTrackings = [readingPage]
         }
         
         do {
