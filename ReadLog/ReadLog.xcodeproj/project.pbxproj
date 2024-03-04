@@ -10,7 +10,6 @@
 		9DC96E9F2B0C57F900034878 /* BookDetailFull.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC96E9E2B0C57F900034878 /* BookDetailFull.swift */; };
 		DB0E01DA2B1FF5B600F19A04 /* BooksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB0E01D92B1FF5B600F19A04 /* BooksView.swift */; };
 		DB18172D2B062ED600A55F80 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB18172C2B062ED600A55F80 /* Persistence.swift */; };
-		DB633C1B2B02FC8F004CEC27 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB633C192B02FC8F004CEC27 /* Model.xcdatamodeld */; };
 		E60025092B06378D00C4DFDD /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60025082B06378D00C4DFDD /* Date+Extension.swift */; };
 		E6035B872B0CEF5600C34007 /* ReadingBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6035B862B0CEF5600C34007 /* ReadingBookView.swift */; };
 		E60DDA992B0A8D1400F25BB2 /* BookSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60DDA982B0A8D1400F25BB2 /* BookSearchView.swift */; };
@@ -58,7 +57,6 @@
 		9DC96E9E2B0C57F900034878 /* BookDetailFull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailFull.swift; sourceTree = "<group>"; };
 		DB0E01D92B1FF5B600F19A04 /* BooksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksView.swift; sourceTree = "<group>"; };
 		DB18172C2B062ED600A55F80 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		DB633C1A2B02FC8F004CEC27 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		E60025082B06378D00C4DFDD /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		E6035B862B0CEF5600C34007 /* ReadingBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingBookView.swift; sourceTree = "<group>"; };
 		E60DDA982B0A8D1400F25BB2 /* BookSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSearchView.swift; sourceTree = "<group>"; };
@@ -331,7 +329,6 @@
 			children = (
 				E6B60C2D2B47EC02002B4D04 /* Repository */,
 				DB18172C2B062ED600A55F80 /* Persistence.swift */,
-				DB633C192B02FC8F004CEC27 /* Model.xcdatamodeld */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -479,7 +476,6 @@
 				E6667EED2B154E51006E6ED5 /* PaginationViewModel.swift in Sources */,
 				E618A6832B92136200FD6740 /* BackupView.swift in Sources */,
 				E6667EEB2B154DB7006E6ED5 /* BookSubInfo.swift in Sources */,
-				DB633C1B2B02FC8F004CEC27 /* Model.xcdatamodeld in Sources */,
 				DB0E01DA2B1FF5B600F19A04 /* BooksView.swift in Sources */,
 				DB18172D2B062ED600A55F80 /* Persistence.swift in Sources */,
 				E6B184D32B142FD400776177 /* BookShelfCell.swift in Sources */,
@@ -724,19 +720,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		DB633C192B02FC8F004CEC27 /* Model.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				DB633C1A2B02FC8F004CEC27 /* Model.xcdatamodel */,
-			);
-			currentVersion = DB633C1A2B02FC8F004CEC27 /* Model.xcdatamodel */;
-			path = Model.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = E6E68ECF2AF1DD7B00172557 /* Project object */;
 }
