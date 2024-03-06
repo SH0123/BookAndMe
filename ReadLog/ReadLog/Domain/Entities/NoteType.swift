@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
-enum Note: Int {
+enum NoteType: Int {
     case impressive, myThink
 }
 
-extension Note {
+extension NoteType {
     var noteColor: Color {
         switch self {
         case .impressive:

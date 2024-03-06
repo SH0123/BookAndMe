@@ -40,14 +40,17 @@ class PaginationViewModel: ObservableObject {
         keywordSearchMode = true
         
         guard !isFetching else { return }
-        
         guard currentPage <= totalPages else { return }
         
         isFetching = true
         
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=\(ApiKey.aladinKey)&Query=\(keyword)&QueryType=Keyword&MaxResults=20&start=\(currentPage)&SearchTarget=Book&output=js&Version=20131101"
-        
-        guard let url = URL(string: requestUrl) else {
+
+        guard let encodedUrl = requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            return
+        }
+        guard let url = URL(string: encodedUrl) else {
+            print("not possible with \(requestUrl)")
             return
         }
         
@@ -56,7 +59,6 @@ class PaginationViewModel: ObservableObject {
                 print("Error: \(error)")
                 return
             }
-            
             guard let data = data else {
                 return
             }
@@ -65,7 +67,7 @@ class PaginationViewModel: ObservableObject {
                 let decoder = JSONDecoder()
                 
                 let decodedData = try decoder.decode(JsonResponse.self, from: data)
-                
+
                 if decodedData.totalResults / 20 < 10 {
                     self.totalPages = (decodedData.totalResults - 1) / 20 + 1
                 }

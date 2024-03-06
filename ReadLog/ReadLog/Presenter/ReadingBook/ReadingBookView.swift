@@ -81,7 +81,7 @@ struct ReadingBookView: View {
                                         }
                                         .frame(maxHeight: 30)
                                         
-                                        Text(noteSet.first!.note!)
+                                        Text(noteSet.first!.content!)
                                             .bodyDefault(Color.primary)
                                             .frame(maxWidth: 330, maxHeight: 110)
                                             .offset(x: 10)
@@ -125,7 +125,7 @@ struct ReadingBookView: View {
         return formatter
     }()
     
-    private func convertNoteLabel(labelInt: Int) -> Note {
+    private func convertNoteLabel(labelInt: Int) -> NoteType {
         return labelInt == 0 ? .impressive : .myThink
     }
     

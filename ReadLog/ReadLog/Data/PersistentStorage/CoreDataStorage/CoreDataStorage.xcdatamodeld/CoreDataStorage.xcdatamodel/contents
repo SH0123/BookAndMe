@@ -19,10 +19,10 @@
         <relationship name="readingTrackings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ReadingTrackingEntity" inverseName="bookInfo" inverseEntity="ReadingTrackingEntity"/>
     </entity>
     <entity name="BookNoteEntity" representedClassName="BookNoteEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="label" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="note" optional="YES" attributeType="String"/>
         <relationship name="bookInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookInfoEntity" inverseName="bookNotes" inverseEntity="BookInfoEntity"/>
     </entity>
     <entity name="ReadBookEntity" representedClassName="ReadBookEntity" syncable="YES" codeGenerationType="class">

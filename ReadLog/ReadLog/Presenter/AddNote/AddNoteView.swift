@@ -11,7 +11,7 @@ struct AddNoteView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @State private var showScannerSheet = false
-    @State private var noteType: Note = .impressive
+    @State private var noteType: NoteType = .impressive
     @State private var contents: String = ""
     @State private var noteSelectionShow = false
     @Binding private var notes: [BookNoteEntity]
@@ -53,16 +53,16 @@ struct AddNoteView: View {
 // Component
 private extension AddNoteView {
     
-    func labelButton(type: Binding<Note>) -> some View {
+    func labelButton(type: Binding<NoteType>) -> some View {
         Button(action: {
             noteSelectionShow = true
         }, label: {
             NoteLabel(type: type)
         }).confirmationDialog( "노트 타입", isPresented: $noteSelectionShow) {
-            Button(Note.impressive.noteText) {
+            Button(NoteType.impressive.noteText) {
                 noteType = .impressive
             }
-            Button(Note.myThink.noteText) {
+            Button(NoteType.myThink.noteText) {
                     noteType = .myThink
                 }
             }
@@ -140,7 +140,7 @@ private extension AddNoteView {
         note.id = UUID()
         note.label = Int16(noteType.rawValue)
         note.bookInfo = bookInfo
-        note.note = contents
+        note.content = contents
         note.date = Date()
         
         if var notes = bookInfo.bookNotes {

@@ -110,7 +110,6 @@ struct BookSearchView: View {
                         
                         Button {
                             print("Search book by book title")
-                            
                             viewModel.clear()
                             viewModel.setKeyword(keyword: searchText)
                             viewModel.searchData()

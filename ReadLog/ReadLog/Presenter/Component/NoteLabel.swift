@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NoteLabel: View {
-    @Binding var type: Note
+    @Binding var type: NoteType
 
     var body: some View {
         Text(type.noteText)

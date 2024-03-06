@@ -353,7 +353,7 @@ private extension BookDetailFull {
                     Spacer()
                     NoteLabel(type: .constant(convertLabel(labelType: Int(memo.label))))
                 }
-                Text(memo.note ?? "")
+                Text(memo.content ?? "")
                     .bodyDefaultMultiLine(Color.primary)
             }
             .padding(.vertical, 10)
@@ -361,7 +361,7 @@ private extension BookDetailFull {
         }
     }
     
-    func convertLabel(labelType: Int) -> Note {
+    func convertLabel(labelType: Int) -> NoteType {
         return labelType == 0 ? .impressive : .myThink
     }
 }
