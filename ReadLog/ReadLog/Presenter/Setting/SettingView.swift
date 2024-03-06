@@ -21,7 +21,7 @@ struct SettingView: View {
                         Text("스냅북 버전")
                             .body1(.black)
                         Spacer()
-                        Text("1.0.0")
+                        Text("1.0.3")
                             .body1(.black)
                     }
                     Divider()

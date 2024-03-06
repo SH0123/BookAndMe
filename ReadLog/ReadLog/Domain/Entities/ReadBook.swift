@@ -8,8 +8,7 @@
 import Foundation
 
 struct ReadBook {
-    let id: UUID
-    let startDate: Date
-    let endDate: Date
-    let book: BookInfo
+    let id: UUID?
+    let startDate: Date?
+    let endDate: Date?
 }

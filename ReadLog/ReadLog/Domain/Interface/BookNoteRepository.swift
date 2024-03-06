@@ -8,7 +8,6 @@
 import Foundation
 
 protocol BookNoteRepository {
-    
-    func getAllBookNote(isbn: String) -> Result<[BookNoteEntity], Error>
-    func addBookNote(_ note: BookNoteEntity, to book: BookInfoEntity) -> Result<BookNoteEntity, Error>
+    func fetchBookNoteList(with isbn: String) -> [BookNote]
+    func addBookNote(_ note: BookNote, to book: BookInfo)
 }

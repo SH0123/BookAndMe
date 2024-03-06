@@ -8,9 +8,8 @@
 import Foundation
 
 struct BookNote: Identifiable {
-    let id: UUID
-    let date: Date
-    let label: String
-    let content: String
-    let book: BookInfo
+    let id: UUID?
+    let date: Date?
+    let label: Int
+    let content: String?
 }

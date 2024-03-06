@@ -8,8 +8,7 @@
 import Foundation
 
 struct ReadingTracking {
-    let id: UUID
-    let readDate: Date
+    let id: UUID?
+    let readDate: Date?
     let readPage: Int
-    let book: BookInfo
 }
