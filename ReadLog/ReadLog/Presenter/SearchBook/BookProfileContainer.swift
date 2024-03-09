@@ -12,17 +12,18 @@ struct BookProfileContainer: View {
     
     var body: some View {
         HStack {
-            if bookInfo.image == nil {
-                Image("noImage")
+            if bookInfo.coverImageUrl != "" {
+                URLImage(urlString: bookInfo.coverImageUrl)
+                    .padding(.vertical, 5)
+            } else {
+                Image(uiImage: bookInfo.image ?? UIImage(named: "noImage")!)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100)
                     .clipped()
                     .padding(.horizontal, 15)
                     .padding(.vertical, 5)
-            } else {
-                Image(uiImage: bookInfo.image ?? UIImage(named: "noImage")!)
-                    .padding(.vertical, 5)
+                    
             }
             
             VStack(alignment: .leading) {

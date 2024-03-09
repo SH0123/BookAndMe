@@ -133,7 +133,8 @@ struct ReadingBookView: View {
         .onAppear {
             // 나라 위치별 코드 test
             fetchBookListUseCase.readingBooks(of: nil) { bookList in
-                readingBooks = bookList
+                readingBooks = bookList.reversed()
+                print(readingBooks)
             }
         }
     }

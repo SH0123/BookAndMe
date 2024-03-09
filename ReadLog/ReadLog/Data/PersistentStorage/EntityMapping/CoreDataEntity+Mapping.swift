@@ -13,6 +13,7 @@ extension BookInfoEntity {
             id: Int(id),
             author: author ?? "",
             bookDescription: bookDescription ?? "",
+            coverImageUrl: "",
             image: UIImage(data: image ?? Data()),
             isbn: isbn,
             link: link ?? "",

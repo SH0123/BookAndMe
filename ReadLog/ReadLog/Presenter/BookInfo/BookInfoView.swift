@@ -102,9 +102,10 @@ struct BookInfoView: View {
                                 // TODO: isbn 없는 경우 핸들링 코드 전체적으로 작성 필요
                                 fetchBookInfoUseCase.execute(with: bookInfo.isbn!) { book in
                                     if let book {
+                                        // 책을 읽은 적 있는 경우
                                         if bookInfo.page != 0 {
                                             // save to core data
-                                            saveBookData(newBook: book)
+//                                            saveBookData(newBook: book)
                                             addToReadingList(newBook: book)
                                             // add To Reading List에서 pinned, recent 해주는 작업 필요없음. saveBookData에서 readingStatus True 해주면
                                             //TODO: 첫번째 페이지에서 bookinfo 중에 readingStatus true인 값 가져오는 로직으로 변경
@@ -113,14 +114,14 @@ struct BookInfoView: View {
                                             // save data to core data
                                             getBookDataWithPage(isbn: bookInfo.isbn!) { result in
                                                 if let bookWithPage = result {
-                                                    saveBookData(newBook: bookWithPage)
+//                                                    saveBookData(newBook: bookWithPage)
                                                     addToReadingList(newBook: bookWithPage)
                                                 }
                                             }
                                         }
                                     } else {
-
-                                        addToReadingList(newBook: bookInfo)
+                                        // 책을 읽은 적 없는 경우
+                                        saveBookData(newBook: bookInfo)
                                     }
                                 }
 //                                dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
@@ -184,6 +185,7 @@ struct BookInfoView: View {
         }
         .onAppear {
             fetchBookInfoUseCase.execute(with: bookInfo.isbn!) { bookInfo in
+                print(bookInfo)
                 guard let bookInfo, let wish = dbBookData?.wish else { return }
                 dbBookData = bookInfo
                 self.like = wish
@@ -331,6 +333,7 @@ struct BookInfoView: View {
         var bookInfo = BookInfo(id: bookDataJsonResponse.id,
                                 author: bookDataJsonResponse.author,
                                 bookDescription: bookDataJsonResponse.description,
+                                coverImageUrl: bookDataJsonResponse.coverImage,
                                 image: nil,
                                 isbn: bookDataJsonResponse.isbn,
                                 link: bookDataJsonResponse.link,

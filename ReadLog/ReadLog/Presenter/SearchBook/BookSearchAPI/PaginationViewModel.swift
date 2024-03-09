@@ -9,6 +9,7 @@ import SwiftUI
 
 class PaginationViewModel: ObservableObject {
     @Published var results: [BookInfo] = []
+    @Published private (set) var isLoading: Bool = false
     
     private var currentPage = 1
     
@@ -43,6 +44,7 @@ class PaginationViewModel: ObservableObject {
         guard currentPage <= totalPages else { return }
         
         isFetching = true
+        isLoading = true
         
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=\(ApiKey.aladinKey)&Query=\(keyword)&QueryType=Keyword&MaxResults=20&start=\(currentPage)&SearchTarget=Book&output=js&Version=20131101"
 
@@ -105,6 +107,7 @@ class PaginationViewModel: ObservableObject {
         var bookInfo = BookInfo(id: bookDataJsonResponse.id,
                                 author: bookDataJsonResponse.author,
                                 bookDescription: bookDataJsonResponse.description,
+                                coverImageUrl: bookDataJsonResponse.coverImage,
                                 image: nil,
                                 isbn: bookDataJsonResponse.isbn,
                                 link: bookDataJsonResponse.link,
@@ -126,7 +129,6 @@ class PaginationViewModel: ObservableObject {
                 print("Failed to fetch or convert image data.")
             }
         }
-        print(bookInfo)
         return bookInfo
     }
     
@@ -151,7 +153,7 @@ class PaginationViewModel: ObservableObject {
                 completion(data)
             }
         }
-        
+        self.isLoading = true
         task.resume()
     }
 
