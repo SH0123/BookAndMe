@@ -185,10 +185,9 @@ struct BookInfoView: View {
         }
         .onAppear {
             fetchBookInfoUseCase.execute(with: bookInfo.isbn!) { bookInfo in
-                print(bookInfo)
-                guard let bookInfo, let wish = dbBookData?.wish else { return }
+                guard let bookInfo else { return }
                 dbBookData = bookInfo
-                self.like = wish
+                self.like = bookInfo.wish
                 if bookInfo.readingStatus {
                     self.buttonText = "독서 진행 중"
                 }
@@ -222,9 +221,10 @@ struct BookInfoView: View {
             // if book data is in db, save changes
             fetchBookInfoUseCase.execute(with: bookInfo.isbn!) { book in
                 if let book {
-                    dbBookData = book
                     if like != book.wish {
-                        updateBookInfoUseCase.execute(book: book, of: nil, nil)
+                        guard var dbBookData else { return }
+                        dbBookData.wish = like
+                        updateBookInfoUseCase.execute(book: dbBookData, of: nil, nil)
                     }
                 } else {
                     if like {

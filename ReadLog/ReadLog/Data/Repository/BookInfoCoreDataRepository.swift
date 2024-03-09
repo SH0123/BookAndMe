@@ -87,8 +87,10 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
     
     func updateBookInfo(book: BookInfo, of userId: String?, _ completion: ((BookInfo?) -> Void)?) {
         guard let isbn = book.isbn else { return }
-        guard let bookInfoEntity = getBookInfoEntity(isbn: isbn) else { return }
-        mappingBookInfoEntity(from: book, to: bookInfoEntity)
+        guard var bookInfoEntity = getBookInfoEntity(isbn: isbn) else { return }
+        bookInfoEntity = mappingBookInfoEntity(from: book, to: bookInfoEntity)
+        print(book)
+        print(bookInfoEntity.wish)
         do {
             try context.save()
             if let completion {
@@ -100,7 +102,7 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
         }
     }
     
-    private func mappingBookInfoEntity(from book: BookInfo, to bookInfoEntity: BookInfoEntity) {
+    private func mappingBookInfoEntity(from book: BookInfo, to bookInfoEntity: BookInfoEntity) -> BookInfoEntity {
         bookInfoEntity.id = Int32(book.id)
         bookInfoEntity.author = book.author
         bookInfoEntity.bookDescription = book.bookDescription
@@ -116,6 +118,8 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
         bookInfoEntity.publisher = book.publisher
         bookInfoEntity.title = book.title
         bookInfoEntity.wish = book.wish
+        
+        return bookInfoEntity
     }
     
     
