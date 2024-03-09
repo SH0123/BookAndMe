@@ -1,19 +1,30 @@
 import SwiftUI
 import CoreData
 
+protocol AddReadBookDelegate: AnyObject {
+    func removeFromReadBookList(_ bookInfo: BookInfo)
+}
+
 struct BookShelfView: View {
     @Environment(\.managedObjectContext) private var viewContext
     // 중복된 isbn에 대해서 한개만 뜨도록 설정
-    @FetchRequest (sortDescriptors:
-                    [NSSortDescriptor(keyPath: \ReadBookEntity.endDate, ascending: false)],
-                   animation: .default)
-    private var fetchedBookList: FetchedResults<ReadBookEntity>
+//    @FetchRequest (sortDescriptors:
+//                    [NSSortDescriptor(keyPath: \ReadBookEntity.endDate, ascending: false)],
+//                   animation: .default)
+//    private var fetchedBookList: FetchedResults<ReadBookEntity>
     private let bookCountInRow: Int = 3
     private let rowInPage: Int = 3
-    private var interpolatedBookList: [BookInfoEntity?] {
+    private var interpolatedBookList: [BookInfo?] {
         get {
+            guard let fetchedBookList else { return [] }
             return interpolateBookList(fetchedBookList)
         }
+    }
+    @State private var fetchedBookList: [BookInfo]?
+    private let fetchBookListUseCase: FetchBookListUseCase
+    
+    init(fetchBookListUseCase: FetchBookListUseCase = FetchBookListUseCaseImpl()) {
+        self.fetchBookListUseCase = fetchBookListUseCase
     }
     
     var body: some View {
@@ -76,24 +87,27 @@ private extension BookShelfView {
         .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
     }
     
-    func interpolateBookList(_ readList: FetchedResults<ReadBookEntity>) -> [BookInfoEntity?] {
+    func interpolateBookList(_ bookList: [BookInfo]) -> [BookInfo?] {
         // 같은 책 1개만 가져올 수 있도록
-        var dictionary: [String: Bool] = [:]
-        var bookList: [BookInfoEntity?] = []
-        for record in readList {
-            if !dictionary.keys.contains(record.bookInfo!.isbn!) {
-                dictionary[record.bookInfo!.isbn!] = true
-                bookList.append(record.bookInfo!)
+        var readList: [BookInfo?] = []
+//        for record in readList {
+//            if !dictionary.keys.contains(record.isbn!) {
+//                dictionary[record.isbn!] = true
+//                bookList.append(record)
+//            }
+//        }
+        for book in bookList {
+            if !book.readbooks.isEmpty {
+                readList.append(book)
             }
-
         }
-        let bookCount = bookList.count
+        let bookCount = readList.count
         let addBookCount = (bookCountInRow - bookCount % bookCountInRow) % bookCountInRow
-        let nilArray: [BookInfoEntity?] = Array<BookInfoEntity?>(repeating: nil, count: addBookCount)
+        let nilArray: [BookInfo?] = Array<BookInfo?>(repeating: nil, count: addBookCount)
         return bookList + nilArray
     }
     
-    func dataForRow(idx: Int) -> [BookInfoEntity?] {
+    func dataForRow(idx: Int) -> [BookInfo?] {
         Array(interpolatedBookList[idx*bookCountInRow..<idx*bookCountInRow+3])
     }
 }

@@ -5,10 +5,10 @@
 //  Created by 유석원 on 11/28/23.
 //
 
-import Foundation
+import SwiftUI
 
 class PaginationViewModel: ObservableObject {
-    @Published var results: [BookInfoData] = []
+    @Published var results: [BookInfo] = []
     
     private var currentPage = 1
     
@@ -72,47 +72,19 @@ class PaginationViewModel: ObservableObject {
                     self.totalPages = (decodedData.totalResults - 1) / 20 + 1
                 }
                 
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
                     print(decodedData.item.count)
                     let filteredData = decodedData.item.filter { $0.isbn != "" }
-                    let bookDataArray: [BookInfoData] = filteredData.map { bookData in
-                        if let itemPage = bookData.subInfo?.itemPage {
-                            
-                            let bookData = BookInfoData(
-                                id: bookData.id,
-                                isbn: bookData.isbn,
-                                title: bookData.title,
-                                author: bookData.author,
-                                description: bookData.description,
-                                coverImage: bookData.coverImage,
-                                publisher: bookData.publisher,
-                                link: bookData.link,
-                                itemPage: itemPage,
-                                dbImage: nil,
-                                dbWish: false,
-                                dbNthCycle: 0
-                            )
-                            return bookData
+                    let bookDataArray: [BookInfo] = filteredData.map { bookDataJsonResponse in
+                        if let itemPage = bookDataJsonResponse.subInfo?.itemPage {
+                            return (self?.mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: itemPage))!
                         } else {
-                            let bookData = BookInfoData(
-                                id: bookData.id,
-                                isbn: bookData.isbn,
-                                title: bookData.title,
-                                author: bookData.author,
-                                description: bookData.description,
-                                coverImage: bookData.coverImage,
-                                publisher: bookData.publisher,
-                                link: bookData.link,
-                                itemPage: 0,
-                                dbImage: nil,
-                                dbWish: false,
-                                dbNthCycle: 0
-                            )
-                            return bookData
+                            return (self?.mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: 0))!
                         }
                     }
                     
-                    self.results.append(contentsOf: bookDataArray)
+                    self?.results.append(contentsOf: bookDataArray)
+//                    print(self?.results)
                 }
             } catch {
                 print("Error decoding JSON: \(error)")
@@ -127,6 +99,63 @@ class PaginationViewModel: ObservableObject {
             self.isFetching = false
         }
     }
+    
+    func mappingToBookInfo(bookDataJsonResponse: BookDataJsonResponse, page: Int) -> BookInfo {
+        // 사진 저장 안됨
+        var bookInfo = BookInfo(id: bookDataJsonResponse.id,
+                                author: bookDataJsonResponse.author,
+                                bookDescription: bookDataJsonResponse.description,
+                                image: nil,
+                                isbn: bookDataJsonResponse.isbn,
+                                link: bookDataJsonResponse.link,
+                                readingStatus: false,
+                                repeatTime: 0,
+                                page: page,
+                                pinned: false,
+                                publisher: bookDataJsonResponse.publisher,
+                                title: bookDataJsonResponse.title,
+                                wish: false,
+                                notes: [],
+                                trackings: [],
+                                readbooks: [])
+        
+        fetchImage(urlString: bookDataJsonResponse.coverImage) { imageData in
+            if let imageData {
+                bookInfo.image = UIImage(data: imageData)
+            } else {
+                print("Failed to fetch or convert image data.")
+            }
+        }
+        print(bookInfo)
+        return bookInfo
+    }
+    
+    func fetchImage(urlString: String, completion: @escaping (Data?) -> Void) {
+        let convertedUrl = urlString.replacingOccurrences(of: "coversum", with: "cover200")
+        
+        guard let url = URL(string: convertedUrl) else {
+            completion(nil)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                print("Error downloading image: \(error)")
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                completion(data)
+            }
+        }
+        
+        task.resume()
+    }
+
+
     
     func isbnSearchData(isbn: String, completion: @escaping (Bool) -> Void) {
         clear()
@@ -160,48 +189,18 @@ class PaginationViewModel: ObservableObject {
                 
                 let decodedData = try decoder.decode(JsonResponse.self, from: data)
                 
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
                     print(decodedData.item.count)
                     
-                    let bookDataArray: [BookInfoData] = decodedData.item.map { bookData in
-                        if let itemPage = bookData.subInfo?.itemPage {
-                            let bookData = BookInfoData(
-                                id: bookData.id,
-                                isbn: bookData.isbn,
-                                title: bookData.title,
-                                author: bookData.author,
-                                description: bookData.description,
-                                coverImage: bookData.coverImage,
-                                publisher: bookData.publisher,
-                                link: bookData.link,
-                                itemPage: itemPage,
-                                dbImage: nil,
-                                dbWish: false,
-                                dbNthCycle: 0
-                            )
-                            return bookData
+                    let bookDataArray: [BookInfo] = decodedData.item.map { bookDataJsonResponse in
+                        if let itemPage = bookDataJsonResponse.subInfo?.itemPage {
+                            return (self?.mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: itemPage))!
                         } else {
-                            let bookData = BookInfoData(
-                                id: bookData.id,
-                                isbn: bookData.isbn,
-                                title: bookData.title,
-                                author: bookData.author,
-                                description: bookData.description,
-                                coverImage: bookData.coverImage,
-                                publisher: bookData.publisher,
-                                link: bookData.link,
-                                itemPage: 0,
-                                dbImage: nil,
-                                dbWish: false,
-                                dbNthCycle: 0
-                            )
-                            return bookData
+                            return (self?.mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: 0))!
                         }
-                        
-                        
                     }
                     
-                    self.results.append(contentsOf: bookDataArray)
+                    self?.results.append(contentsOf: bookDataArray)
                 }
             } catch {
                 print("Error decoding JSON: \(error)")

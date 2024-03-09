@@ -8,18 +8,29 @@
 import SwiftUI
 import CoreData
 
+protocol AddWishListDelegate: AnyObject {
+    func AddWishList(_ bookInfo: BookInfo)
+}
+
 struct BookWishlistView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Binding var tab: Int
     
-    @FetchRequest(
-        sortDescriptors: [
-            NSSortDescriptor(keyPath: \BookInfoEntity.title, ascending: true)
-        ],
-        predicate: NSPredicate(format: "wish == true"),
-        animation: .default
-    )
-    private var dbBookData: FetchedResults<BookInfoEntity>
+//    @FetchRequest(
+//        sortDescriptors: [
+//            NSSortDescriptor(keyPath: \BookInfoEntity.title, ascending: true)
+//        ],
+//        predicate: NSPredicate(format: "wish == true"),
+//        animation: .default
+//    )
+//    private var dbBookData: FetchedResults<BookInfoEntity>
+    @State private var dbBookData: [BookInfo]?
+    private let fetchBookListUseCase: FetchBookListUseCase
+    
+    init(tab: Binding<Int>, fetchBookListUseCase: FetchBookListUseCase = FetchBookListUseCaseImpl()) {
+        self._tab = tab
+        self.fetchBookListUseCase = fetchBookListUseCase
+    }
     
     var body: some View {
         NavigationStack {
@@ -29,44 +40,29 @@ struct BookWishlistView: View {
                 
                 VStack {
                     header
-                    if dbBookData.isEmpty {
-                        Spacer()
-                        Text("아직 찜 목록에 아무 것도 없어요")
-                            .display(.secondary)
-                    } else {
+                    if let dbBookData, !dbBookData.isEmpty {
                         ScrollView {
                             LazyVStack {
-                                ForEach(dbBookData) { item in
-                                    let book = convertToBookInfo(book: item)
-                                    
+                                ForEach(dbBookData) { book in
                                     NavigationLink(destination: BookInfoView(tab: $tab, bookInfo: book).navigationBarBackButtonHidden(true)) {
                                         BookProfileContainer(bookInfo: book)
                                     }
                                 }
                             }
                         }
+                    } else {
+                        Spacer()
+                        Text("아직 찜 목록에 아무 것도 없어요")
+                            .display(.secondary)
                     }
                     Spacer()
                 }
             }
+        }.onAppear {
+            fetchBookListUseCase.wishBooks(of: nil) { bookList in
+                dbBookData = bookList
+            }
         }
-    }
-    
-    func convertToBookInfo(book: FetchedResults<BookInfoEntity>.Element) -> BookInfoData {
-        return BookInfoData(
-            id: Int(book.id),
-            isbn: book.isbn!,
-            title: book.title!,
-            author: book.author!,
-            description: book.bookDescription!,
-            coverImage: "",
-            publisher: book.publisher!,
-            link: book.link!,
-            itemPage: Int(book.page),
-            dbImage: book.image,
-            dbWish: book.wish,
-            dbNthCycle: Int(book.repeatTime)
-        )
     }
 }
 

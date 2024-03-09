@@ -10,5 +10,5 @@ import Foundation
 struct ReadingTracking {
     let id: UUID?
     let readDate: Date?
-    let readPage: Int
+    var readPage: Int
 }

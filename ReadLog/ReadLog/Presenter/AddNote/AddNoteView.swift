@@ -14,14 +14,16 @@ struct AddNoteView: View {
     @State private var noteType: NoteType = .impressive
     @State private var contents: String = ""
     @State private var noteSelectionShow = false
-    @Binding private var notes: [BookNoteEntity]
+    @Binding private var notes: [BookNote]
     @FocusState private var isInputActive: Bool
     
+    private let addBookNoteUseCase: AddBookNoteUseCase
     private let placeholder: String = "내용을 작성해보세요"
     private let dateFormatter: DateFormatter = Date.yyyyMdFormatter
-    private var bookInfo: BookInfoEntity
+    private var bookInfo: BookInfo
     
-    init(_ bookInfo: BookInfoEntity, _ note: Binding<[BookNoteEntity]>) {
+    init( _ bookInfo: BookInfo, _ note: Binding<[BookNote]>, _ addBookNoteUseCase: AddBookNoteUseCase = AddBookNoteUseCaseImpl()) {
+        self.addBookNoteUseCase = addBookNoteUseCase
         self.bookInfo = bookInfo
         self._notes = note
     }
@@ -135,7 +137,15 @@ private extension AddNoteView {
 
 // CoreData Connection
 private extension AddNoteView {
-    func addItem(_ completion: @escaping (BookNoteEntity)->()) {
+    func addItem(_ completion: @escaping (BookNote)->()) {
+        let note = BookNote(id: UUID(),
+                            date: Date(),
+                            label: noteType.rawValue,
+                            content: contents)
+        addBookNoteUseCase.execute(note,
+                                   to: bookInfo,
+                                   of: nil, completion)
+        /*
         let note = BookNoteEntity(context: viewContext)
         note.id = UUID()
         note.label = Int16(noteType.rawValue)
@@ -157,6 +167,7 @@ private extension AddNoteView {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
         }
+         */
     }
 }
 

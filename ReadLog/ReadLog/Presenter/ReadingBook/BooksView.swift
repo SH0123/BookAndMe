@@ -11,8 +11,8 @@ import CoreData
 struct BooksView : View {
     @Environment(\.managedObjectContext) private var viewContext
     @Binding var tab: Int
-    var items: FetchedResults<BookInfoEntity>
-    
+    @Binding var books: [BookInfo]
+
     let pageWidth: CGFloat = 245 // 한 페이지 너비 265
     let spacing: CGFloat = 28 // 뷰 사이의 공간 크기
     @Binding var currentIndex: Int // 현재 가리키는 page넘버
@@ -24,8 +24,8 @@ struct BooksView : View {
             let offset: CGFloat = baseOffset + relativeOffset
             
             LazyHStack(spacing: spacing) {
-                ForEach(items, id: \.self) { item in 
-                    NavigationLink(destination: BookDetailFull(item, isRead: false).navigationBarBackButtonHidden(true)) {
+                ForEach(0..<books.count, id: \.self) { idx in
+                    NavigationLink(destination: BookDetailFull(books[idx], isRead: false).navigationBarBackButtonHidden(true)) {
                         ZStack{
                             Rectangle()
                                 .foregroundColor(.clear)
@@ -35,7 +35,7 @@ struct BooksView : View {
                                 .background(.white)
                                 .cornerRadius(10)
                                 .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 5)
-                            if let imageData = item.image, let uiImage =
+                            if let imageData = books[idx].image?.pngData(), let uiImage =
                                 UIImage(data: imageData) {
                                 Image(uiImage: uiImage)
                                     .resizable()
@@ -44,20 +44,15 @@ struct BooksView : View {
                                     .shadow(radius: 4, y: 4)
                             }
                             else {
-                                if let title = item.title {
-                                    VStack {
-                                        Text(title)
-                                        Text("이미지를 로딩중입니다")
-                                            .foregroundStyle(Color.skyBlue)
-                                    }
-                                }
-                                else {
-                                    Spacer()
+                                VStack {
+                                    Text(books[idx].title)
+                                    Text("이미지를 로딩중입니다")
+                                        .foregroundStyle(Color.skyBlue)
                                 }
                             }
                             
                             Button(action: {
-                                item.pinned.toggle()
+                                books[idx].pinned.toggle()
                                 do {
                                     try viewContext.save()
                                 } catch {
@@ -67,7 +62,7 @@ struct BooksView : View {
                             }){
                                 ZStack{
                                     Circle()
-                                        .foregroundColor(item.pinned == true ? .yellow : .clear)
+                                        .foregroundColor(books[idx].pinned == true ? .yellow : .clear)
                                     Image("pin")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
@@ -104,7 +99,7 @@ struct BooksView : View {
                     }
                     .onEnded { value in
                         let increment = Int((-value.translation.width/pageWidth).rounded())
-                        currentIndex = max(min(currentIndex + increment, items.count), 0)
+                        currentIndex = max(min(currentIndex + increment, books.count), 0)
                         withAnimation(Animation.easeInOut(duration: 0.3)){
                             relativeOffset = -CGFloat(currentIndex) * (pageWidth + spacing)
                         }

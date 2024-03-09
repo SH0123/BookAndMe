@@ -13,18 +13,35 @@ struct BookDetailFull: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: ReadingTrackerViewModel 
     @State private var pagesReadInput: String = ""
-    @State private var bookMemos: [BookNoteEntity] = []
+    @State private var bookMemos: [BookNote] = []
     @State private var showingAlert: Bool = false
     @State private var isInit: Bool = true
     @FocusState private var isInputActive: Bool
-    private var bookInfo: BookInfoEntity?
+    private let fetchBookInfoUseCase: FetchBookInfoUseCase
+    private let fetchBookNoteListUseCase: FetchBookNoteListUseCase
+    private let addReadBookUseCase: AddReadBookUseCase
+    private let updateBookInfoUseCase: UpdateBookInfoUseCase
+    private let fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase
+    private var bookInfo: BookInfo?
     private var isRead: Bool = false
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
     
-    init(_ bookInfo: BookInfoEntity?, isRead: Bool) {
+    init(_ bookInfo: BookInfo?, 
+         isRead: Bool,
+         fetchBookInfoUseCase: FetchBookInfoUseCase = FetchBookInfoUseCaseImpl(),
+         fetchBookNoteListUseCase: FetchBookNoteListUseCase = FetchBookNoteListUseCaseImpl(),
+         addReadBookUseCase: AddReadBookUseCase = AddReadBookUseCaseImpl(),
+         updateBookInfoUseCase: UpdateBookInfoUseCase = UpdateBookInfoUseCaseImpl(),
+         fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase = FetchReadingTrackingsUseCaseImpl()
+    ) {
         self.bookInfo = bookInfo
         self.isRead = isRead
         self._viewModel = StateObject(wrappedValue: ReadingTrackerViewModel(context: PersistenceController.shared.container.viewContext))
+        self.fetchBookInfoUseCase = fetchBookInfoUseCase
+        self.fetchBookNoteListUseCase = fetchBookNoteListUseCase
+        self.addReadBookUseCase = addReadBookUseCase
+        self.updateBookInfoUseCase = updateBookInfoUseCase
+        self.fetchReadingTrackingsUseCase = fetchReadingTrackingsUseCase
     }
     
     var body: some View {
@@ -41,7 +58,6 @@ struct BookDetailFull: View {
                         }
                         progressBar(value: viewModel.progressPercentage)
                         Spacer(minLength: 20)
-//                        trackingCircles(viewModel: self.viewModel)
                     }
                     Spacer(minLength: 20)
                     HStack{
@@ -90,7 +106,7 @@ struct BookDetailFull: View {
                 }
                 
             }
-            .alert("숫자 형식이 올바르지 않습니다.", isPresented: $showingAlert) {
+            .alert("유효 하지 않은 페이지 입니다.", isPresented: $showingAlert) {
                 Button("확인") {
                     pagesReadInput = ""
                     showingAlert = false
@@ -105,29 +121,39 @@ struct BookDetailFull: View {
                 viewModel.setTotalBookPages(isbn: bookInfo!.isbn!, page: Int((bookInfo?.page)!))
                 isInit = false
             }
-            bookMemos = fetchAllBookNotes(isbn: bookInfo?.isbn)
+            fetchAllBookNotes(isbn: bookInfo?.isbn) { notes in
+                bookMemos = notes
+            }
         })
     }
 }
 // function
 private extension BookDetailFull {
-    func fetchBookInfo(isbn: String) -> BookInfoEntity? {
-        let fetchRequest: NSFetchRequest<BookInfoEntity>
-        
-        fetchRequest = BookInfoEntity.fetchRequest()
-        fetchRequest.fetchLimit = 1
-        fetchRequest.predicate = NSPredicate(format: "isbn LIKE %@", isbn)
-        
-        do {
-            let object = try viewContext.fetch(fetchRequest)
-            return object.first
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
+    func fetchBookInfo(isbn: String, _ completion: @escaping (BookInfo?)->Void) {
+        fetchBookInfoUseCase.execute(with: isbn) { bookInfo in
+            completion(bookInfo)
         }
+//        let fetchRequest: NSFetchRequest<BookInfoEntity>
+//        
+//        fetchRequest = BookInfoEntity.fetchRequest()
+//        fetchRequest.fetchLimit = 1
+//        fetchRequest.predicate = NSPredicate(format: "isbn LIKE %@", isbn)
+//        
+//        do {
+//            let object = try viewContext.fetch(fetchRequest)
+//            return object.first
+//        } catch {
+//            let nsError = error as NSError
+//            fatalError("Unresolved Error\(nsError)")
+//        }
     }
     
-    func fetchAllBookNotes(isbn: String?) -> [BookNoteEntity] {
+    func fetchAllBookNotes(isbn: String?, _ completion: @escaping ([BookNote])->Void) {
+        guard let isbn else { return }
+        fetchBookNoteListUseCase.execute(with: isbn, of: nil) { notes in
+            completion(notes)
+        }
+        /*
         guard let isbn else { return [] }
         let fetchRequest: NSFetchRequest<BookNoteEntity>
         
@@ -141,24 +167,16 @@ private extension BookDetailFull {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
         }
+         */
     }
     
-    func fetchAllReadingList(isbn: String) -> [ReadingTrackingEntity] {
-        let fetchRequest: NSFetchRequest<ReadingTrackingEntity>
-        
-        fetchRequest = ReadingTrackingEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "bookInfo.isbn LIKE %@",isbn)
-        
-        do {
-            let objects = try viewContext.fetch(fetchRequest)
-            return objects
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
+    func fetchAllReadingList(isbn: String, _ completion: @escaping ([ReadingTracking])->Void){
+        fetchReadingTrackingsUseCase.execute(with: isbn, of: nil) { readingTrackings in
+            completion(readingTrackings)
         }
     }
-    
+    // 필요 x
+    /*
     func deleteAllReadList(readingList: [ReadingTrackingEntity]) {
         for idx in 0..<readingList.count {
             viewContext.delete(readingList[idx])
@@ -182,52 +200,41 @@ private extension BookDetailFull {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
         }
+        
+        // delegate 사용 필요
+    }
+     */
+    
+    func readingStateToggle(book: BookInfo) {
+        // delegate 사용 필요 bookshelf에 추가
+        // delegate 사용 필요 readingList에서 제거
+        updateBookInfoUseCase.execute(book: book, of: nil, nil)
     }
     
-    func addReadList(entity: BookInfoEntity, sdate: Date, edate: Date) {
-        entity.readingStatus = false
-        
-        let readBook = ReadBookEntity(context: viewContext)
-        readBook.id = UUID()
-        readBook.startDate = sdate
-        readBook.endDate = edate
-        readBook.bookInfo = entity
-        
-        if var readList = bookInfo?.readBooks {
-            readList = readList.adding(readBook) as NSSet
-            bookInfo?.readBooks = readList
-        } else {
-            bookInfo?.readBooks = [readBook]
-        }
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
+    func addReadList(book: BookInfo, sdate: Date, edate: Date) {
+        let readBook = ReadBook(id: UUID(), startDate: sdate, endDate: edate)
+        addReadBookUseCase.execute(readBook: readBook, bookInfo: book, of: nil) { bookInfo in
+            readingStateToggle(book: bookInfo)
         }
     }
     
     func readComplete(isbn: String?) {
         guard let isbn else { return }
-        // fetch start, end date
-        let startDate: Date
-        let endDate: Date
-        let readingList = fetchAllReadingList(isbn: isbn)
-        print(readingList)
-        if readingList.isEmpty {
-            return
-        }
         
-        //TODO: date handling
-        startDate = readingList.first?.readDate ?? Date()
-        endDate = readingList.last?.readDate ?? Date()
-        
-        // delete all reading list no need
-//        deleteAllReadList(readingList: readingList)
-        
-        // add read list
-        if let bookInfo {
-            addReadList(entity: bookInfo, sdate: startDate, edate: endDate)
+        fetchAllReadingList(isbn: isbn) { readingList in
+            print(readingList)
+            if readingList.isEmpty {
+                return
+            }
+            
+            let startDate = readingList.first?.readDate ?? Date()
+            let endDate = readingList.last?.readDate ?? Date()
+            
+            // add read list
+            if let bookInfo {
+                // done read 이런 느낌의 함수 호출하고 > 내부에서 addreadlist, state toggle 하기
+                addReadList(book: bookInfo, sdate: startDate, edate: endDate)
+            }
         }
     }
 }
@@ -236,19 +243,10 @@ private extension BookDetailFull {
 private extension BookDetailFull {
     @ViewBuilder
     func displayBook(isbn: String) -> some View {
-        if let book = fetchBookInfo(isbn: isbn) {
+        if let book = bookInfo {
             VStack {
                 HStack{
-                    if let imageData = book.image, let uiImage = UIImage(data:imageData){
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100)
-                            .clipped()
-                            .padding(.horizontal, 15)
-                            .padding(.vertical, 5)
-                    }else{
-                        Image(systemName: "book")
+                    Image(uiImage: (book.image ?? UIImage(named: "noImage"))!)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100)
@@ -257,15 +255,15 @@ private extension BookDetailFull {
                             .padding(.vertical, 5)
                     }
                     VStack(alignment: .leading){
-                        Text(book.title ?? "Unknown Title")
+                        Text(book.title)
                             .body2(.black)
                             .multilineTextAlignment(.leading)
                             .padding(.vertical, 6)
-                        Text(book.author ?? "Unknown Author")
+                        Text(book.author)
                             .mini(.black)
                             .multilineTextAlignment(.leading)
                             .padding(.vertical, 6)
-                        Text(book.publisher ?? "Unknown Publisher")
+                        Text(book.publisher)
                             .mini(.black)
                             .multilineTextAlignment(.leading)
                             .padding(.vertical, 6)
@@ -281,8 +279,7 @@ private extension BookDetailFull {
                 .overlay(RoundedRectangle(cornerRadius:10)
                     .stroke(Color("gray"), lineWidth: 1)
                 )
-            }
-        }else{
+            } else{
             Text("Book not found").title(Color.primary)
         }
     }
@@ -309,28 +306,10 @@ private extension BookDetailFull {
     }
 }
 
-// MARK: - Daily Tracking view
-private extension BookDetailFull {
-    struct trackingCircles: View {
-        @StateObject var viewModel: ReadingTrackerViewModel
-        var body: some View {
-            HStack {
-                ForEach(viewModel.dailyProgress) { progress in
-                    Circle()
-                        .fill(progress.pagesRead > 0 ? Color("lightBlue") : Color("gray"))
-                        .frame(width: 45, height: 45)
-                        .overlay(Text("\(progress.pagesRead)p"))
-                        .body3(Color.primary)
-                }
-            }
-        }
-    }
-}
-
 //MARK: - Book Note view
 private extension BookDetailFull {
     @ViewBuilder
-    func bookNoteView(memos: [BookNoteEntity]) -> some View {
+    func bookNoteView(memos: [BookNote]) -> some View {
         if !memos.isEmpty {
             LazyVStack {
                 ForEach(memos) { memo in
@@ -343,7 +322,7 @@ private extension BookDetailFull {
         }
     }
     
-    func bookNote(memo: BookNoteEntity) -> some View {
+    func bookNote(memo: BookNote) -> some View {
         VStack {
             VStack(alignment: .leading, spacing:10) {
                 HStack {
@@ -398,7 +377,7 @@ private extension BookDetailFull {
             Spacer()
             if !isRead {
                 Button("완독"){
-//                    doneReadingBook(entity: bookInfo!)
+                    // 완독에서 크래쉬남
                     readComplete(isbn: bookInfo?.isbn)
                     dismiss()
                 }

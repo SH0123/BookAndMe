@@ -26,11 +26,21 @@ final class ReadingTrackerViewModel: ObservableObject {
     }
     private var viewContext: NSManagedObjectContext
     private var pinned: Bool = false
+    private let fetchReadingTrackingUseCase: FetchReadingTrackingsUseCase
+    private let addReadingTrackingUseCase: AddReadingTrackingUseCase
+    private let updateReadingTrackingUseCase: UpdateReadingTrackingUseCase
      
-    init(context: NSManagedObjectContext) {
+    init(context: NSManagedObjectContext,
+         fetchReadingTrackingUseCase: FetchReadingTrackingsUseCase = FetchReadingTrackingsUseCaseImpl(),
+         addReadingTrackingUseCase: AddReadingTrackingUseCase = AddReadingTrackingUseCaseImpl(),
+         updateReadingTrackingUseCaes: UpdateReadingTrackingUseCase = UpdateReadingTrackingUseCaseImpl()) {
         self.viewContext = PersistenceController.shared.container.viewContext
+        self.fetchReadingTrackingUseCase = fetchReadingTrackingUseCase
+        self.addReadingTrackingUseCase = addReadingTrackingUseCase
+        self.updateReadingTrackingUseCase = updateReadingTrackingUseCaes
      }
     
+    /*
     func setDailyProgress(isbn: String) {
         var lastPage = 0
         if let lastWeekReadingList = fetchLastWeekReadingData(isbn: isbn) {
@@ -52,36 +62,31 @@ final class ReadingTrackerViewModel: ObservableObject {
         }
         lastPageRead = lastPage
     }
+     */
     
-    func addDailyProgress(newPageRead: Int, bookInfo: BookInfoEntity) {
+    func addDailyProgress(newPageRead: Int, bookInfo: BookInfo) {
         // set last data recent = false
-        let readingList = fetchAllReadingData(isbn: bookInfo.isbn!)
-        print(readingList.map { "\($0.readPage) \(String(describing: $0.readDate))"})
-//        for idx in 0..<readingList.count {
-//            updateRecentValue(entity: readingList[idx])
-//        }
-//        
-//        if let lastReading = readingList.last {
-//            self.pinned = lastReading.pinned
-//        }
-        
-        if let index = readingList.firstIndex(where: { Date.yyyyMdFormatter.string(from: $0.readDate!) == Date.yyyyMdFormatter.string(from: Date()) }){
-            updateTodayReadingData(entity: readingList[index], newPage: newPageRead)
+        guard let isbn = bookInfo.isbn else { return }
+        fetchAllReadingTrackingList(isbn: isbn) { [weak self] readingTrackingList in
+            if let index = readingTrackingList.firstIndex(where: { Date.yyyyMdFormatter.string(from: $0.readDate!) == Date.yyyyMdFormatter.string(from: Date()) }){
+                self?.updateReadingTrackingUseCase.execute(readingTrackingList[index], of: nil, newPage: newPageRead)
+            }
+            else {
+                self?.addTodayReadingTracking(page: newPageRead, bookInfo: bookInfo)
+            }
+            self?.lastPageRead = newPageRead
         }
-        else {
-            addTodayBookPage(page: newPageRead, bookInfo: bookInfo)
-        }
-        lastPageRead = newPageRead
     }
     
     func setTotalBookPages(isbn: String, page: Int) {
-        let readingList = fetchAllReadingData(isbn: isbn)
-        if let lastReading = readingList.last {
-            lastPageRead = Int(lastReading.readPage)
+        fetchAllReadingTrackingList(isbn: isbn) { [weak self] readingTrackingList in
+            if let lastReading = readingTrackingList.last {
+                self?.lastPageRead = Int(lastReading.readPage)
+            }
+            self?.totalBookPages = page
         }
-        totalBookPages = page
     }
-    
+    /*
     private func getCurrentDay(date: Date) -> String {
         return Date.dayOfWeekFormatter.string(from: date)
     }
@@ -90,10 +95,11 @@ final class ReadingTrackerViewModel: ObservableObject {
         let componenents = Calendar.current.dateComponents([.year, .month, .day], from: date)
         let targetComponents = DateComponents(year: componenents.year!, month: componenents.month!, day: componenents.day!)
         return Calendar.current.date(from: targetComponents)!
-    }
+    }*/
 }
 
 private extension ReadingTrackerViewModel {
+    /*
     func fetchThisWeekReadingData(isbn: String) -> [ReadingTrackingEntity] {
         let today: Date = Date()
         let monTodayDiff: Int = (5 + Calendar.current.dateComponents([.weekday], from: today).weekday!) % 7
@@ -131,68 +137,18 @@ private extension ReadingTrackerViewModel {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
         }
+    }*/
+    
+    func fetchAllReadingTrackingList(isbn: String, _ completion: @escaping ([ReadingTracking])->Void) {
+        fetchReadingTrackingUseCase.execute(with: isbn,
+                                            of: nil) { readingTrackingList in
+            completion(readingTrackingList)
+        }
+        
     }
     
-    func fetchAllReadingData(isbn: String) -> [ReadingTrackingEntity] {
-        let fetchRequest: NSFetchRequest<ReadingTrackingEntity>
-        
-        fetchRequest = ReadingTrackingEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "bookInfo.isbn LIKE %@",isbn)
-        
-        do {
-            let objects = try viewContext.fetch(fetchRequest)
-            return objects
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-    }
-    
-    /*
-    func updateRecentValue(entity: ReadingTrackingEntity) {
-        entity.recent = false
-        
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-    }
-     */
-    
-    func updateTodayReadingData(entity: ReadingTrackingEntity, newPage: Int) {
-        entity.readPage = Int32(newPage)
-        
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-    }
-    
-    
-    func addTodayBookPage(page: Int, bookInfo: BookInfoEntity) {
-        let readingPage = ReadingTrackingEntity(context: viewContext)
-        readingPage.id = UUID()
-        readingPage.readPage = Int32(page)
-        readingPage.readDate = Date()
-        readingPage.bookInfo = bookInfo
-        
-        if var readingList = bookInfo.readingTrackings {
-            readingList = readingList.adding(readingPage) as NSSet
-            bookInfo.readingTrackings = readingList
-        } else {
-            bookInfo.readingTrackings = [readingPage]
-        }
-        
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
+    func addTodayReadingTracking(page: Int, bookInfo: BookInfo) {
+        let newReadingTracking = ReadingTracking(id: UUID(), readDate: Date(), readPage: page)
+        addReadingTrackingUseCase.execute(newReadingTracking, to: bookInfo, of: nil)
     }
 }

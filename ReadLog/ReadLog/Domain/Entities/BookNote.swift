@@ -10,6 +10,6 @@ import Foundation
 struct BookNote: Identifiable {
     let id: UUID?
     let date: Date?
-    let label: Int
-    let content: String?
+    var label: Int
+    var content: String?
 }

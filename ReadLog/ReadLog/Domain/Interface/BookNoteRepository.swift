@@ -8,6 +8,6 @@
 import Foundation
 
 protocol BookNoteRepository {
-    func fetchBookNoteList(with isbn: String) -> [BookNote]
-    func addBookNote(_ note: BookNote, to book: BookInfo)
+    func fetchBookNoteList(with isbn: String, of userId: String?, _ completion: @escaping ([BookNote])->Void)
+    func addBookNote(_ note: BookNote, to book: BookInfo, of userId: String?, _ completion: @escaping (BookNote)->Void)
 }

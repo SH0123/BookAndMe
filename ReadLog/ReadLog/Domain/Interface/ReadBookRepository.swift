@@ -8,7 +8,6 @@
 import Foundation
 
 protocol ReadBookRepository {
-    func fetchAllReadBookList() -> [ReadBook]
-    func fetchReadBook(with isbn: String) -> [ReadBook]
-    func addReadBook(_ readBook: ReadBook, to: BookInfo)
+    func fetchReadBookList(of userId: String?, _ completion: @escaping ([ReadBook])->Void)
+    func addReadBook(readBook: ReadBook, bookInfo: BookInfo, of userId: String?, _ completion: @escaping (BookInfo)->Void)
 }

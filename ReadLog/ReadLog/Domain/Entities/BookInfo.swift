@@ -7,20 +7,20 @@
 
 import UIKit
 
-struct BookInfo {
+struct BookInfo: Identifiable {
     let id: Int
-    let author: String?
-    let bookDescription: String?
-    let image: UIImage?
+    let author: String
+    let bookDescription: String
+    var image: UIImage?
     let isbn: String?
-    let link: String?
-    let readingStatus: Bool
+    let link: String
+    var readingStatus: Bool
     let repeatTime: Int
-    let page: Int
-    let pinned: Bool
-    let publisher: String?
-    let title: String?
-    let wish: Bool
+    var page: Int
+    var pinned: Bool
+    let publisher: String
+    let title: String
+    var wish: Bool
     let notes: [BookNote]
     let trackings: [ReadingTracking]
     let readbooks: [ReadBook]
