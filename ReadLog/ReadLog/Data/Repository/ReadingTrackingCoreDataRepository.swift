@@ -17,7 +17,7 @@ final class ReadingTrackingCoreDataRepository: ReadingTrackingRepository {
         let fetchRequest: NSFetchRequest<ReadingTrackingEntity>
         
         fetchRequest = ReadingTrackingEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: false)]
         fetchRequest.predicate = NSPredicate(format: "bookInfo.isbn == %@",isbn)
         
         do {
@@ -30,7 +30,7 @@ final class ReadingTrackingCoreDataRepository: ReadingTrackingRepository {
         
     }
     
-    func addReadingTracking(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?,  _ completion: @escaping (ReadingTracking)->Void) {
+    func addReadingTracking(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?) {
         guard let isbn = bookInfo.isbn else { return }
         guard let bookInfoEntity = getBookInfoEntity(with: isbn) else { return }
         let readingTracking = ReadingTrackingEntity(context: context)
@@ -48,7 +48,6 @@ final class ReadingTrackingCoreDataRepository: ReadingTrackingRepository {
         
         do {
             try context.save()
-            completion(tracking)
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")

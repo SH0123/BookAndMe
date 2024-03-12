@@ -145,6 +145,7 @@ struct BookInfoView: View {
             // save wishlist changes
             // if book data is not in db and added to wishlist, saves book data (wish = true)
             // if book data is in db, save changes
+            // TODO: delegate 통해서 wishlist에 넣기
             fetchBookInfoUseCase.execute(with: bookInfo.isbn!) { book in
                 // TODO: bookInfo, dbBookData 등 너무 많은 변수 존재해서 혼란을 야기
                 if let book {
@@ -238,7 +239,6 @@ struct BookInfoView: View {
                                 readingStatus: false,
                                 repeatTime: 0,
                                 page: page,
-                                pinned: false,
                                 publisher: bookDataJsonResponse.publisher,
                                 title: bookDataJsonResponse.title,
                                 wish: false,

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol AddReadingTrackingUseCase {
-    func execute(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?, _ completion: @escaping (ReadingTracking)->Void)
+    func execute(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?)
 }
 
 final class AddReadingTrackingUseCaseImpl: AddReadingTrackingUseCase {
@@ -18,9 +18,7 @@ final class AddReadingTrackingUseCaseImpl: AddReadingTrackingUseCase {
         self.readingTrackingRepository = readingTrackingRepository
     }
 
-    func execute(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?, _ completion: @escaping (ReadingTracking)->Void) {
-        readingTrackingRepository.addReadingTracking(tracking, to: bookInfo, of: userId) { tracking in
-            completion(tracking)
-        }
+    func execute(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?) {
+        readingTrackingRepository.addReadingTracking(tracking, to: bookInfo, of: userId)
     }
 }

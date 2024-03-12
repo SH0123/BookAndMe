@@ -50,27 +50,6 @@ struct BooksView : View {
                                         .foregroundStyle(Color.skyBlue)
                                 }
                             }
-                            
-                            Button(action: {
-                                books[idx].pinned.toggle() // TODO: 여기 update usecase 사용 필요
-                                do {
-                                    try viewContext.save()
-                                } catch {
-                                    let nsError = error as NSError
-                                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                                }
-                            }){
-                                ZStack{
-                                    Circle()
-                                        .foregroundColor(books[idx].pinned == true ? .yellow : .clear)
-                                    Image("pin")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                }
-                                
-                            }
-                            .frame(width: 25, height: 25)
-                            .offset(x: 105, y: -135)
                         }
                     }
                     .frame(width: pageWidth)

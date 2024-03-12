@@ -114,7 +114,6 @@ class PaginationViewModel: ObservableObject {
                                 readingStatus: false,
                                 repeatTime: 0,
                                 page: page,
-                                pinned: false,
                                 publisher: bookDataJsonResponse.publisher,
                                 title: bookDataJsonResponse.title,
                                 wish: false,

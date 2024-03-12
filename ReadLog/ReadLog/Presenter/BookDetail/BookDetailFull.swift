@@ -90,7 +90,6 @@ struct BookDetailFull: View {
                     Spacer()
                     Button {
                         if let newPageRead = Int(pagesReadInput), newPageRead <= viewModel.totalBookPages {
-                            // TODO: 여기 제대로 동작 안함
                             viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
                             pagesReadInput = ""
                             hideKeyboard()

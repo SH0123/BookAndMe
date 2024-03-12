@@ -21,7 +21,6 @@ extension BookInfoEntity {
             readingStatus: readingStatus,
             repeatTime: Int(repeatTime),
             page: Int(page),
-            pinned: pinned,
             publisher: publisher ?? "",
             title: title ?? "제목 없음",
             wish: wish,

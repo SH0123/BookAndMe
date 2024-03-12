@@ -21,9 +21,6 @@ final class ReadBookCoreDataRepository: ReadBookRepository {
         
         do {
             let objects = try context.fetch(fetchRequest)
-            let bookInfos = objects.compactMap {$0.bookInfo?.title}
-            print(objects.first?.endDate!)
-            print(bookInfos)
             completion(objects.compactMap { $0.bookInfo?.toDomain() })
             
         } catch {
@@ -45,8 +42,6 @@ final class ReadBookCoreDataRepository: ReadBookRepository {
         if var readList = bookInfoEntity?.readBooks {
             readList = readList.adding(newReadBook) as NSSet
             bookInfoEntity?.readBooks = readList
-            print(bookInfoEntity?.title)
-            print("---------------------")
         } else {
             bookInfoEntity?.readBooks = [newReadBook]
         }

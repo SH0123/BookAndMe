@@ -48,7 +48,6 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
         
         do {
             let objects = try context.fetch(request)
-            objects.first?.readBooks?.allObjects
             completion(objects.map { $0.toDomain() })
         } catch {
             let nsError = error as NSError
@@ -113,7 +112,6 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
         bookInfoEntity.readingStatus = book.readingStatus
         bookInfoEntity.repeatTime = Int32(book.repeatTime)
         bookInfoEntity.page = Int32(book.page)
-        bookInfoEntity.pinned = book.pinned
         bookInfoEntity.publisher = book.publisher
         bookInfoEntity.title = book.title
         bookInfoEntity.wish = book.wish

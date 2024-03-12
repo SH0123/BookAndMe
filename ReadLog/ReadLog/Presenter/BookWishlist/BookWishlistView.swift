@@ -15,15 +15,6 @@ protocol AddWishListDelegate: AnyObject {
 struct BookWishlistView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Binding var tab: Int
-    
-//    @FetchRequest(
-//        sortDescriptors: [
-//            NSSortDescriptor(keyPath: \BookInfoEntity.title, ascending: true)
-//        ],
-//        predicate: NSPredicate(format: "wish == true"),
-//        animation: .default
-//    )
-//    private var dbBookData: FetchedResults<BookInfoEntity>
     @State private var dbBookData: [BookInfo]?
     private let fetchBookListUseCase: FetchBookListUseCase
     

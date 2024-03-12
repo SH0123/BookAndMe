@@ -20,19 +20,6 @@ struct ReadingBookView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Binding var tab: Int
     @State var readingBooks: [BookInfo] = []
-    // Book info
-    //    @FetchRequest(
-    //        sortDescriptors: [
-    //            NSSortDescriptor(keyPath: \ReadingList.pinned, ascending: false),
-    //            NSSortDescriptor(keyPath: \ReadingTrackingEntity.readDate, ascending: false)],
-    //        predicate: NSPredicate(format:"recent == true"),
-    //        animation: .default)
-    //    private var notes: FetchedResults<ReadingTrackingEntity>
-    
-//    @FetchRequest(
-//        sortDescriptors: [], predicate: NSPredicate(format:"readingStatus == true"),
-//        animation: .default)
-//    private var readingBooks: FetchedResults<BookInfoEntity>
     @State var currentIndex: Int = 0
     let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
     private let fetchBookListUseCase: FetchBookListUseCase

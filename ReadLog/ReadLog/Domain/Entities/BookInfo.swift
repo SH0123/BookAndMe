@@ -18,7 +18,6 @@ struct BookInfo: Identifiable {
     var readingStatus: Bool
     let repeatTime: Int
     var page: Int
-    var pinned: Bool
     let publisher: String
     let title: String
     var wish: Bool
