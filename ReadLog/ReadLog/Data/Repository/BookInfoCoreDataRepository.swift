@@ -48,6 +48,7 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
         
         do {
             let objects = try context.fetch(request)
+            objects.first?.readBooks?.allObjects
             completion(objects.map { $0.toDomain() })
         } catch {
             let nsError = error as NSError
@@ -70,22 +71,20 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
 
     }
     
-    func addBookInfo(book: BookInfo) {
-        let bookInfoEntity = BookInfoEntity(context: context)
-        mappingBookInfoEntity(from: book, to: bookInfoEntity)
-        bookInfoEntity.bookNotes = []
-        bookInfoEntity.readingTrackings = []
-        bookInfoEntity.readBooks = []
-        
+    func addBookInfo(book: BookInfo, _ completion: @escaping (BookInfo) -> Void) {
+        var bookInfoEntity = BookInfoEntity(context: context)
+        bookInfoEntity = mappingBookInfoEntity(from: book, to: bookInfoEntity)
+        print(bookInfoEntity)
         do {
             try context.save()
+            completion(book)
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
         }
     }
     
-    func updateBookInfo(book: BookInfo, of userId: String?, _ completion: ((BookInfo?) -> Void)?) {
+    func updateBookInfo(book: BookInfo, of userId: String?, _ completion: ((BookInfo) -> Void)?) {
         guard let isbn = book.isbn else { return }
         guard var bookInfoEntity = getBookInfoEntity(isbn: isbn) else { return }
         bookInfoEntity = mappingBookInfoEntity(from: book, to: bookInfoEntity)
@@ -118,6 +117,9 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
         bookInfoEntity.publisher = book.publisher
         bookInfoEntity.title = book.title
         bookInfoEntity.wish = book.wish
+        bookInfoEntity.bookNotes = NSSet(array: book.notes.map { $0.toEntity(context: context, bookInfoEntity: bookInfoEntity) })
+        bookInfoEntity.readingTrackings = NSSet(array: book.trackings.map { $0.toEntity(context: context, bookInfoEntity: bookInfoEntity) })
+        bookInfoEntity.readBooks = NSSet(array: book.readbooks.map { $0.toEntity(context: context, bookInfoEntity: bookInfoEntity) })
         
         return bookInfoEntity
     }

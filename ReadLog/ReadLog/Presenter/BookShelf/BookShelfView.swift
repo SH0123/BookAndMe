@@ -21,10 +21,10 @@ struct BookShelfView: View {
         }
     }
     @State private var fetchedBookList: [BookInfo]?
-    private let fetchBookListUseCase: FetchBookListUseCase
+    private let fetchReadBookListUseCase: FetchReadBookListUseCase
     
-    init(fetchBookListUseCase: FetchBookListUseCase = FetchBookListUseCaseImpl()) {
-        self.fetchBookListUseCase = fetchBookListUseCase
+    init(fetchReadBookListUseCase: FetchReadBookListUseCase = FetchReadBookListUseCaseImpl()) {
+        self.fetchReadBookListUseCase = fetchReadBookListUseCase
     }
     
     var body: some View {
@@ -71,6 +71,14 @@ struct BookShelfView: View {
             }
             
             .toolbar(.hidden)
+        }
+        .onAppear {
+            fetchReadBookListUseCase.execute(of: nil) { bookList in
+                print("----")
+                print(bookList)
+                fetchedBookList = bookList
+            }
+            
         }
     }
 }

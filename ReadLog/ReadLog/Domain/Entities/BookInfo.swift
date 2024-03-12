@@ -22,7 +22,7 @@ struct BookInfo: Identifiable {
     let publisher: String
     let title: String
     var wish: Bool
-    let notes: [BookNote]
-    let trackings: [ReadingTracking]
-    let readbooks: [ReadBook]
+    var notes: [BookNote]
+    var trackings: [ReadingTracking]
+    var readbooks: [ReadBook]
 }

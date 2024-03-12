@@ -9,6 +9,6 @@ import Foundation
 
 protocol ReadingTrackingRepository {
     func fetchReadingTrackingList(with isbn: String, of userId: String?, _ completion: @escaping ([ReadingTracking])->Void)
-    func addReadingTracking(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?)
+    func addReadingTracking(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?,  _ completion: @escaping (ReadingTracking)->Void)
     func updateReadingTracking(_ tracking: ReadingTracking, of userId: String?, newPage: Int)
 }

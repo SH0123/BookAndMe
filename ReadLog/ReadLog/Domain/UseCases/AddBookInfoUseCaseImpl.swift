@@ -8,7 +8,7 @@
 import Foundation
 
 protocol AddBookInfoUseCase {
-    func execute(book: BookInfo)
+    func execute(book: BookInfo, _ completion: @escaping (BookInfo) -> Void)
 }
 
 final class AddBookInfoUseCaseImpl: AddBookInfoUseCase {
@@ -18,7 +18,9 @@ final class AddBookInfoUseCaseImpl: AddBookInfoUseCase {
         self.bookInfoRepository = bookInfoRepository
     }
 
-    func execute(book: BookInfo) {
-        bookInfoRepository.addBookInfo(book: book)
+    func execute(book: BookInfo, _ completion: @escaping (BookInfo) -> Void) {
+        bookInfoRepository.addBookInfo(book: book) { bookInfo in
+            completion(bookInfo)
+        }
     }
 }

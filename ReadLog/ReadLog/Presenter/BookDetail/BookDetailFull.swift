@@ -19,7 +19,6 @@ struct BookDetailFull: View {
     @FocusState private var isInputActive: Bool
     private let fetchBookInfoUseCase: FetchBookInfoUseCase
     private let fetchBookNoteListUseCase: FetchBookNoteListUseCase
-    private let addReadBookUseCase: AddReadBookUseCase
     private let updateBookInfoUseCase: UpdateBookInfoUseCase
     private let fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase
     private var bookInfo: BookInfo?
@@ -30,7 +29,6 @@ struct BookDetailFull: View {
          isRead: Bool,
          fetchBookInfoUseCase: FetchBookInfoUseCase = FetchBookInfoUseCaseImpl(),
          fetchBookNoteListUseCase: FetchBookNoteListUseCase = FetchBookNoteListUseCaseImpl(),
-         addReadBookUseCase: AddReadBookUseCase = AddReadBookUseCaseImpl(),
          updateBookInfoUseCase: UpdateBookInfoUseCase = UpdateBookInfoUseCaseImpl(),
          fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase = FetchReadingTrackingsUseCaseImpl()
     ) {
@@ -39,7 +37,6 @@ struct BookDetailFull: View {
         self._viewModel = StateObject(wrappedValue: ReadingTrackerViewModel(context: PersistenceController.shared.container.viewContext))
         self.fetchBookInfoUseCase = fetchBookInfoUseCase
         self.fetchBookNoteListUseCase = fetchBookNoteListUseCase
-        self.addReadBookUseCase = addReadBookUseCase
         self.updateBookInfoUseCase = updateBookInfoUseCase
         self.fetchReadingTrackingsUseCase = fetchReadingTrackingsUseCase
     }
@@ -93,6 +90,7 @@ struct BookDetailFull: View {
                     Spacer()
                     Button {
                         if let newPageRead = Int(pagesReadInput), newPageRead <= viewModel.totalBookPages {
+                            // TODO: 여기 제대로 동작 안함
                             viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
                             pagesReadInput = ""
                             hideKeyboard()
@@ -208,19 +206,28 @@ private extension BookDetailFull {
     func readingStateToggle(book: BookInfo) {
         // delegate 사용 필요 bookshelf에 추가
         // delegate 사용 필요 readingList에서 제거
-        updateBookInfoUseCase.execute(book: book, of: nil, nil)
+        var updateBook = book
+        updateBook.readingStatus = false
+        updateBookInfoUseCase.execute(book: updateBook, of: nil, nil)
     }
     
     func addReadList(book: BookInfo, sdate: Date, edate: Date) {
         let readBook = ReadBook(id: UUID(), startDate: sdate, endDate: edate)
-        addReadBookUseCase.execute(readBook: readBook, bookInfo: book, of: nil) { bookInfo in
+//        addReadBookUseCase.execute(readBook: readBook, bookInfo: book, of: nil) { bookInfo in
+//            readingStateToggle(book: bookInfo)
+//            // 1번 탭에서 책 정보 지워줄 delegate 필요
+//        }
+        var newBook = book
+        newBook.readbooks.append(readBook)
+        updateBookInfoUseCase.execute(book: newBook, of: nil) { bookInfo in
             readingStateToggle(book: bookInfo)
         }
     }
     
+    // bookShelf 추가 안됨
     func readComplete(isbn: String?) {
         guard let isbn else { return }
-        
+        // TODO: 이러면 다회독 했을 때 예전 데이터가 reading list에서 가져와져서 그 값이 저장될 듯
         fetchAllReadingList(isbn: isbn) { readingList in
             print(readingList)
             if readingList.isEmpty {
@@ -377,7 +384,7 @@ private extension BookDetailFull {
             Spacer()
             if !isRead {
                 Button("완독"){
-                    // 완독에서 크래쉬남
+                    // delegate 통해서 1번탭에서 지워줄 것
                     readComplete(isbn: bookInfo?.isbn)
                     dismiss()
                 }

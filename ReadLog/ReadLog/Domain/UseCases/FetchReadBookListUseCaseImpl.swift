@@ -8,7 +8,7 @@
 import Foundation
 
 protocol FetchReadBookListUseCase {
-    func execute(of userId: String?, _ completion: @escaping ([ReadBook]) -> Void)
+    func execute(of userId: String?, _ completion: @escaping ([BookInfo]) -> Void)
 }
 
 final class FetchReadBookListUseCaseImpl: FetchReadBookListUseCase {
@@ -18,7 +18,7 @@ final class FetchReadBookListUseCaseImpl: FetchReadBookListUseCase {
         self.readBookRepository = readBookRepository
     }
 
-    func execute(of userId: String?, _ completion: @escaping ([ReadBook]) -> Void) {
+    func execute(of userId: String?, _ completion: @escaping ([BookInfo]) -> Void) {
         readBookRepository.fetchReadBookList(of: userId) { readBookList in
             completion(readBookList)
         }

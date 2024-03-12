@@ -13,7 +13,7 @@ final class ReadBookCoreDataRepository: ReadBookRepository {
     private var context: NSManagedObjectContext = PersistenceController.shared.container.viewContext
     private init() {}
     
-    func fetchReadBookList(of userId: String?, _ completion: @escaping ([ReadBook]) -> Void) {
+    func fetchReadBookList(of userId: String?, _ completion: @escaping ([BookInfo]) -> Void) {
         let fetchRequest: NSFetchRequest<ReadBookEntity>
         
         fetchRequest = ReadBookEntity.fetchRequest()
@@ -21,7 +21,11 @@ final class ReadBookCoreDataRepository: ReadBookRepository {
         
         do {
             let objects = try context.fetch(fetchRequest)
-            completion(objects.map { $0.toDomain() })
+            let bookInfos = objects.compactMap {$0.bookInfo?.title}
+            print(objects.first?.endDate!)
+            print(bookInfos)
+            completion(objects.compactMap { $0.bookInfo?.toDomain() })
+            
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")
@@ -30,19 +34,38 @@ final class ReadBookCoreDataRepository: ReadBookRepository {
     
     func addReadBook(readBook: ReadBook, bookInfo: BookInfo, of userId: String?, _ completion: @escaping (BookInfo)->Void) {
         // bookinfo reading state 변경 domain과 db entity 둘 다 해줘야함
-        guard let isbn = bookInfo.isbn, let book = getBookInfoEntity(isbn: isbn) else { return }
+        guard let isbn = bookInfo.isbn else { return }
+        let bookInfoEntity = getBookInfoEntity(isbn: isbn)
         let newReadBook = ReadBookEntity(context: context)
         newReadBook.id = readBook.id
         newReadBook.startDate = readBook.startDate
         newReadBook.endDate = readBook.endDate
-        newReadBook.bookInfo = book
+        newReadBook.bookInfo = bookInfoEntity
         
-        if var readList = book.readBooks {
-            readList = readList.adding(readBook) as NSSet
-            book.readBooks = readList
+        if var readList = bookInfoEntity?.readBooks {
+            readList = readList.adding(newReadBook) as NSSet
+            bookInfoEntity?.readBooks = readList
+            print(bookInfoEntity?.title)
+            print("---------------------")
         } else {
-            book.readBooks = [readBook]
+            bookInfoEntity?.readBooks = [newReadBook]
         }
+        
+//        guard let isbn = book.isbn else { return }
+//        let book = getBookInfoEntity(with: isbn)
+//        let newNote = BookNoteEntity(context: context)
+//        newNote.id = note.id
+//        newNote.label = Int16(note.label)
+//        newNote.content = note.content
+//        newNote.date = note.date
+//        newNote.bookInfo = book
+//        
+//        if var notes = book?.bookNotes {
+//            notes = notes.adding(newNote) as NSSet
+//            book?.bookNotes = notes
+//        } else {
+//            book?.bookNotes = [newNote]
+//        }
         
         do {
             try context.save()

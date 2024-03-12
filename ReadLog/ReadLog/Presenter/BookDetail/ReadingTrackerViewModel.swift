@@ -74,7 +74,6 @@ final class ReadingTrackerViewModel: ObservableObject {
             else {
                 self?.addTodayReadingTracking(page: newPageRead, bookInfo: bookInfo)
             }
-            self?.lastPageRead = newPageRead
         }
     }
     
@@ -138,7 +137,7 @@ private extension ReadingTrackerViewModel {
             fatalError("Unresolved Error\(nsError)")
         }
     }*/
-    
+    // 완독시에 ReadingTracking 모두 지우기? 아니면 과거 읽었던 기록들 유지하면서 n회차에 읽은 시작날짜와 끝낸 날짜 추적 가능한가
     func fetchAllReadingTrackingList(isbn: String, _ completion: @escaping ([ReadingTracking])->Void) {
         fetchReadingTrackingUseCase.execute(with: isbn,
                                             of: nil) { readingTrackingList in
@@ -149,6 +148,8 @@ private extension ReadingTrackerViewModel {
     
     func addTodayReadingTracking(page: Int, bookInfo: BookInfo) {
         let newReadingTracking = ReadingTracking(id: UUID(), readDate: Date(), readPage: page)
-        addReadingTrackingUseCase.execute(newReadingTracking, to: bookInfo, of: nil)
+        addReadingTrackingUseCase.execute(newReadingTracking, to: bookInfo, of: nil) { [weak self] readingTracking in
+            self?.lastPageRead = readingTracking.readPage
+        }
     }
 }

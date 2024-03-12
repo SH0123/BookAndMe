@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UpdateBookInfoUseCase {
-    func execute(book: BookInfo, of userId: String?, _ completion: ((BookInfo?) -> Void)?)
+    func execute(book: BookInfo, of userId: String?, _ completion: ((BookInfo) -> Void)?)
 }
 
 final class UpdateBookInfoUseCaseImpl: UpdateBookInfoUseCase {
@@ -18,7 +18,7 @@ final class UpdateBookInfoUseCaseImpl: UpdateBookInfoUseCase {
         self.bookInfoRepository = bookInfoRepository
     }
 
-    func execute(book: BookInfo, of userId: String?, _ completion: ((BookInfo?) -> Void)?) {
+    func execute(book: BookInfo, of userId: String?, _ completion: ((BookInfo) -> Void)?) {
         bookInfoRepository.updateBookInfo(book: book, of: userId) { bookInfo in
             if let completion {
                 completion(bookInfo)

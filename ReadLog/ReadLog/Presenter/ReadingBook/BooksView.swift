@@ -52,7 +52,7 @@ struct BooksView : View {
                             }
                             
                             Button(action: {
-                                books[idx].pinned.toggle()
+                                books[idx].pinned.toggle() // TODO: 여기 update usecase 사용 필요
                                 do {
                                     try viewContext.save()
                                 } catch {

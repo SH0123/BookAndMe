@@ -30,7 +30,7 @@ final class ReadingTrackingCoreDataRepository: ReadingTrackingRepository {
         
     }
     
-    func addReadingTracking(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?) {
+    func addReadingTracking(_ tracking: ReadingTracking, to bookInfo: BookInfo, of userId: String?,  _ completion: @escaping (ReadingTracking)->Void) {
         guard let isbn = bookInfo.isbn else { return }
         guard let bookInfoEntity = getBookInfoEntity(with: isbn) else { return }
         let readingTracking = ReadingTrackingEntity(context: context)
@@ -48,6 +48,7 @@ final class ReadingTrackingCoreDataRepository: ReadingTrackingRepository {
         
         do {
             try context.save()
+            completion(tracking)
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved Error\(nsError)")

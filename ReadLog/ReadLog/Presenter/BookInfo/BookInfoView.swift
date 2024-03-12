@@ -14,18 +14,12 @@ struct BookInfoView: View {
     
     // core data
     @Environment(\.managedObjectContext) private var viewContext
-//    @FetchRequest(
-//        sortDescriptors: [
-//            NSSortDescriptor(keyPath: \BookInfoEntity.id, ascending: false)
-//        ],
-//        animation: .default
-//    )
-//    private var dbBookData: FetchedResults<BookInfoEntity>
     private let fetchBookInfoUseCase: FetchBookInfoUseCase
     private let addBookInfoUseCase: AddBookInfoUseCase
     private let updateBookInfoUseCase: UpdateBookInfoUseCase
+    private let addReadingTrackingUseCase: AddReadingTrackingUseCase
     @State private var dbBookData: BookInfo?
-    // view variables
+
     var bookInfo: BookInfo
     
     @State var bookWithPage: BookInfoData?
@@ -38,12 +32,14 @@ struct BookInfoView: View {
          bookInfo: BookInfo,
          fetchBookInfoUseCase: FetchBookInfoUseCase = FetchBookInfoUseCaseImpl(),
          addBookInfoUseCase: AddBookInfoUseCase = AddBookInfoUseCaseImpl(),
-         updateBookInfoUseCase: UpdateBookInfoUseCase = UpdateBookInfoUseCaseImpl()) {
+         updateBookInfoUseCase: UpdateBookInfoUseCase = UpdateBookInfoUseCaseImpl(),
+         addReadingTrackingUseCase: AddReadingTrackingUseCase = AddReadingTrackingUseCaseImpl()) {
         self._tab = tab
         self.bookInfo = bookInfo
         self.fetchBookInfoUseCase = fetchBookInfoUseCase
         self.addBookInfoUseCase = addBookInfoUseCase
         self.updateBookInfoUseCase = updateBookInfoUseCase
+        self.addReadingTrackingUseCase = addReadingTrackingUseCase
     }
     
     var body: some View {
@@ -95,58 +91,14 @@ struct BookInfoView: View {
                                 .font(.system(size: 35))
                         }
                         
-                        // book data does not exist in core data
                         if buttonText == "독서 시작" {
+                            // TODO: 처음 독서 시작 버튼 하면 저장 안됨. 두번째 해야 됨
                             Button {
                                 print("start to read the book.")
                                 // TODO: isbn 없는 경우 핸들링 코드 전체적으로 작성 필요
                                 fetchBookInfoUseCase.execute(with: bookInfo.isbn!) { book in
-                                    if let book {
-                                        // 책을 읽은 적 있는 경우
-                                        if bookInfo.page != 0 {
-                                            // save to core data
-//                                            saveBookData(newBook: book)
-                                            addToReadingList(newBook: book)
-                                            // add To Reading List에서 pinned, recent 해주는 작업 필요없음. saveBookData에서 readingStatus True 해주면
-                                            //TODO: 첫번째 페이지에서 bookinfo 중에 readingStatus true인 값 가져오는 로직으로 변경
-                                        } else {
-                                            // call isbn search api and take subinfo data
-                                            // save data to core data
-                                            getBookDataWithPage(isbn: bookInfo.isbn!) { result in
-                                                if let bookWithPage = result {
-//                                                    saveBookData(newBook: bookWithPage)
-                                                    addToReadingList(newBook: bookWithPage)
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        // 책을 읽은 적 없는 경우
-                                        saveBookData(newBook: bookInfo)
-                                    }
+                                    addToReadingList(newBook: book)
                                 }
-//                                dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
-//                                if dbBookData.isEmpty {
-//                                    // if bookInfo object has page number, api call is not required.
-//                                    if bookInfo.itemPage != 0 {
-//                                        // save to core data
-//                                        saveBookData(newBook: bookInfo)
-//                                        addToReadingList(bookId: Int32(bookInfo.id))
-//                                        // add To Reading List에서 pinned, recent 해주는 작업 필요없음. saveBookData에서 readingStatus True 해주면
-//                                        //TODO: 첫번째 페이지에서 bookinfo 중에 readingStatus true인 값 가져오는 로직으로 변경
-//                                    } else {
-//                                        // call isbn search api and take subinfo data
-//                                        // save data to core data
-//                                        getBookDataWithPage(isbn: bookInfo.isbn) { result in
-//                                            if let bookWithPage = result {
-//                                                saveBookData(newBook: bookWithPage)
-//                                                addToReadingList(bookId: Int32(bookWithPage.id))
-//                                            }
-//                                        }
-//                                    }
-//                                } else {
-//                                    addToReadingList(bookId: Int32(bookInfo.id))
-//                                }
-                                
                             } label: {
                                 Text(buttonText)
                                     .title(.black)
@@ -157,11 +109,7 @@ struct BookInfoView: View {
                             .background(Color.lightBlue)
                             .cornerRadius(5.0)
                         } else {
-                            
-                            // todomain 부분 수정한거임 나중에 다시 수정
                             NavigationLink(destination: BookDetailFull(dbBookData, isRead: false).navigationBarBackButtonHidden(true)) {
-                                
-                                
                                 Button {
                                     print("go to book detail page.")
                                 } label: {
@@ -192,34 +140,13 @@ struct BookInfoView: View {
                     self.buttonText = "독서 진행 중"
                 }
             }
-//            dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
-//            if !dbBookData.isEmpty {
-//                self.like = dbBookData.first!.wish
-//                if dbBookData.first!.readingStatus {
-//                    self.buttonText = "독서 진행 중"
-//                }
-                /*
-                if let readingList = dbBookData.first!.readingTrackings as? Set<ReadingTrackingEntity> {
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-                    
-                    // TODO: 가장 처음 책을 읽기 시작한 날 buttonText에 넣는 로직으로 변경
-//                    let recent = readingList.filter { $0.recent == true }
-//                    
-//                    if !recent.isEmpty {
-//                        self.buttonText = dateFormatter.string(from: recent.first!.readtime!)
-//                    }
-                    self.buttonText = "독서 진행 중"
-                    
-                }
-                 */
-//            }
         }
         .onDisappear {
             // save wishlist changes
             // if book data is not in db and added to wishlist, saves book data (wish = true)
             // if book data is in db, save changes
             fetchBookInfoUseCase.execute(with: bookInfo.isbn!) { book in
+                // TODO: bookInfo, dbBookData 등 너무 많은 변수 존재해서 혼란을 야기
                 if let book {
                     if like != book.wish {
                         guard var dbBookData else { return }
@@ -228,42 +155,26 @@ struct BookInfoView: View {
                     }
                 } else {
                     if like {
-                        if bookInfo.page == 0 {
+                        if dbBookData?.page == 0 {
                             getBookDataWithPage(isbn: bookInfo.isbn!) { result in
-                                if let bookWithPage = result {
-                                    saveBookData(newBook: bookWithPage)
+                                if var bookWithPage = result {
+                                    // TODO: page 수 0인 책들 나오는데 다시 확인해보기
+                                    bookWithPage.wish = true
+                                    saveBookData(newBook: bookWithPage, nil)
                                 }
                             }
                         } else {
-                            saveBookData(newBook: bookInfo)
+                            // bookInfo 넘겨줘야함
+                            var bookData = bookInfo
+                            bookData.wish = true
+                            saveBookData(newBook: bookData, nil)
                         }
                     }
                 }
-                
-                
             }
-            
-//            dbBookData.nsPredicate = NSPredicate(format: "id == %d", Int32(bookInfo.id))
-//            if dbBookData.isEmpty {
-//                if like {
-//                    if bookInfo.itemPage == 0 {
-//                        getBookDataWithPage(isbn: bookInfo.isbn) { result in
-//                            if let bookWithPage = result {
-//                                saveBookData(newBook: bookWithPage)
-//                            }
-//                        }
-//                    } else {
-//                        saveBookData(newBook: bookInfo)
-//                    }
-//                }
-//            } else {
-//                if like != dbBookData.first!.wish {
-//                    updateBookWish(bookId: Int32(bookInfo.id))
-//                }
-//            }
         }
     }
-    
+    // get page로 그냥 바꾸자. 왜냐하면 book Info를 새롭게 mapping하는 코드는 지금의 상태를 다 날려버림 ㅠㅠ
     private func getBookDataWithPage(isbn: String, completion: @escaping (BookInfo?) -> Void) {
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=\(ApiKey.aladinKey)&itemIdType=ISBN13&ItemId=\(isbn)&output=js&Version=20131101"
         
@@ -315,20 +226,7 @@ struct BookInfoView: View {
         
         task.resume()
     }
-    /*
-    func findBook(bookId: Int32) -> BookInfoEntity? {
-        let fetchRequest: NSFetchRequest<BookInfoEntity> = BookInfoEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %d", bookId)
-        
-        do {
-            let result = try viewContext.fetch(fetchRequest)
-            return result.first
-        } catch {
-            print("Error fetching object by id: \(error)")
-            return nil
-        }
-    }
-    */
+    
     private func mappingToBookInfo(bookDataJsonResponse: BookDataJsonResponse, page: Int) -> BookInfo {
         var bookInfo = BookInfo(id: bookDataJsonResponse.id,
                                 author: bookDataJsonResponse.author,
@@ -361,64 +259,59 @@ struct BookInfoView: View {
         return bookInfo
     }
     
-    private func saveBookData(newBook: BookInfo) {
+    // 책을 저장한 적 없는 경우 아래 두개
+    private func saveBookData(newBook: BookInfo, _ completion: ((BookInfo)->Void)?) {
         print("Save book to core data.")
-        addBookInfoUseCase.execute(book: newBook)
+        addBookInfoUseCase.execute(book: newBook) { bookInfo in
+            guard let completion else { return }
+            completion(bookInfo)
+        }
     }
     
+    private func setInitialReadingState(to newBook: BookInfo) -> BookInfo {
+        var resBook = newBook
+        resBook.readingStatus = true
+        let readingTracking = ReadingTracking(id: UUID(), readDate: Date(), readPage: 0)
+        resBook.trackings.append(readingTracking)
+        return resBook
+    }
     
-    private func addToReadingList(newBook: BookInfo) {
-        var book = newBook
-        book.readingStatus = true
-        updateBookInfoUseCase.execute(book: book, of: nil) { _ in
+    // 책을 읽은 적 있는 경우 아래 한개
+    private func updateReadingStatus(newBook: BookInfo) {
+        updateBookInfoUseCase.execute(book: newBook, of: nil) { _ in
             print("saved readingList to db")
             self.buttonText = "독서 진행중"
-            // reading book view delegate 작업
-            // tab 바꾸는것도 delegate에서
-        }
-        
-//        guard let book = findBook(bookId: bookId) else {
-//            return
-//        }
-//        book.readingStatus = true
-//        
-//        let newReading = ReadingTrackingEntity(context: viewContext)
-//        newReading.readDate = Date()
-//        newReading.readPage = 0
-//        
-//        book.readingTrackings = [newReading]
-//        newReading.bookInfo = book
-        
-//        do {
-//            try viewContext.save()
-//            print("saved readingList to db")
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-//            self.buttonText = dateFormatter.string(from: newReading.readDate!)
-//            self.buttonText = "독서 진행 중"
-//            tab = 0
-//        } catch {
-//            let nsError = error as NSError
-//            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//        }
-    }
-    /*
-    func updateBookWish(bookId: Int32) {
-        guard let book = findBook(bookId: bookId) else {
-            return
-        }
-        
-        book.wish = like
-        
-        do {
-            try viewContext.save()
-            print("updated book in db")
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            self.tab = 0
         }
     }
-    */
+    
+    private func addToReadingList(newBook: BookInfo?) {
+        if let newBook {
+            var initialBook = setInitialReadingState(to: newBook)
+            // 책을 읽은 적 있는 경우
+            if bookInfo.page != 0 {
+                updateReadingStatus(newBook: initialBook)
+            } else {
+                // new book에 page만 넣어주기
+                getBookDataWithPage(isbn: bookInfo.isbn!) { result in
+                    if let bookWithPage = result {
+                        initialBook.page = bookWithPage.page
+                        updateReadingStatus(newBook: initialBook)
+                    }
+                }
+            }
+        } else {
+            // 책을 읽은 적 없는 경우
+            let initialBook = setInitialReadingState(to: bookInfo)
+            saveBookData(newBook: initialBook) { _ in
+                self.buttonText = "독서 진행중"
+                self.tab = 0
+                // 독서 진행중이면 클릭 못하게 작업하자
+            }
+        }
+    }
+    
+    //TODO: 이미지 저장 안되는 문제
     // 다른 파일에서도 사용되기 때문에 dto -> domain mapper로 만들어도 좋을 듯
     private func fetchImage(urlString: String, completion: @escaping (Data?) -> Void) {
         let convertedUrl = urlString.replacingOccurrences(of: "coversum", with: "cover200")

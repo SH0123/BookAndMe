@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 extension BookInfoEntity {
     func toDomain() -> BookInfo {
@@ -53,5 +54,42 @@ extension ReadingTrackingEntity {
         return .init(id: id,
                      readDate: readDate,
                      readPage: Int(readPage))
+    }
+}
+
+extension ReadingTracking {
+    func toEntity(context: NSManagedObjectContext, bookInfoEntity: BookInfoEntity) -> ReadingTrackingEntity {
+        let entity = ReadingTrackingEntity(context: context)
+        entity.id = id
+        entity.readDate = readDate
+        entity.readPage = Int32(readPage)
+        entity.bookInfo = bookInfoEntity
+        
+        return entity
+    }
+}
+
+extension ReadBook {
+    func toEntity(context: NSManagedObjectContext, bookInfoEntity: BookInfoEntity) -> ReadBookEntity {
+        let entity = ReadBookEntity(context: context)
+        entity.id = id
+        entity.startDate = startDate
+        entity.endDate = endDate
+        entity.bookInfo = bookInfoEntity
+        
+        return entity
+    }
+}
+
+extension BookNote {
+    func toEntity(context: NSManagedObjectContext, bookInfoEntity: BookInfoEntity) -> BookNoteEntity {
+        let entity = BookNoteEntity(context: context)
+        entity.id = id
+        entity.label = Int16(label)
+        entity.date = date
+        entity.content = content
+        entity.bookInfo = bookInfoEntity
+        
+        return entity
     }
 }
