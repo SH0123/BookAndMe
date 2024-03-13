@@ -175,7 +175,7 @@ struct BookInfoView: View {
             }
         }
     }
-    // get page로 그냥 바꾸자. 왜냐하면 book Info를 새롭게 mapping하는 코드는 지금의 상태를 다 날려버림 ㅠㅠ
+    
     private func getBookDataWithPage(isbn: String, completion: @escaping (BookInfo?) -> Void) {
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=\(ApiKey.aladinKey)&itemIdType=ISBN13&ItemId=\(isbn)&output=js&Version=20131101"
         
@@ -247,13 +247,13 @@ struct BookInfoView: View {
                                 readbooks: [])
         
         fetchImage(urlString: bookDataJsonResponse.coverImage) { imageData in
-            DispatchQueue.main.async {
+//            DispatchQueue.main.async {
                 if let imageData {
                     bookInfo.image = UIImage(data: imageData)
                 } else {
                     print("Failed to fetch or convert image data.")
                 }
-            }
+//            }
         }
         
         return bookInfo
@@ -268,12 +268,23 @@ struct BookInfoView: View {
         }
     }
     
-    private func setInitialReadingState(to newBook: BookInfo) -> BookInfo {
+    private func setInitialReadingState(to newBook: BookInfo, _ completion: @escaping (BookInfo)->Void) {
         var resBook = newBook
-        resBook.readingStatus = true
-        let readingTracking = ReadingTracking(id: UUID(), readDate: Date(), readPage: 0)
-        resBook.trackings.append(readingTracking)
-        return resBook
+        
+        fetchImage(urlString: newBook.coverImageUrl) { imageData in
+            DispatchQueue.main.async {
+                if let imageData {
+                    resBook.image = UIImage(data: imageData)
+                } else {
+                    print("Failed to fetch or convert image data.")
+                }
+                
+                resBook.readingStatus = true
+                let readingTracking = ReadingTracking(id: UUID(), readDate: Date(), readPage: 0)
+                resBook.trackings.append(readingTracking)
+                completion(resBook)
+            }
+        }
     }
     
     // 책을 읽은 적 있는 경우 아래 한개
@@ -287,31 +298,40 @@ struct BookInfoView: View {
     
     private func addToReadingList(newBook: BookInfo?) {
         if let newBook {
-            var initialBook = setInitialReadingState(to: newBook)
-            // 책을 읽은 적 있는 경우
-            if bookInfo.page != 0 {
-                updateReadingStatus(newBook: initialBook)
-            } else {
-                // new book에 page만 넣어주기
-                getBookDataWithPage(isbn: bookInfo.isbn!) { result in
-                    if let bookWithPage = result {
-                        initialBook.page = bookWithPage.page
-                        updateReadingStatus(newBook: initialBook)
+            setInitialReadingState(to: newBook) { initBook in
+                var initialBook = initBook
+                // 책을 읽은 적 있는 경우
+                if bookInfo.page != 0 {
+                    updateReadingStatus(newBook: initialBook)
+                } else {
+                    // new book에 page만 넣어주기
+                    getBookDataWithPage(isbn: bookInfo.isbn!) { result in
+                        if let bookWithPage = result {
+                            initialBook.page = bookWithPage.page
+                            updateReadingStatus(newBook: initialBook)
+                        }
                     }
                 }
             }
+            
         } else {
             // 책을 읽은 적 없는 경우
-            let initialBook = setInitialReadingState(to: bookInfo)
-            saveBookData(newBook: initialBook) { _ in
-                self.buttonText = "독서 진행중"
-                self.tab = 0
-                // 독서 진행중이면 클릭 못하게 작업하자
+            setInitialReadingState(to: bookInfo) { initBook in
+                var initialBook = initBook
+                getBookDataWithPage(isbn: bookInfo.isbn!) { result in
+                    if let bookWithPage = result {
+                        initialBook.page = bookWithPage.page
+                        saveBookData(newBook: initialBook) { _ in
+                            self.buttonText = "독서 진행중"
+                            self.tab = 0
+                            // 독서 진행중이면 클릭 못하게 작업하자
+                        }
+                    }
+                }
             }
         }
     }
     
-    //TODO: 이미지 저장 안되는 문제
     // 다른 파일에서도 사용되기 때문에 dto -> domain mapper로 만들어도 좋을 듯
     private func fetchImage(urlString: String, completion: @escaping (Data?) -> Void) {
         let convertedUrl = urlString.replacingOccurrences(of: "coversum", with: "cover200")
@@ -330,9 +350,9 @@ struct BookInfoView: View {
                 return
             }
             
-            DispatchQueue.main.async {
+//            DispatchQueue.main.async {
                 completion(data)
-            }
+//            }
         }
         
         task.resume()

@@ -21,6 +21,7 @@ final class ReadBookCoreDataRepository: ReadBookRepository {
         
         do {
             let objects = try context.fetch(fetchRequest)
+            
             completion(objects.compactMap { $0.bookInfo?.toDomain() })
             
         } catch {

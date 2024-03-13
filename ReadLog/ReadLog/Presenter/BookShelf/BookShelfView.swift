@@ -7,11 +7,6 @@ protocol AddReadBookDelegate: AnyObject {
 
 struct BookShelfView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    // 중복된 isbn에 대해서 한개만 뜨도록 설정
-//    @FetchRequest (sortDescriptors:
-//                    [NSSortDescriptor(keyPath: \ReadBookEntity.endDate, ascending: false)],
-//                   animation: .default)
-//    private var fetchedBookList: FetchedResults<ReadBookEntity>
     private let bookCountInRow: Int = 3
     private let rowInPage: Int = 3
     private var interpolatedBookList: [BookInfo?] {
@@ -74,8 +69,6 @@ struct BookShelfView: View {
         }
         .onAppear {
             fetchReadBookListUseCase.execute(of: nil) { bookList in
-                print("----")
-                print(bookList)
                 fetchedBookList = bookList
             }
             
@@ -96,19 +89,16 @@ private extension BookShelfView {
     }
     
     func interpolateBookList(_ bookList: [BookInfo]) -> [BookInfo?] {
-        // 같은 책 1개만 가져올 수 있도록
+        // TODO: 같은 책 1개만 가져올 수 있도록, 문제의 원인 분석해보기
         var readList: [BookInfo?] = []
-//        for record in readList {
-//            if !dictionary.keys.contains(record.isbn!) {
-//                dictionary[record.isbn!] = true
-//                bookList.append(record)
-//            }
-//        }
-        for book in bookList {
-            if !book.readbooks.isEmpty {
-                readList.append(book)
+        var dictionary: [String: Bool] = [:]
+        for record in bookList {
+            if !dictionary.keys.contains(record.isbn!) {
+                dictionary[record.isbn!] = true
+                readList.append(record)
             }
         }
+
         let bookCount = readList.count
         let addBookCount = (bookCountInRow - bookCount % bookCountInRow) % bookCountInRow
         let nilArray: [BookInfo?] = Array<BookInfo?>(repeating: nil, count: addBookCount)

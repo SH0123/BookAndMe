@@ -86,7 +86,6 @@ class PaginationViewModel: ObservableObject {
                     }
                     
                     self?.results.append(contentsOf: bookDataArray)
-//                    print(self?.results)
                 }
             } catch {
                 print("Error decoding JSON: \(error)")
@@ -121,13 +120,6 @@ class PaginationViewModel: ObservableObject {
                                 trackings: [],
                                 readbooks: [])
         
-        fetchImage(urlString: bookDataJsonResponse.coverImage) { imageData in
-            if let imageData {
-                bookInfo.image = UIImage(data: imageData)
-            } else {
-                print("Failed to fetch or convert image data.")
-            }
-        }
         return bookInfo
     }
     

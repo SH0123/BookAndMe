@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct SettingView: View {
+    var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
+        return version
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .topLeading) {
@@ -21,7 +26,7 @@ struct SettingView: View {
                         Text("스냅북 버전")
                             .body1(.black)
                         Spacer()
-                        Text("1.0.3")
+                        Text(appVersion)
                             .body1(.black)
                     }
                     Divider()
@@ -68,6 +73,7 @@ struct SettingView: View {
             UIApplication.shared.open(url, options:[:])
         }
     }
+    
 }
 
 #Preview {

@@ -11,7 +11,7 @@ import CoreData
 struct BookDetailFull: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) var dismiss
-    @StateObject private var viewModel: ReadingTrackerViewModel 
+    @StateObject private var viewModel: ReadingTrackerViewModel
     @State private var pagesReadInput: String = ""
     @State private var bookMemos: [BookNote] = []
     @State private var showingAlert: Bool = false
@@ -25,7 +25,7 @@ struct BookDetailFull: View {
     private var isRead: Bool = false
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
     
-    init(_ bookInfo: BookInfo?, 
+    init(_ bookInfo: BookInfo?,
          isRead: Bool,
          fetchBookInfoUseCase: FetchBookInfoUseCase = FetchBookInfoUseCaseImpl(),
          fetchBookNoteListUseCase: FetchBookNoteListUseCase = FetchBookNoteListUseCaseImpl(),
@@ -42,73 +42,73 @@ struct BookDetailFull: View {
     }
     
     var body: some View {
-            VStack {
-                header
-                ScrollView {
-                    displayBook(isbn: (self.bookInfo?.isbn)!)
-                        .padding(EdgeInsets(top: 20, leading: 0, bottom: 40, trailing: 0))
-                    if !isRead {
-                        HStack {
-                            Spacer()
-                            Text("\(viewModel.lastPageRead)p / \(viewModel.totalBookPages)p")
-                                .mini(.black)
-                        }
-                        progressBar(value: viewModel.progressPercentage)
-                        Spacer(minLength: 20)
-                    }
-                    Spacer(minLength: 20)
-                    HStack{
-                        VStack(alignment: .leading){
-                            Text("독서 기록").title(Color.primary)
-                            HStack {
-                                Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
-                                Spacer()
-                                NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos)){
-                                    Image(systemName: "plus.app")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 24, height: 24)
-                                }
-                                .foregroundStyle(Color.primary)
-                            }
-                        }
-                    }
-                    .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
-                    .background(Color("backgroundColor"))
-                    Divider()
-                    bookNoteView(memos: bookMemos)
-                }
-                .scrollIndicators(.hidden)
+        VStack {
+            header
+            ScrollView {
+                displayBook(isbn: (self.bookInfo?.isbn)!)
+                    .padding(EdgeInsets(top: 20, leading: 0, bottom: 40, trailing: 0))
                 if !isRead {
-                    pageInput
+                    HStack {
+                        Spacer()
+                        Text("\(viewModel.lastPageRead)p / \(viewModel.totalBookPages)p")
+                            .mini(.black)
+                    }
+                    progressBar(value: viewModel.progressPercentage)
+                    Spacer(minLength: 20)
                 }
-            }
-            .padding(.horizontal)
-            .background(Color("backgroundColor"))
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button {
-                        if let newPageRead = Int(pagesReadInput), newPageRead <= viewModel.totalBookPages {
-                            viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
-                            pagesReadInput = ""
-                            hideKeyboard()
-                        } else {
-                            showingAlert = true
+                Spacer(minLength: 20)
+                HStack{
+                    VStack(alignment: .leading){
+                        Text("독서 기록").title(Color.primary)
+                        HStack {
+                            Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
+                            Spacer()
+                            NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos)){
+                                Image(systemName: "plus.app")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 24, height: 24)
+                            }
+                            .foregroundStyle(Color.primary)
                         }
-                    } label: {
-                        Text("저장")
-                            .foregroundStyle(Color.black)
                     }
                 }
-                
+                .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
+                .background(Color("backgroundColor"))
+                Divider()
+                bookNoteView(memos: bookMemos)
             }
-            .alert("유효 하지 않은 페이지 입니다.", isPresented: $showingAlert) {
-                Button("확인") {
-                    pagesReadInput = ""
-                    showingAlert = false
+            .scrollIndicators(.hidden)
+            if !isRead {
+                pageInput
+            }
+        }
+        .padding(.horizontal)
+        .background(Color("backgroundColor"))
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button {
+                    if let newPageRead = Int(pagesReadInput), newPageRead <= viewModel.totalBookPages {
+                        viewModel.addDailyProgress(newPageRead: newPageRead, bookInfo: self.bookInfo!)
+                        pagesReadInput = ""
+                        hideKeyboard()
+                    } else {
+                        showingAlert = true
+                    }
+                } label: {
+                    Text("저장")
+                        .foregroundStyle(Color.black)
                 }
             }
+            
+        }
+        .alert("유효 하지 않은 페이지 입니다.", isPresented: $showingAlert) {
+            Button("확인") {
+                pagesReadInput = ""
+                showingAlert = false
+            }
+        }
         
         .onTapGesture {
             isInputActive = false
@@ -130,19 +130,19 @@ private extension BookDetailFull {
         fetchBookInfoUseCase.execute(with: isbn) { bookInfo in
             completion(bookInfo)
         }
-//        let fetchRequest: NSFetchRequest<BookInfoEntity>
-//        
-//        fetchRequest = BookInfoEntity.fetchRequest()
-//        fetchRequest.fetchLimit = 1
-//        fetchRequest.predicate = NSPredicate(format: "isbn LIKE %@", isbn)
-//        
-//        do {
-//            let object = try viewContext.fetch(fetchRequest)
-//            return object.first
-//        } catch {
-//            let nsError = error as NSError
-//            fatalError("Unresolved Error\(nsError)")
-//        }
+        //        let fetchRequest: NSFetchRequest<BookInfoEntity>
+        //
+        //        fetchRequest = BookInfoEntity.fetchRequest()
+        //        fetchRequest.fetchLimit = 1
+        //        fetchRequest.predicate = NSPredicate(format: "isbn LIKE %@", isbn)
+        //
+        //        do {
+        //            let object = try viewContext.fetch(fetchRequest)
+        //            return object.first
+        //        } catch {
+        //            let nsError = error as NSError
+        //            fatalError("Unresolved Error\(nsError)")
+        //        }
     }
     
     func fetchAllBookNotes(isbn: String?, _ completion: @escaping ([BookNote])->Void) {
@@ -151,19 +151,19 @@ private extension BookDetailFull {
             completion(notes)
         }
         /*
-        guard let isbn else { return [] }
-        let fetchRequest: NSFetchRequest<BookNoteEntity>
-        
-        fetchRequest = BookNoteEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "%K LIKE %@",#keyPath(BookNoteEntity.bookInfo.isbn), isbn)
-        
-        do {
-            let objects = try viewContext.fetch(fetchRequest)
-            return objects
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
+         guard let isbn else { return [] }
+         let fetchRequest: NSFetchRequest<BookNoteEntity>
+         
+         fetchRequest = BookNoteEntity.fetchRequest()
+         fetchRequest.predicate = NSPredicate(format: "%K LIKE %@",#keyPath(BookNoteEntity.bookInfo.isbn), isbn)
+         
+         do {
+         let objects = try viewContext.fetch(fetchRequest)
+         return objects
+         } catch {
+         let nsError = error as NSError
+         fatalError("Unresolved Error\(nsError)")
+         }
          */
     }
     
@@ -174,32 +174,32 @@ private extension BookDetailFull {
     }
     // 필요 x
     /*
-    func deleteAllReadList(readingList: [ReadingTrackingEntity]) {
-        for idx in 0..<readingList.count {
-            viewContext.delete(readingList[idx])
-        }
-        
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-        
-    }
-    
-    func doneReadingBook(entity: BookInfoEntity) {
-        entity.readingStatus = false
-        
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved Error\(nsError)")
-        }
-        
-        // delegate 사용 필요
-    }
+     func deleteAllReadList(readingList: [ReadingTrackingEntity]) {
+     for idx in 0..<readingList.count {
+     viewContext.delete(readingList[idx])
+     }
+     
+     do {
+     try viewContext.save()
+     } catch {
+     let nsError = error as NSError
+     fatalError("Unresolved Error\(nsError)")
+     }
+     
+     }
+     
+     func doneReadingBook(entity: BookInfoEntity) {
+     entity.readingStatus = false
+     
+     do {
+     try viewContext.save()
+     } catch {
+     let nsError = error as NSError
+     fatalError("Unresolved Error\(nsError)")
+     }
+     
+     // delegate 사용 필요
+     }
      */
     
     func readingStateToggle(book: BookInfo) {
@@ -212,10 +212,10 @@ private extension BookDetailFull {
     
     func addReadList(book: BookInfo, sdate: Date, edate: Date) {
         let readBook = ReadBook(id: UUID(), startDate: sdate, endDate: edate)
-//        addReadBookUseCase.execute(readBook: readBook, bookInfo: book, of: nil) { bookInfo in
-//            readingStateToggle(book: bookInfo)
-//            // 1번 탭에서 책 정보 지워줄 delegate 필요
-//        }
+        //        addReadBookUseCase.execute(readBook: readBook, bookInfo: book, of: nil) { bookInfo in
+        //            readingStateToggle(book: bookInfo)
+        //            // 1번 탭에서 책 정보 지워줄 delegate 필요
+        //        }
         var newBook = book
         newBook.readbooks.append(readBook)
         updateBookInfoUseCase.execute(book: newBook, of: nil) { bookInfo in
@@ -253,13 +253,13 @@ private extension BookDetailFull {
             VStack {
                 HStack{
                     Image(uiImage: (book.image ?? UIImage(named: "noImage"))!)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100)
-                            .clipped()
-                            .padding(.horizontal, 15)
-                            .padding(.vertical, 5)
-                    }
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100)
+                        .clipped()
+                        .padding(.horizontal, 15)
+                        .padding(.vertical, 5)
+                    
                     VStack(alignment: .leading){
                         Text(book.title)
                             .body2(.black)
@@ -285,7 +285,8 @@ private extension BookDetailFull {
                 .overlay(RoundedRectangle(cornerRadius:10)
                     .stroke(Color("gray"), lineWidth: 1)
                 )
-            } else{
+            }
+        } else{
             Text("Book not found").title(Color.primary)
         }
     }
@@ -394,7 +395,7 @@ private extension BookDetailFull {
         }
         .padding(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
     }
-
+    
 }
 //#Preview {
 //    BookDetailFull("newBook3")

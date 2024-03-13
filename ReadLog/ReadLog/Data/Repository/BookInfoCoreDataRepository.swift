@@ -87,8 +87,6 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
         guard let isbn = book.isbn else { return }
         guard var bookInfoEntity = getBookInfoEntity(isbn: isbn) else { return }
         bookInfoEntity = mappingBookInfoEntity(from: book, to: bookInfoEntity)
-        print(book)
-        print(bookInfoEntity.wish)
         do {
             try context.save()
             if let completion {
