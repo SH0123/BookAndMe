@@ -47,7 +47,7 @@ struct GoogleBooksManager {
     }
     
     private func convertToBookInfo(from decodedData: GoogleBooksJsonResponse) -> [BookInfo] {
-        let filteredData = decodedData.items.filter { $0.volumeInfo.industryIdentifiers.count != 0 && $0.volumeInfo.pageCount != 0 }
+        let filteredData = decodedData.items.filter { $0.volumeInfo.industryIdentifiers?.count != 0 && $0.volumeInfo.pageCount != 0 }
         let bookDataArray: [BookInfo] = filteredData.map { bookDataJsonResponse in
             return mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse)
         }
@@ -56,11 +56,11 @@ struct GoogleBooksManager {
     
     private func mappingToBookInfo(bookDataJsonResponse: GoogleBooksJsonItem) -> BookInfo {
         var bookInfo = BookInfo(id: bookDataJsonResponse.id,
-                                author: bookDataJsonResponse.volumeInfo.authors.joined(separator: ", "),
+                                author: bookDataJsonResponse.volumeInfo.authors?.joined(separator: ", ") ?? "공식 작가 없음",
                                 bookDescription: bookDataJsonResponse.volumeInfo.description ?? "공식 책 설명 없음",
-                                coverImageUrl: bookDataJsonResponse.volumeInfo.imageLinks.thumbnail,
+                                coverImageUrl: bookDataJsonResponse.volumeInfo.imageLinks?.thumbnail ?? "",
                                 image: nil,
-                                isbn: bookDataJsonResponse.volumeInfo.industryIdentifiers[0].identifier,
+                                isbn: bookDataJsonResponse.volumeInfo.industryIdentifiers?[0].identifier ?? "",
                                 link: bookDataJsonResponse.volumeInfo.infoLink ?? "",
                                 readingStatus: false,
                                 repeatTime: 0,

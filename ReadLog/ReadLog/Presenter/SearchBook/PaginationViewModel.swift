@@ -21,6 +21,8 @@ class PaginationViewModel: ObservableObject {
     
     private var keywordSearchMode = true
     
+    private let bookApiManager: BookAPIManager = BookAPIManager()
+    
     func isKeywordSearchMode() -> Bool {
         return keywordSearchMode
     }
@@ -45,12 +47,18 @@ class PaginationViewModel: ObservableObject {
         
         isFetching = true
         isLoading = true
-        
+        currentPage += 1
 //        let aladinFetcher = AladinManager()
 //        aladinFetcher.fetchAndDecode(keyword: keyword, maxResult: 20, currentPage: currentPage) {_ in}
+        bookApiManager.fetchBooks(keyword: keyword, maxResult: 20, currentPage: currentPage) { bookDataArray, totalResults in
+            self.results.append(contentsOf: bookDataArray)
+            if totalResults / 20 < 10 {
+                self.totalPages = (totalResults - 1) / 20 + 1
+            }
+        }
         // TODO: current Page update 되도록, currentPage가 max를 넘어서지 않도록 control, fetch image는 읽기 시작 눌렀을 때만 되도록 코드 확장, ISBN 용도의 코드는 따로 작성해야하나? 상속할 수 있나 생각해보기
         // TODO: 실행 잘 되는지 테스트
-        currentPage += 1
+        /*
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=\(ApiKey.aladinKey)&Query=\(keyword)&QueryType=Keyword&MaxResults=20&start=\(currentPage)&SearchTarget=Book&output=js&Version=20131101"
 
         guard let encodedUrl = requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
@@ -100,7 +108,7 @@ class PaginationViewModel: ObservableObject {
         
         
         task.resume()
-        
+        */
         DispatchQueue.main.async {
             self.isFetching = false
         }
@@ -136,9 +144,16 @@ class PaginationViewModel: ObservableObject {
         guard !isFetching else { return }
         
         guard currentPage <= totalPages else { return }
-        
+        currentPage += 1
         isFetching = true
         
+        bookApiManager.fetchIsbnBooks(keyword: isbn, maxResult: 20, currentPage: currentPage) { bookDataArray, totalResults in
+            self.results.append(contentsOf: bookDataArray)
+            if totalResults / 20 < 10 {
+                self.totalPages = (totalResults - 1) / 20 + 1
+            }
+        }
+        /*
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=\(ApiKey.aladinKey)&itemIdType=ISBN13&ItemId=\(isbn)&output=js&Version=20131101"
         
         guard let url = URL(string: requestUrl) else {
@@ -181,7 +196,7 @@ class PaginationViewModel: ObservableObject {
         currentPage += 1
         
         task.resume()
-        
+        */
         DispatchQueue.main.async {
             self.isFetching = false
         }

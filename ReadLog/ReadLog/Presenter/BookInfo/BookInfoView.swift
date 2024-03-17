@@ -23,6 +23,7 @@ struct BookInfoView: View {
     @State private var dbBookData: BookInfo?
 
     var bookInfo: BookInfo
+    private let bookApiManager: BookAPIManager = BookAPIManager()
     
     @State var bookWithPage: BookInfoData?
     @State var like = false
@@ -162,7 +163,8 @@ struct BookInfoView: View {
                     }
                 } else {
                     if like {
-                        if dbBookData?.page == 0 {
+                        // TODO: Like 할 때 image 업데이트 안되는 문제
+//                        if dbBookData?.page == 0 {
                             getBookDataWithPage(isbn: bookInfo.isbn!) { result in
                                 if var bookWithPage = result {
 
@@ -170,12 +172,12 @@ struct BookInfoView: View {
                                     saveBookData(newBook: bookWithPage, nil)
                                 }
                             }
-                        } else {
-                            // bookInfo 넘겨줘야함
-                            var bookData = bookInfo
-                            bookData.wish = true
-                            saveBookData(newBook: bookData, nil)
-                        }
+//                        } else {
+//                            // bookInfo 넘겨줘야함
+//                            var bookData = bookInfo
+//                            bookData.wish = true
+//                            saveBookData(newBook: bookData, nil)
+//                        }
                     }
                 }
             }
@@ -183,6 +185,15 @@ struct BookInfoView: View {
     }
     
     private func getBookDataWithPage(isbn: String, completion: @escaping (BookInfo?) -> Void) {
+        
+        bookApiManager.fetchIsbnBooks(keyword: isbn, maxResult: 20, currentPage: 1) { bookDataArray, totalResults in
+            if let bookWithPage = bookDataArray.first {
+                completion(bookWithPage)
+            } else {
+                completion(nil)
+            }
+        }
+        /*
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=\(ApiKey.aladinKey)&itemIdType=ISBN13&ItemId=\(isbn)&output=js&Version=20131101"
         
         guard let url = URL(string: requestUrl) else {
@@ -232,6 +243,7 @@ struct BookInfoView: View {
         }
         
         task.resume()
+         */
     }
     
     private func mappingToBookInfo(bookDataJsonResponse: AladinJsonResponseItem, page: Int) -> BookInfo {

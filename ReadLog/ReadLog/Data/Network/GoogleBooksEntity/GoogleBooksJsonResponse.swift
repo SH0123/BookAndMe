@@ -20,12 +20,12 @@ struct GoogleBooksJsonItem: Codable {
 
 struct VolumeInfo: Codable {
     let title: String
-    let authors: [String]
+    let authors: [String]?
     let publisher: String?
     let description: String?
-    let industryIdentifiers: [IndustryIdentifiers]
+    let industryIdentifiers: [IndustryIdentifiers]?
     let pageCount: Int?
-    let imageLinks: ImageLinks
+    let imageLinks: ImageLinks?
     let infoLink: String?
 }
 struct ImageLinks: Codable {
