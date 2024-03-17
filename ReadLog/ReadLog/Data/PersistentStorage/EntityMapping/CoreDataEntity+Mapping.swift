@@ -8,10 +8,11 @@
 import UIKit
 import CoreData
 
+//MARK: DB Entity -> Domain
 extension BookInfoEntity {
     func toDomain() -> BookInfo {
         return .init(
-            id: Int(id),
+            id: id ?? UUID().uuidString,
             author: author ?? "",
             bookDescription: bookDescription ?? "",
             coverImageUrl: "",
@@ -56,6 +57,7 @@ extension ReadingTrackingEntity {
     }
 }
 
+// MARK: Domain -> DB Entity
 extension ReadingTracking {
     func toEntity(context: NSManagedObjectContext, bookInfoEntity: BookInfoEntity) -> ReadingTrackingEntity {
         let entity = ReadingTrackingEntity(context: context)

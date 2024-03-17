@@ -3,7 +3,7 @@
     <entity name="BookInfoEntity" representedClassName="BookInfoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="bookDescription" optional="YES" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="image" optional="YES" attributeType="Binary"/>
         <attribute name="isbn" optional="YES" attributeType="String"/>
         <attribute name="link" optional="YES" attributeType="String"/>

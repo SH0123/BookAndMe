@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class PaginationViewModel: ObservableObject {
+class PaginationViewModel<API: BookDecodableAPI>: ObservableObject {
     @Published var results: [BookInfo] = []
     @Published private (set) var isLoading: Bool = false
     
@@ -20,6 +20,12 @@ class PaginationViewModel: ObservableObject {
     private var keyword = ""
     
     private var keywordSearchMode = true
+    
+    private let bookApiHandler: BookApiHandler<API>
+    
+    init(bookApiHandler: BookApiHandler<API>) {
+        self.bookApiHandler = bookApiHandler
+    }
     
     func isKeywordSearchMode() -> Bool {
         return keywordSearchMode
@@ -46,6 +52,12 @@ class PaginationViewModel: ObservableObject {
         isFetching = true
         isLoading = true
         
+        bookApiHandler.fetchAndDecode(keyword: keyword, maxResult: 20, currentPage: currentPage) { bookInfoList in
+            
+        }
+        // TODO: current Page update 되도록, currentPage가 max를 넘어서지 않도록 control, fetch image는 읽기 시작 눌렀을 때만 되도록 코드 확장, ISBN 용도의 코드는 따로 작성해야하나? 상속할 수 있나 생각해보기
+        // TODO: 실행 잘 되는지 테스트
+        /*
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=\(ApiKey.aladinKey)&Query=\(keyword)&QueryType=Keyword&MaxResults=20&start=\(currentPage)&SearchTarget=Book&output=js&Version=20131101"
 
         guard let encodedUrl = requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
@@ -68,7 +80,7 @@ class PaginationViewModel: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 
-                let decodedData = try decoder.decode(JsonResponse.self, from: data)
+                let decodedData = try decoder.decode(AladinJsonResponse.self, from: data)
 
                 if decodedData.totalResults / 20 < 10 {
                     self.totalPages = (decodedData.totalResults - 1) / 20 + 1
@@ -91,19 +103,19 @@ class PaginationViewModel: ObservableObject {
                 print("Error decoding JSON: \(error)")
             }
         }
-        
+        */
         currentPage += 1
         
-        task.resume()
+//        task.resume()
         
         DispatchQueue.main.async {
             self.isFetching = false
         }
     }
     
-    func mappingToBookInfo(bookDataJsonResponse: BookDataJsonResponse, page: Int) -> BookInfo {
+    func mappingToBookInfo(bookDataJsonResponse: AladinJsonResponseItem, page: Int) -> BookInfo {
         // 사진 저장 안됨
-        var bookInfo = BookInfo(id: bookDataJsonResponse.id,
+        var bookInfo = BookInfo(id: String(bookDataJsonResponse.id),
                                 author: bookDataJsonResponse.author,
                                 bookDescription: bookDataJsonResponse.description,
                                 coverImageUrl: bookDataJsonResponse.coverImage,
@@ -180,7 +192,7 @@ class PaginationViewModel: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 
-                let decodedData = try decoder.decode(JsonResponse.self, from: data)
+                let decodedData = try decoder.decode(AladinJsonResponse.self, from: data)
                 
                 DispatchQueue.main.async { [weak self] in
                     print(decodedData.item.count)

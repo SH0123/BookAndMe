@@ -1,5 +1,5 @@
 //
-//  BookDataJsonResponse.swift
+//  JsonResponse.swift
 //  ReadLog
 //
 //  Created by 유석원 on 12/4/23.
@@ -7,7 +7,22 @@
 
 import Foundation
 
-struct BookDataJsonResponse: Codable {
+struct AladinJsonResponse: Codable {
+    let version: String
+    let logo: String
+    let title: String
+    let link: String
+    let pubDate: String
+    let totalResults: Int
+    let startIndex: Int
+    let itemsPerPage: Int
+    let query: String
+    let searchCategoryId: Int
+    let searchCategoryName: String
+    let item: [AladinJsonResponseItem]
+}
+
+struct AladinJsonResponseItem: Codable {
     let id: Int
     let isbn: String
     let title: String
@@ -15,7 +30,6 @@ struct BookDataJsonResponse: Codable {
     let description: String
     let coverImage: String
     let publisher: String
-//    let price: Int
     let link: String
     let subInfo: BookSubInfo?
     
@@ -27,8 +41,11 @@ struct BookDataJsonResponse: Codable {
         case description
         case coverImage = "cover"
         case publisher
-//        case price = "priceStandard"
         case link
         case subInfo
     }
+}
+
+struct BookSubInfo: Codable {
+    let itemPage: Int?
 }

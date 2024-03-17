@@ -9,7 +9,11 @@ import SwiftUI
 import CoreData
 
 protocol AddWishListDelegate: AnyObject {
-    func AddWishList(_ bookInfo: BookInfo)
+    func addWishList(_ bookInfo: BookInfo)
+}
+
+protocol RemoveWishListDelegate: AnyObject {
+    func removeWishList(_ bookInfo: BookInfo)
 }
 
 struct BookWishlistView: View {
@@ -81,3 +85,4 @@ private extension BookWishlistView {
         
     }
 }
+

@@ -1,10 +1,6 @@
 import SwiftUI
 import CoreData
 
-protocol AddReadBookDelegate: AnyObject {
-    func removeFromReadBookList(_ bookInfo: BookInfo)
-}
-
 struct BookShelfView: View {
     @Environment(\.managedObjectContext) private var viewContext
     private let bookCountInRow: Int = 3
@@ -89,17 +85,7 @@ private extension BookShelfView {
     }
     
     func interpolateBookList(_ bookList: [BookInfo]) -> [BookInfo?] {
-        // TODO: 같은 책 1개만 가져올 수 있도록, 문제의 원인 분석해보기
-        var readList: [BookInfo?] = []
-        var dictionary: [String: Bool] = [:]
-        for record in bookList {
-            if !dictionary.keys.contains(record.isbn!) {
-                dictionary[record.isbn!] = true
-                readList.append(record)
-            }
-        }
-
-        let bookCount = readList.count
+        let bookCount = bookList.count
         let addBookCount = (bookCountInRow - bookCount % bookCountInRow) % bookCountInRow
         let nilArray: [BookInfo?] = Array<BookInfo?>(repeating: nil, count: addBookCount)
         return bookList + nilArray

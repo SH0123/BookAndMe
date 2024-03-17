@@ -20,7 +20,15 @@ final class FetchReadBookListUseCaseImpl: FetchReadBookListUseCase {
 
     func execute(of userId: String?, _ completion: @escaping ([BookInfo]) -> Void) {
         readBookRepository.fetchReadBookList(of: userId) { readBookList in
-            completion(readBookList)
+            var readList: [BookInfo] = []
+            var dictionary: [String: Bool] = [:]
+            for record in readBookList {
+                if !dictionary.keys.contains(record.isbn!) {
+                    dictionary[record.isbn!] = true
+                    readList.append(record)
+                }
+            }
+            completion(readList)
         }
     }
 }

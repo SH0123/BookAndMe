@@ -8,12 +8,8 @@
 import SwiftUI
 import CoreData
 
-protocol DoneReadingBookDelegate: AnyObject {
-    func removeFromReadingBookList(_ bookInfo: BookInfo)
-}
-
-protocol AddReadingBookDelegate: AnyObject {
-    func addReadingBookList(_ bookInfo: BookInfo)
+protocol RemoveReadingBookDelegate: AnyObject {
+    func removeReadingBook(_ bookInfo: BookInfo)
 }
 
 struct ReadingBookView: View {

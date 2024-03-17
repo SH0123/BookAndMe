@@ -46,23 +46,7 @@ final class ReadBookCoreDataRepository: ReadBookRepository {
         } else {
             bookInfoEntity?.readBooks = [newReadBook]
         }
-        
-//        guard let isbn = book.isbn else { return }
-//        let book = getBookInfoEntity(with: isbn)
-//        let newNote = BookNoteEntity(context: context)
-//        newNote.id = note.id
-//        newNote.label = Int16(note.label)
-//        newNote.content = note.content
-//        newNote.date = note.date
-//        newNote.bookInfo = book
-//        
-//        if var notes = book?.bookNotes {
-//            notes = notes.adding(newNote) as NSSet
-//            book?.bookNotes = notes
-//        } else {
-//            book?.bookNotes = [newNote]
-//        }
-        
+                
         do {
             try context.save()
             completion(bookInfo)

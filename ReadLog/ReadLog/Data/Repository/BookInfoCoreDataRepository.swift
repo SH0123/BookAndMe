@@ -99,7 +99,7 @@ final class BookInfoCoreDataRepository: BookInfoRepository {
     }
     
     private func mappingBookInfoEntity(from book: BookInfo, to bookInfoEntity: BookInfoEntity) -> BookInfoEntity {
-        bookInfoEntity.id = Int32(book.id)
+        bookInfoEntity.id = book.id
         bookInfoEntity.author = book.author
         bookInfoEntity.bookDescription = book.bookDescription
         if let imageData = book.image?.pngData() {

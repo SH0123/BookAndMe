@@ -22,6 +22,4 @@ struct FetchBookNoteListUseCaseImpl: FetchBookNoteListUseCase {
             completion(notes)
         }
     }
-    
-    
 }

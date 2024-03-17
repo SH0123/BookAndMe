@@ -8,7 +8,7 @@
 import UIKit
 
 struct BookInfo: Identifiable {
-    let id: Int
+    let id: String
     let author: String
     let bookDescription: String
     var coverImageUrl: String

@@ -18,6 +18,8 @@ struct BookInfoView: View {
     private let addBookInfoUseCase: AddBookInfoUseCase
     private let updateBookInfoUseCase: UpdateBookInfoUseCase
     private let addReadingTrackingUseCase: AddReadingTrackingUseCase
+//    private weak var addWishListDelegate: AddWishListDelegate?
+//    private weak var removeWishListDelegate: RemoveWishListDelegate?
     @State private var dbBookData: BookInfo?
 
     var bookInfo: BookInfo
@@ -33,13 +35,18 @@ struct BookInfoView: View {
          fetchBookInfoUseCase: FetchBookInfoUseCase = FetchBookInfoUseCaseImpl(),
          addBookInfoUseCase: AddBookInfoUseCase = AddBookInfoUseCaseImpl(),
          updateBookInfoUseCase: UpdateBookInfoUseCase = UpdateBookInfoUseCaseImpl(),
-         addReadingTrackingUseCase: AddReadingTrackingUseCase = AddReadingTrackingUseCaseImpl()) {
+         addReadingTrackingUseCase: AddReadingTrackingUseCase = AddReadingTrackingUseCaseImpl()
+//         addWishListDelegate: AddWishListDelegate?,
+//         removeWishListDelegate: RemoveWishListDelegate?
+    ) {
         self._tab = tab
         self.bookInfo = bookInfo
         self.fetchBookInfoUseCase = fetchBookInfoUseCase
         self.addBookInfoUseCase = addBookInfoUseCase
         self.updateBookInfoUseCase = updateBookInfoUseCase
         self.addReadingTrackingUseCase = addReadingTrackingUseCase
+//        self.addWishListDelegate = addWishListDelegate
+//        self.removeWishListDelegate = removeWishListDelegate
     }
     
     var body: some View {
@@ -159,7 +166,7 @@ struct BookInfoView: View {
                         if dbBookData?.page == 0 {
                             getBookDataWithPage(isbn: bookInfo.isbn!) { result in
                                 if var bookWithPage = result {
-                                    // TODO: page 수 0인 책들 나오는데 다시 확인해보기
+
                                     bookWithPage.wish = true
                                     saveBookData(newBook: bookWithPage, nil)
                                 }
@@ -199,7 +206,7 @@ struct BookInfoView: View {
             do {
                 let decoder = JSONDecoder()
                 
-                let decodedData = try decoder.decode(JsonResponse.self, from: data)
+                let decodedData = try decoder.decode(AladinJsonResponse.self, from: data)
                 
                 DispatchQueue.main.async {
                     print(decodedData.item.count)
@@ -228,8 +235,8 @@ struct BookInfoView: View {
         task.resume()
     }
     
-    private func mappingToBookInfo(bookDataJsonResponse: BookDataJsonResponse, page: Int) -> BookInfo {
-        var bookInfo = BookInfo(id: bookDataJsonResponse.id,
+    private func mappingToBookInfo(bookDataJsonResponse: AladinJsonResponseItem, page: Int) -> BookInfo {
+        var bookInfo = BookInfo(id: String(bookDataJsonResponse.id),
                                 author: bookDataJsonResponse.author,
                                 bookDescription: bookDataJsonResponse.description,
                                 coverImageUrl: bookDataJsonResponse.coverImage,

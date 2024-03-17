@@ -23,7 +23,9 @@ struct BookDetailFull: View {
     private let fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase
     private var bookInfo: BookInfo?
     private var isRead: Bool = false
+//    private weak var removeReadingBookDelegate: RemoveReadingBookDelegate?
     let memoDateFormatter: DateFormatter = Date.yyyyMdFormatter
+    
     
     init(_ bookInfo: BookInfo?,
          isRead: Bool,
@@ -31,6 +33,7 @@ struct BookDetailFull: View {
          fetchBookNoteListUseCase: FetchBookNoteListUseCase = FetchBookNoteListUseCaseImpl(),
          updateBookInfoUseCase: UpdateBookInfoUseCase = UpdateBookInfoUseCaseImpl(),
          fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase = FetchReadingTrackingsUseCaseImpl()
+//         removeReadingBookDelegate: RemoveReadingBookDelegate? = nil
     ) {
         self.bookInfo = bookInfo
         self.isRead = isRead
@@ -39,6 +42,7 @@ struct BookDetailFull: View {
         self.fetchBookNoteListUseCase = fetchBookNoteListUseCase
         self.updateBookInfoUseCase = updateBookInfoUseCase
         self.fetchReadingTrackingsUseCase = fetchReadingTrackingsUseCase
+//        self.removeReadingBookDelegate = removeReadingBookDelegate
     }
     
     var body: some View {
@@ -130,19 +134,6 @@ private extension BookDetailFull {
         fetchBookInfoUseCase.execute(with: isbn) { bookInfo in
             completion(bookInfo)
         }
-        //        let fetchRequest: NSFetchRequest<BookInfoEntity>
-        //
-        //        fetchRequest = BookInfoEntity.fetchRequest()
-        //        fetchRequest.fetchLimit = 1
-        //        fetchRequest.predicate = NSPredicate(format: "isbn LIKE %@", isbn)
-        //
-        //        do {
-        //            let object = try viewContext.fetch(fetchRequest)
-        //            return object.first
-        //        } catch {
-        //            let nsError = error as NSError
-        //            fatalError("Unresolved Error\(nsError)")
-        //        }
     }
     
     func fetchAllBookNotes(isbn: String?, _ completion: @escaping ([BookNote])->Void) {
@@ -150,21 +141,6 @@ private extension BookDetailFull {
         fetchBookNoteListUseCase.execute(with: isbn, of: nil) { notes in
             completion(notes)
         }
-        /*
-         guard let isbn else { return [] }
-         let fetchRequest: NSFetchRequest<BookNoteEntity>
-         
-         fetchRequest = BookNoteEntity.fetchRequest()
-         fetchRequest.predicate = NSPredicate(format: "%K LIKE %@",#keyPath(BookNoteEntity.bookInfo.isbn), isbn)
-         
-         do {
-         let objects = try viewContext.fetch(fetchRequest)
-         return objects
-         } catch {
-         let nsError = error as NSError
-         fatalError("Unresolved Error\(nsError)")
-         }
-         */
     }
     
     func fetchAllReadingList(isbn: String, _ completion: @escaping ([ReadingTracking])->Void){
@@ -172,38 +148,8 @@ private extension BookDetailFull {
             completion(readingTrackings)
         }
     }
-    // 필요 x
-    /*
-     func deleteAllReadList(readingList: [ReadingTrackingEntity]) {
-     for idx in 0..<readingList.count {
-     viewContext.delete(readingList[idx])
-     }
-     
-     do {
-     try viewContext.save()
-     } catch {
-     let nsError = error as NSError
-     fatalError("Unresolved Error\(nsError)")
-     }
-     
-     }
-     
-     func doneReadingBook(entity: BookInfoEntity) {
-     entity.readingStatus = false
-     
-     do {
-     try viewContext.save()
-     } catch {
-     let nsError = error as NSError
-     fatalError("Unresolved Error\(nsError)")
-     }
-     
-     // delegate 사용 필요
-     }
-     */
     
     func readingStateToggle(book: BookInfo) {
-        // delegate 사용 필요 bookshelf에 추가
         // delegate 사용 필요 readingList에서 제거
         var updateBook = book
         updateBook.readingStatus = false
@@ -223,7 +169,6 @@ private extension BookDetailFull {
         }
     }
     
-    // bookShelf 추가 안됨
     func readComplete(isbn: String?) {
         guard let isbn else { return }
         // TODO: 이러면 다회독 했을 때 예전 데이터가 reading list에서 가져와져서 그 값이 저장될 듯
