@@ -47,7 +47,6 @@
 		E68A92D72B9B5B44004DBDE7 /* AddReadingTrackingUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68A92D62B9B5B44004DBDE7 /* AddReadingTrackingUseCaseImpl.swift */; };
 		E68A92D92B9B5B78004DBDE7 /* UpdateReadingTrackingUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68A92D82B9B5B78004DBDE7 /* UpdateReadingTrackingUseCaseImpl.swift */; };
 		E69DFCF72BA6B10800679531 /* GoogleBooksJsonResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69DFCF62BA6B10800679531 /* GoogleBooksJsonResponse.swift */; };
-		E69DFCFB2BA6F3C800679531 /* GoogleBooksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69DFCFA2BA6F3C800679531 /* GoogleBooksManager.swift */; };
 		E69DFCFD2BA6F3D000679531 /* AladinBookAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69DFCFC2BA6F3D000679531 /* AladinBookAPI.swift */; };
 		E69DFCFF2BA701EF00679531 /* BookAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69DFCFE2BA701EF00679531 /* BookAPI.swift */; };
 		E69DFD012BA7023F00679531 /* BookAPICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69DFD002BA7023F00679531 /* BookAPICaller.swift */; };
@@ -123,7 +122,6 @@
 		E68A92D62B9B5B44004DBDE7 /* AddReadingTrackingUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReadingTrackingUseCaseImpl.swift; sourceTree = "<group>"; };
 		E68A92D82B9B5B78004DBDE7 /* UpdateReadingTrackingUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateReadingTrackingUseCaseImpl.swift; sourceTree = "<group>"; };
 		E69DFCF62BA6B10800679531 /* GoogleBooksJsonResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksJsonResponse.swift; sourceTree = "<group>"; };
-		E69DFCFA2BA6F3C800679531 /* GoogleBooksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBooksManager.swift; sourceTree = "<group>"; };
 		E69DFCFC2BA6F3D000679531 /* AladinBookAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AladinBookAPI.swift; sourceTree = "<group>"; };
 		E69DFCFE2BA701EF00679531 /* BookAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookAPI.swift; sourceTree = "<group>"; };
 		E69DFD002BA7023F00679531 /* BookAPICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookAPICaller.swift; sourceTree = "<group>"; };
@@ -277,7 +275,6 @@
 			children = (
 				E69DFCF12BA6AC5400679531 /* AladinEntity */,
 				E69DFCF22BA6AC5D00679531 /* GoogleBooksEntity */,
-				E69DFCFA2BA6F3C800679531 /* GoogleBooksManager.swift */,
 				E69DFCFC2BA6F3D000679531 /* AladinBookAPI.swift */,
 				E69DFCFE2BA701EF00679531 /* BookAPI.swift */,
 				E69DFD002BA7023F00679531 /* BookAPICaller.swift */,
@@ -590,7 +587,6 @@
 				E6AA85522B2685B5008225BA /* LicenseView.swift in Sources */,
 				E60DDA992B0A8D1400F25BB2 /* BookSearchView.swift in Sources */,
 				E66AB1FE2BA1EEB00090AB13 /* ReadingBookViewModel.swift in Sources */,
-				E69DFCFB2BA6F3C800679531 /* GoogleBooksManager.swift in Sources */,
 				E60DDA9B2B0A8F2400F25BB2 /* SearchBar.swift in Sources */,
 				E6AA85502B267A5F008225BA /* SettingView.swift in Sources */,
 				E65ED5372B97316100A09FCE /* ReadBook.swift in Sources */,

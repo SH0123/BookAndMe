@@ -183,7 +183,7 @@ struct BookInfoView: View {
             }
         }
     }
-    
+
     private func getBookDataWithPage(isbn: String, completion: @escaping (BookInfo?) -> Void) {
         
         bookApiManager.fetchIsbnBooks(keyword: isbn, maxResult: 20, currentPage: 1) { bookDataArray, totalResults in
