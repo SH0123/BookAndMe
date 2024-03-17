@@ -10,3 +10,7 @@ import UIKit
 struct Literals {
     static let defaultImage: String = "noImage"
 }
+
+enum CountryType: String {
+    case korea = "KR"
+}

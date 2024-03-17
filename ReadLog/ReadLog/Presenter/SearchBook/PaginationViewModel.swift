@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class PaginationViewModel<API: BookDecodableAPI>: ObservableObject {
+class PaginationViewModel: ObservableObject {
     @Published var results: [BookInfo] = []
     @Published private (set) var isLoading: Bool = false
     
@@ -20,12 +20,6 @@ class PaginationViewModel<API: BookDecodableAPI>: ObservableObject {
     private var keyword = ""
     
     private var keywordSearchMode = true
-    
-    private let bookApiHandler: BookApiHandler<API>
-    
-    init(bookApiHandler: BookApiHandler<API>) {
-        self.bookApiHandler = bookApiHandler
-    }
     
     func isKeywordSearchMode() -> Bool {
         return keywordSearchMode
@@ -52,12 +46,11 @@ class PaginationViewModel<API: BookDecodableAPI>: ObservableObject {
         isFetching = true
         isLoading = true
         
-        bookApiHandler.fetchAndDecode(keyword: keyword, maxResult: 20, currentPage: currentPage) { bookInfoList in
-            
-        }
+//        let aladinFetcher = AladinManager()
+//        aladinFetcher.fetchAndDecode(keyword: keyword, maxResult: 20, currentPage: currentPage) {_ in}
         // TODO: current Page update 되도록, currentPage가 max를 넘어서지 않도록 control, fetch image는 읽기 시작 눌렀을 때만 되도록 코드 확장, ISBN 용도의 코드는 따로 작성해야하나? 상속할 수 있나 생각해보기
         // TODO: 실행 잘 되는지 테스트
-        /*
+        currentPage += 1
         let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=\(ApiKey.aladinKey)&Query=\(keyword)&QueryType=Keyword&MaxResults=20&start=\(currentPage)&SearchTarget=Book&output=js&Version=20131101"
 
         guard let encodedUrl = requestUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
@@ -103,10 +96,10 @@ class PaginationViewModel<API: BookDecodableAPI>: ObservableObject {
                 print("Error decoding JSON: \(error)")
             }
         }
-        */
-        currentPage += 1
         
-//        task.resume()
+        
+        
+        task.resume()
         
         DispatchQueue.main.async {
             self.isFetching = false
@@ -134,34 +127,7 @@ class PaginationViewModel<API: BookDecodableAPI>: ObservableObject {
         
         return bookInfo
     }
-    
-    func fetchImage(urlString: String, completion: @escaping (Data?) -> Void) {
-        let convertedUrl = urlString.replacingOccurrences(of: "coversum", with: "cover200")
-        
-        guard let url = URL(string: convertedUrl) else {
-            completion(nil)
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let error = error {
-                print("Error downloading image: \(error)")
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
-                return
-            }
-            
-            DispatchQueue.main.async {
-                completion(data)
-            }
-        }
-        self.isLoading = true
-        task.resume()
-    }
 
-
-    
     func isbnSearchData(isbn: String, completion: @escaping (Bool) -> Void) {
         clear()
         keywordSearchMode = false

@@ -99,7 +99,6 @@ struct BookInfoView: View {
                         }
                         
                         if buttonText == "독서 시작" {
-                            // TODO: 처음 독서 시작 버튼 하면 저장 안됨. 두번째 해야 됨
                             Button {
                                 print("start to read the book.")
                                 // TODO: isbn 없는 경우 핸들링 코드 전체적으로 작성 필요
@@ -254,13 +253,11 @@ struct BookInfoView: View {
                                 readbooks: [])
         
         fetchImage(urlString: bookDataJsonResponse.coverImage) { imageData in
-//            DispatchQueue.main.async {
                 if let imageData {
                     bookInfo.image = UIImage(data: imageData)
                 } else {
                     print("Failed to fetch or convert image data.")
                 }
-//            }
         }
         
         return bookInfo
@@ -357,9 +354,9 @@ struct BookInfoView: View {
                 return
             }
             
-//            DispatchQueue.main.async {
+            DispatchQueue.main.async {
                 completion(data)
-//            }
+            }
         }
         
         task.resume()

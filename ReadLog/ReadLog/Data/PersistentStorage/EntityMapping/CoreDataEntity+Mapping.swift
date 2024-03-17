@@ -12,7 +12,7 @@ import CoreData
 extension BookInfoEntity {
     func toDomain() -> BookInfo {
         return .init(
-            id: id ?? UUID().uuidString,
+            id: id ?? UUID().uuidString ,
             author: author ?? "",
             bookDescription: bookDescription ?? "",
             coverImageUrl: "",
