@@ -44,7 +44,7 @@ struct AladinISBNAPI: BookAPI {
         guard let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             return
         }
-        print("kekekeekek")
+
         bookAPICaller.fetchBooks(urlString: encodedUrlString) { aladinJsonResponse in
 
             let totalResults = aladinJsonResponse.totalResults
@@ -60,18 +60,19 @@ struct AladinJsonConverter {
     func convertToBookInfo(from decodedData: AladinJsonResponse) -> [BookInfo] {
         let filteredData = decodedData.item.filter { $0.isbn != "" }
         let bookDataArray: [BookInfo] = filteredData.map { bookDataJsonResponse in
-            if let itemPage = bookDataJsonResponse.subInfo?.itemPage {
-                return (mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: itemPage))
-            } else {
-                return (mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: 0))
-            }
+            return mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: bookDataJsonResponse.subInfo?.itemPage ?? 0)
+//            if let itemPage = bookDataJsonResponse.subInfo?.itemPage {
+//                return (mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: itemPage))
+//            } else {
+//                return (mappingToBookInfo(bookDataJsonResponse: bookDataJsonResponse, page: 0))
+//            }
         }
         print(bookDataArray)
         return bookDataArray
     }
     
     private func mappingToBookInfo(bookDataJsonResponse: AladinJsonResponseItem, page: Int) -> BookInfo {
-        var bookInfo = BookInfo(id: String(bookDataJsonResponse.id),
+        let bookInfo = BookInfo(id: String(bookDataJsonResponse.id),
                                 author: bookDataJsonResponse.author,
                                 bookDescription: bookDataJsonResponse.description,
                                 coverImageUrl: bookDataJsonResponse.coverImage,
@@ -87,15 +88,6 @@ struct AladinJsonConverter {
                                 notes: [],
                                 trackings: [],
                                 readbooks: [])
-        
-        // TODO: fetch image 처음 독서 시작하는 경우에만 필요, isbn으로 검색하는 경우는 필요 x
-        fetchImage(urlString: bookDataJsonResponse.coverImage) { imageData in
-                if let imageData {
-                    bookInfo.image = UIImage(data: imageData)
-                } else {
-                    print("Failed to fetch or convert image data.")
-                }
-        }
 
         return bookInfo
     }

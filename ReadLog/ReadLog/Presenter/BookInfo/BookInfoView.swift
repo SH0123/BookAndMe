@@ -163,7 +163,6 @@ struct BookInfoView: View {
                     }
                 } else {
                     if like {
-                        // TODO: Like 할 때 image 업데이트 안되는 문제
 //                        if dbBookData?.page == 0 {
                             getBookDataWithPage(isbn: bookInfo.isbn!) { result in
                                 if var bookWithPage = result {
@@ -187,93 +186,21 @@ struct BookInfoView: View {
     private func getBookDataWithPage(isbn: String, completion: @escaping (BookInfo?) -> Void) {
         
         bookApiManager.fetchIsbnBooks(keyword: isbn, maxResult: 20, currentPage: 1) { bookDataArray, totalResults in
-            if let bookWithPage = bookDataArray.first {
-                completion(bookWithPage)
+            if var bookWithPage = bookDataArray.first {
+                fetchImage(urlString: bookWithPage.coverImageUrl) { imageData in
+                    if let imageData {
+                        bookWithPage.image = UIImage(data: imageData)
+                    } else{
+                        print("Failed to fetch or convert image data.")
+                    }
+                    completion(bookWithPage)
+                }
             } else {
                 completion(nil)
             }
         }
-        /*
-        let requestUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=\(ApiKey.aladinKey)&itemIdType=ISBN13&ItemId=\(isbn)&output=js&Version=20131101"
-        
-        guard let url = URL(string: requestUrl) else {
-            completion(nil)
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                print("Error: \(error)")
-                completion(nil)
-                return
-            }
-            
-            guard let data = data else {
-                completion(nil)
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                
-                let decodedData = try decoder.decode(AladinJsonResponse.self, from: data)
-                
-                DispatchQueue.main.async {
-                    print(decodedData.item.count)
-                    
-                    let bookDataArray: [BookInfo] = decodedData.item.map { bookJson in
-                        if let itemPage = bookJson.subInfo?.itemPage {
-                            return mappingToBookInfo(bookDataJsonResponse: bookJson, page: itemPage)
-                        } else {
-                            return mappingToBookInfo(bookDataJsonResponse: bookJson, page: 0)
-                        }
-                    }
-                    
-                    if let bookWithPage = bookDataArray.first {
-                        completion(bookWithPage)
-                    } else {
-                        completion(nil)
-                    }
-                    
-                }
-            } catch {
-                print("Error decoding JSON: \(error)")
-                completion(nil)
-            }
-        }
-        
-        task.resume()
-         */
     }
     
-    private func mappingToBookInfo(bookDataJsonResponse: AladinJsonResponseItem, page: Int) -> BookInfo {
-        var bookInfo = BookInfo(id: String(bookDataJsonResponse.id),
-                                author: bookDataJsonResponse.author,
-                                bookDescription: bookDataJsonResponse.description,
-                                coverImageUrl: bookDataJsonResponse.coverImage,
-                                image: nil,
-                                isbn: bookDataJsonResponse.isbn,
-                                link: bookDataJsonResponse.link,
-                                readingStatus: false,
-                                repeatTime: 0,
-                                page: page,
-                                publisher: bookDataJsonResponse.publisher,
-                                title: bookDataJsonResponse.title,
-                                wish: false,
-                                notes: [],
-                                trackings: [],
-                                readbooks: [])
-        
-        fetchImage(urlString: bookDataJsonResponse.coverImage) { imageData in
-                if let imageData {
-                    bookInfo.image = UIImage(data: imageData)
-                } else {
-                    print("Failed to fetch or convert image data.")
-                }
-        }
-        
-        return bookInfo
-    }
     
     // 책을 저장한 적 없는 경우 아래 두개
     private func saveBookData(newBook: BookInfo, _ completion: ((BookInfo)->Void)?) {
@@ -288,7 +215,6 @@ struct BookInfoView: View {
         var resBook = newBook
         
         fetchImage(urlString: newBook.coverImageUrl) { imageData in
-            DispatchQueue.main.async {
                 if let imageData {
                     resBook.image = UIImage(data: imageData)
                 } else {
@@ -299,7 +225,6 @@ struct BookInfoView: View {
                 let readingTracking = ReadingTracking(id: UUID(), readDate: Date(), readPage: 0)
                 resBook.trackings.append(readingTracking)
                 completion(resBook)
-            }
         }
     }
     
