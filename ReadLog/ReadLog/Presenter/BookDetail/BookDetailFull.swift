@@ -16,11 +16,13 @@ struct BookDetailFull: View {
     @State private var bookMemos: [BookNote] = []
     @State private var showingAlert: Bool = false
     @State private var isInit: Bool = true
+    @State private var showingSheet = false
     @FocusState private var isInputActive: Bool
     private let fetchBookInfoUseCase: FetchBookInfoUseCase
     private let fetchBookNoteListUseCase: FetchBookNoteListUseCase
     private let updateBookInfoUseCase: UpdateBookInfoUseCase
     private let fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase
+    private let deleteBookNoteUseCase: DeleteBookNoteUseCase
     private var bookInfo: BookInfo?
     private var isRead: Bool = false
 //    private weak var removeReadingBookDelegate: RemoveReadingBookDelegate?
@@ -32,7 +34,8 @@ struct BookDetailFull: View {
          fetchBookInfoUseCase: FetchBookInfoUseCase = FetchBookInfoUseCaseImpl(),
          fetchBookNoteListUseCase: FetchBookNoteListUseCase = FetchBookNoteListUseCaseImpl(),
          updateBookInfoUseCase: UpdateBookInfoUseCase = UpdateBookInfoUseCaseImpl(),
-         fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase = FetchReadingTrackingsUseCaseImpl()
+         fetchReadingTrackingsUseCase: FetchReadingTrackingsUseCase = FetchReadingTrackingsUseCaseImpl(),
+         deleteBookNoteUseCase: DeleteBookNoteUseCase = DeleteBookNoteUseCaseImpl()
 //         removeReadingBookDelegate: RemoveReadingBookDelegate? = nil
     ) {
         self.bookInfo = bookInfo
@@ -42,6 +45,7 @@ struct BookDetailFull: View {
         self.fetchBookNoteListUseCase = fetchBookNoteListUseCase
         self.updateBookInfoUseCase = updateBookInfoUseCase
         self.fetchReadingTrackingsUseCase = fetchReadingTrackingsUseCase
+        self.deleteBookNoteUseCase = deleteBookNoteUseCase
 //        self.removeReadingBookDelegate = removeReadingBookDelegate
     }
     
@@ -67,17 +71,17 @@ struct BookDetailFull: View {
                         HStack {
                             Text("어떤 부분이 인상 깊었나요?").bodyDefault(Color.primary)
                             Spacer()
-                            NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos)){
+                            NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos, nil)){
                                 Image(systemName: "plus.app")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(width: 24, height: 24)
+                                    .frame(width: 23, height: 23)
                             }
                             .foregroundStyle(Color.primary)
                         }
                     }
                 }
-                .padding(EdgeInsets(top: 10, leading: 5, bottom: 0, trailing: 5))
+                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 .background(Color("backgroundColor"))
                 Divider()
                 bookNoteView(memos: bookMemos)
@@ -87,7 +91,7 @@ struct BookDetailFull: View {
                 pageInput
             }
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 20)
         .background(Color("backgroundColor"))
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
@@ -276,7 +280,7 @@ private extension BookDetailFull {
     
     func bookNote(memo: BookNote) -> some View {
         VStack {
-            VStack(alignment: .leading, spacing:10) {
+            VStack(alignment: .leading, spacing:30) {
                 HStack {
                     Text(memoDateFormatter.string(from: memo.date!))
                         .bodyDefault(Color("gray"))
@@ -286,6 +290,34 @@ private extension BookDetailFull {
                 }
                 Text(memo.content ?? "")
                     .bodyDefaultMultiLine(Color.primary)
+                HStack(spacing: 30) {
+                    // TODO: 삭제 기능 추가
+                    Spacer()
+                    Button(action: {
+                        self.showingSheet = true
+                    }) {
+                        Image(systemName: Literals.trash)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20)
+                    }.alert("독서 노트를 삭제하시겠습니까?", isPresented: $showingSheet){
+                        Button("삭제", role: .destructive) {
+                            deleteBookNoteUseCase.execute(with: memo, of: nil) {
+                                bookMemos.removeAll(where: {$0.id == memo.id})
+                            }
+                        }
+                        Button("취소", role: .cancel) {}
+                    } message: {
+                        Text("삭제 이후에는 복원할 수 없습니다")
+                    }
+                    NavigationLink(destination:AddNoteView(bookInfo!, $bookMemos, memo)){
+                        Image(systemName: Literals.pencilSquare)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20)
+                    }
+                }
+                
             }
             .padding(.vertical, 10)
             Divider()

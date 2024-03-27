@@ -88,6 +88,7 @@ struct ReadingBookView: View {
                                     }//where vstack ends
                                     .frame(width: 350)
                                 } else {
+                                    //TODO: 기록 추가로 이동하는 페이지
                                     Text("책에 대한 기록이 아직 없어요.\n탭 해서 기록을 추가해 보세요")
                                         .bodyDefault(Color("gray"))
                                         .foregroundColor(.secondary)
